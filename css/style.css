@@ -1,0 +1,35 @@
+/* Basic Reset & Body Styles */
+body {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    padding: 0;
+}
+
+header {
+    text-align: center;
+}
+
+nav ul {
+    list-style: none; /* Remove bullet points */
+    padding: 0;
+    margin: 0;
+    display: flex; /* Arrange links horizontally */
+    justify-content: center; /* Center the links */
+    gap: 20px; /* Space between links */
+}
+
+nav ul li a {
+    text-decoration: none; /* Remove underline */
+}
+
+/* Main Content Styling */
+main {
+    max-width: 800px; /* Limit content width */
+    margin: 2em auto; /* Center the content with top/bottom margin */
+    padding: 0 20px; /* Add some padding on the sides */
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    font-size: 0.9em;
+}
