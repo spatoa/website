@@ -1,7 +1,19 @@
+/* Global variables for easy theme swapping */
+:root {
+    --max-width: 600px;
+}
+
 /* Basic Reset & Body Styles */
 body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     padding: 0;
+    margin: 0;
+}
+
+a {
+    color: var(--accent-color);
 }
 
 header {
@@ -23,7 +35,7 @@ nav ul li a {
 
 /* Main Content Styling */
 main {
-    max-width: 800px; /* Limit content width */
+    max-width: var(--max-width); /* Limit content width */
     margin: 2em auto; /* Center the content with top/bottom margin */
     padding: 0 20px; /* Add some padding on the sides */
 }
