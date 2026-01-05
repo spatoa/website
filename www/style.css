@@ -1,6 +1,22 @@
 /* Global variables for easy theme swapping */
 :root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --accent-color: #0000ee;
     --max-width: 600px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #000000;
+        --text-color: #ffffff;
+        --accent-color: #8585ff;
+    }
+}
+
+/* Element */
+a {
+    color: var(--accent-color);
 }
 
 /* Basic Reset & Body Styles */
@@ -12,14 +28,11 @@ body {
     margin: 0;
 }
 
-a {
-    color: var(--accent-color);
-}
-
 header {
     text-align: center;
 }
 
+/* Navigation */
 nav ul {
     list-style: none; /* Remove bullet points */
     padding: 0;
