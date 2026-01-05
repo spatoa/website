@@ -14,9 +14,17 @@
     }
 }
 
-/* Element */
+/* Element Specific */
 a {
     color: var(--accent-color);
+}
+
+h3 {
+    margin: 0;
+}
+
+p {
+    margin: 0;
 }
 
 /* Basic Reset & Body Styles */
@@ -49,12 +57,24 @@ nav ul li a {
 /* Main Content Styling */
 main {
     max-width: var(--max-width); /* Limit content width */
-    margin: 2em auto; /* Center the content with top/bottom margin */
-    padding: 0 20px; /* Add some padding on the sides */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0; /* Add some padding on the sides */
+}
+
+section {
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 /* Footer */
 footer {
     text-align: center;
     font-size: 0.9em;
+}
+
+/* Custom Classes */
+
+.card {
+    margin-bottom: 25px;
 }
