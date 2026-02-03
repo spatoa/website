@@ -14,7 +14,11 @@
     }
 }
 
-/* Element Specific */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Global Element Styles */
 a {
     color: var(--accent-color);
 }
@@ -23,11 +27,6 @@ h3 {
     margin: 0;
 }
 
-p {
-    margin: 0;
-}
-
-/* Basic Reset & Body Styles */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -37,12 +36,12 @@ body {
     margin: 0;
 }
 
-header {
+/* Website Navigation */
+.site-nav h1 {
     text-align: center;
 }
 
-/* Navigation */
-nav ul {
+.site-nav ul {
     list-style: none; /* Remove bullet points */
     padding: 0;
     margin: 0;
@@ -51,7 +50,7 @@ nav ul {
     gap: 20px; /* Space between links */
 }
 
-nav ul li a {
+.site-nav ul li a {
     text-decoration: none; /* Remove underline */
 }
 
@@ -78,4 +77,36 @@ footer {
 
 .card {
     margin-bottom: 25px;
+}
+
+.card p {
+    margin: 0;
+}
+
+.reference-list {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0.5rem 0;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.reference-list li {
+    display: contents;
+    /* Increment happens here for each list item */
+    counter-increment: bracket-counter;
+}
+
+.reference-list li::before {
+    /* This will now pull the value after the increment (1, 2, 3...) */
+    content: "[" counter(bracket-counter) "]";
+    grid-column: 1;
+    font-family: inherit;
+    align-self: start; 
+}
+
+/* You must wrap the text in a tag (like span) for it to occupy column 2 */
+.reference-list li span {
+    grid-column: 2;
+    margin-bottom: 0.75rem;
 }
