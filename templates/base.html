@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if page is defined and page.title %}{{ page.title }} - {% elif section is defined and section.title %}{{ section.title }} - {% endif %}{{ config.title }}</title>
+  <link rel="stylesheet" href="{{ get_url(path='css/style.css') | safe }}">
+</head>
+<body>
+  <div class="site-container">
+    <header class="banner">
+      <h1>LACHLAN'S WORLD</h1>
+      <div class="led-ticker">&#9658; WELCOME TO MY CORNER OF THE WEB &#9668;</div>
+    </header>
+
+    <div class="update-stamp">
+      Last Updated: {{ now() | date(format="%b %d, %Y") }}
+    </div>
+
+    <nav class="tab-bar">
+      <a href="{{ get_url(path='/') }}">[ HOME ]</a>
+      <a href="{{ get_url(path='blog/') }}">[ BLOG ]</a>
+      <a href="{{ get_url(path='cyber/') }}">[ CYBER / CTF ]</a>
+      <a href="#arcade">[ GAMES (WASM) ]</a>
+      <a href="{{ config.extra.git_url }}" target="_blank" rel="noopener">[ GIT ]</a>
+    </nav>
+
+    <main>
+      {% block content %}{% endblock content %}
+    </main>
+
+    <footer class="footer-note">
+      <div>Best viewed at 1024x768</div>
+      <div>&copy; 2005-2026 LACHLAN - PROUDLY HOSTED ON MY OWN SERVERS</div>
+    </footer>
+  </div>
+</body>
+</html>
