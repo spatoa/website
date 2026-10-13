@@ -1,0 +1,169 @@
+/* ==============================================
+   WINAMP_MINI.EXE AUDIO PLAYER STYLING
+   ============================================== */
+.winamp-window {
+    background: #1e242b;
+    border: 2px outset #5a6575;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+.winamp-titlebar {
+    background: linear-gradient(90deg, #101820 0%, #283747 60%, #101820 100%);
+    color: #d5dbdb;
+    padding: 2px 6px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #000;
+}
+
+[data-theme="cyber-y2k"] .winamp-titlebar {
+    background: linear-gradient(90deg, #162032 0%, #2a0845 60%, #162032 100%);
+}
+
+[data-theme="candy-2000"] .winamp-titlebar {
+    background: linear-gradient(90deg, #0369a1 0%, #0284c7 60%, #0369a1 100%);
+}
+
+[data-theme="scene-punk"] .winamp-titlebar {
+    background: linear-gradient(90deg, #222222 0%, #880055 60%, #222222 100%);
+}
+
+.winamp-title {
+    color: #00e5ff;
+    font-family: "Lucida Console", monospace;
+}
+
+.winamp-panel-body,
+.winamp-body {
+    padding: 6px;
+    background: #11171d;
+    border: 2px inset var(--bevel-dark);
+}
+
+.winamp-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #000000;
+    border: 2px inset var(--bevel-dark);
+    padding: 4px 6px;
+    margin-bottom: 6px;
+}
+
+.winamp-time-box {
+    background: #0d1a0d;
+    border: 1px solid #1a331a;
+    padding: 2px 4px;
+    font-family: "Lucida Console", monospace;
+    font-size: 13px;
+    font-weight: bold;
+    color: #00ff66;
+    text-shadow: 0 0 5px #00ff66;
+}
+
+.winamp-track-marquee-box {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    background: #000;
+}
+
+.winamp-marquee {
+    color: #00ff66;
+    font-family: "Lucida Console", monospace;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    animation: winampScroll 14s linear infinite;
+}
+
+@keyframes winampScroll {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.winamp-bitrate {
+    font-family: "Lucida Console", monospace;
+    font-size: 9px;
+    color: #ffcc00;
+    background: #201a00;
+    border: 1px solid #4d3d00;
+    padding: 1px 4px;
+}
+
+.winamp-vis-container {
+    background: #000;
+    border: 2px inset var(--bevel-dark);
+    padding: 2px;
+    margin-bottom: 6px;
+}
+
+.winamp-vis-container canvas {
+    display: block;
+    width: 100%;
+    height: 36px;
+    background: #000;
+}
+
+.winamp-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: #232d38;
+    border: 1px outset #546577;
+    padding: 4px 6px;
+}
+
+.winamp-btns {
+    display: flex;
+    gap: 3px;
+}
+
+.winamp-btn {
+    padding: 2px 7px;
+    font-size: 9px;
+    background: #344252;
+    color: #e0f7fa;
+    border: 1px outset #607d8b;
+}
+
+.winamp-btn:hover {
+    background: #455a64;
+    color: #fff;
+}
+
+.winamp-btn:active {
+    border-style: inset;
+    background: #263238;
+}
+
+.winamp-volume-box {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vol-label {
+    font-family: "Lucida Console", monospace;
+    font-size: 9px;
+    color: #a0b2c6;
+    font-weight: bold;
+}
+
+.retro-slider {
+    width: 60px;
+    accent-color: #00e5ff;
+}
+
+.winamp-status-note {
+    margin-top: 4px;
+    text-align: center;
+    font-family: "Lucida Console", monospace;
+    font-size: 8px;
+    color: #78909c;
+}

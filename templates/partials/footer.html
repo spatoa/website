@@ -1,0 +1,6 @@
+<footer class="footer-note" role="contentinfo">
+  <div class="footer-bevel">
+    <div>{{ config.extra.strings.footer_view_note | default(value="Best viewed at 1024x768 • Valid XHTML 1.0 Strict • Built with Zola SSG") }}</div>
+    <div>&copy; 2005-{{ now() | date(format="%Y") }} {{ config.extra.author_name }} &bull; {{ config.extra.strings.footer_copyright | default(value="Hosted on my servers") }}</div>
+  </div>
+</footer>

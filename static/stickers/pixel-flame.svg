@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="56" viewBox="0 0 48 56" shape-rendering="crispEdges">
+  <!-- Pixel art fire flame -->
+  <path d="M20 2 h8 v4 h-8 z" fill="#ff0000"/>
+  <path d="M16 6 h16 v6 h-16 z" fill="#ff3300"/>
+  <path d="M12 12 h24 v8 h-24 z" fill="#ff6600"/>
+  <path d="M8 20 h32 v12 h-32 z" fill="#ff9900"/>
+  <path d="M6 32 h36 v14 h-36 z" fill="#ffcc00"/>
+  <path d="M10 46 h28 v8 h-28 z" fill="#ffff00"/>
+  <!-- Inner hot core -->
+  <path d="M18 20 h12 v10 h-12 z" fill="#ffff33"/>
+  <path d="M16 30 h16 v14 h-16 z" fill="#ffffff"/>
+  <!-- Pixel sparks -->
+  <rect x="6" y="10" width="4" height="4" fill="#ff9900"/>
+  <rect x="38" y="14" width="4" height="4" fill="#ff3300"/>
+</svg>

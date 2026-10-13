@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="blog-archive-container">
+  <div class="breadcrumbs-bar">
+    <a href="{{ get_url(path='/') }}">{{ config.extra.strings.blog_breadcrumb_home | default(value="&laquo; Return to Home Portal") | safe }}</a> / 
+    <span>{{ config.extra.strings.blog_breadcrumb_archive | default(value="Blog Archive") }}</span>
+  </div>
+
+  <section class="panel blog-main-panel">
+    <div class="panel-header">{{ config.extra.strings.blog_header | default(value="★ Blog Archive & Personal Bulletins ★") }}</div>
+    <div class="panel-body">
+      <div class="blog-intro-box">
+        <p>
+          {{ config.extra.strings.blog_intro_text | default(value="Welcome to the blog archive! All entries are presented in reverse chronological order below.") }}
+        </p>
+      </div>
+
+      {% if paginator %}
+        {% set posts = paginator.pages %}
+      {% else %}
+        {% set posts = section.pages %}
+      {% endif %}
+
+      {% if posts | length > 0 %}
+        <div class="blog-feed">
+          {% for post in posts %}
+            <article class="blog-entry-card">
+              <div class="blog-entry-header">
+                <span class="blog-date-badge">{{ post.date | date(format="%b %d, %Y") }}</span>
+                <h2 class="blog-entry-title">
+                  <a href="{{ post.permalink }}">{{ post.title }}</a>
+                </h2>
+              </div>
+
+              {% if post.taxonomies.tags %}
+                <div class="blog-tags-bar">
+                  <span class="tags-label">Tags:</span>
+                  {% for tag in post.taxonomies.tags %}
+                    <span class="tag-pill">#{{ tag }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <div class="blog-entry-body">
+                {% if post.description %}
+                  <p>{{ post.description }}</p>
+                {% elif post.summary %}
+                  {{ post.summary | safe }}
+                {% else %}
+                  <p>{{ post.content | striptags | truncate(length=240) }}</p>
+                {% endif %}
+              </div>
+
+              <div class="blog-entry-footer">
+                <a href="{{ post.permalink }}" class="retro-btn-link">{{ config.extra.strings.blog_read_more | default(value="[ Read Full Post &raquo; ]") | safe }}</a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        {% if paginator %}
+          <nav class="pagination-bar">
+            {% if paginator.previous %}
+              <a href="{{ paginator.previous }}" class="retro-btn">{{ config.extra.strings.blog_prev_page | default(value="&laquo; Newer Posts") | safe }}</a>
+            {% else %}
+              <span class="retro-btn disabled">{{ config.extra.strings.blog_prev_page | default(value="&laquo; Newer Posts") | safe }}</span>
+            {% endif %}
+
+            <span class="page-counter">Page {{ paginator.current_index }} of {{ paginator.number_pagers }}</span>
+
+            {% if paginator.next %}
+              <a href="{{ paginator.next }}" class="retro-btn">{{ config.extra.strings.blog_next_page | default(value="Older Posts &raquo;") | safe }}</a>
+            {% else %}
+              <span class="retro-btn disabled">{{ config.extra.strings.blog_next_page | default(value="Older Posts &raquo;") | safe }}</span>
+            {% endif %}
+          </nav>
+        {% endif %}
+      {% else %}
+        <div class="no-posts-box">
+          <p>{{ config.extra.strings.blog_no_posts | default(value="No blog posts found in this section yet.") }}</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock content %}

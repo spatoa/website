@@ -1,0 +1,274 @@
+/* ==============================================
+   NAVIGATION & TOOLBAR CONTROLS
+   ============================================== */
+nav.tab-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    padding: 4px;
+    background: #e2ded5;
+    border: 1px solid #9e978b;
+    flex-wrap: wrap;
+}
+
+[data-theme="paper"] nav.tab-bar {
+    background: #e8e4da;
+    border-color: #9e978b;
+}
+
+[data-theme="windows"] nav.tab-bar {
+    background: #ece9d8;
+    border-color: #808080;
+}
+
+[data-theme="midnight"] nav.tab-bar {
+    background: #111827;
+    border-color: #374151;
+}
+
+[data-theme="cyber-y2k"] nav.tab-bar {
+    background: #0f1622;
+    border-color: #00ff80;
+}
+
+[data-theme="candy-2000"] nav.tab-bar {
+    background: #f0f9ff;
+    border-color: #38bdf8;
+}
+
+[data-theme="scene-punk"] nav.tab-bar {
+    background: #1a1a1a;
+    border-color: #ff1493;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    text-align: center;
+    padding: 4px 10px;
+    background: #d4d0c8;
+    border: 2px outset var(--bevel-light);
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 11px;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.nav-btn:hover {
+    background: #e8e4dc;
+    color: #0a246a;
+}
+
+.nav-btn:active {
+    border-style: inset;
+    background: #b8b4ac;
+}
+
+[data-theme="midnight"] .nav-btn {
+    background: #1f2937;
+    color: #f8fafc;
+    border-color: #4b5563;
+}
+
+[data-theme="midnight"] .nav-btn:hover {
+    background: #374151;
+    color: #38bdf8;
+}
+
+[data-theme="cyber-y2k"] .nav-btn {
+    background: #162032;
+    color: #00ff80;
+    border-color: #00ff80;
+}
+
+[data-theme="cyber-y2k"] .nav-btn:hover {
+    background: #00ff80;
+    color: #000000;
+}
+
+[data-theme="candy-2000"] .nav-btn {
+    background: #e0f2fe;
+    color: #0284c7;
+    border-color: #38bdf8;
+}
+
+[data-theme="candy-2000"] .nav-btn:hover {
+    background: #38bdf8;
+    color: #ffffff;
+}
+
+[data-theme="scene-punk"] .nav-btn {
+    background: #222222;
+    color: #ff1493;
+    border-color: #ff1493;
+}
+
+[data-theme="scene-punk"] .nav-btn:hover {
+    background: #ff1493;
+    color: #000000;
+}
+
+/* Nav Controls Area (Font Controls + Theme Selector + Quick Jump) */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+/* Font Size Toggle Controls */
+.font-size-box {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: #f0ece3;
+    border: 1px inset var(--bevel-dark);
+    padding: 2px 4px;
+}
+
+[data-theme="windows"] .font-size-box {
+    background: #d4d0c8;
+}
+
+[data-theme="midnight"] .font-size-box {
+    background: #0b0f17;
+    border-color: #334155;
+}
+
+[data-theme="cyber-y2k"] .font-size-box {
+    background: #0c131d;
+    border-color: #00ff80;
+}
+
+[data-theme="candy-2000"] .font-size-box {
+    background: #e0f2fe;
+    border-color: #38bdf8;
+}
+
+[data-theme="scene-punk"] .font-size-box {
+    background: #141414;
+    border-color: #ff1493;
+}
+
+.toolbar-label {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 9px;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-right: 2px;
+    user-select: none;
+}
+
+.font-btn {
+    background: #d4d0c8;
+    border: 1px outset var(--bevel-light);
+    font-family: "Impact", Tahoma, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 1px 5px;
+    color: #000;
+    line-height: 14px;
+}
+
+.font-btn:hover {
+    background: #e8e4dc;
+}
+
+.font-btn:active, .font-btn.active {
+    border-style: inset;
+    background: #b4ae9f;
+    color: #000;
+}
+
+[data-theme="midnight"] .font-btn {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #475569;
+}
+
+[data-theme="midnight"] .font-btn.active {
+    background: #3b82f6;
+    color: #fff;
+    border-style: inset;
+}
+
+/* Theme Selector Box */
+.theme-selector-box {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #f0ece3;
+    border: 1px inset var(--bevel-dark);
+    padding: 2px 4px;
+}
+
+[data-theme="windows"] .theme-selector-box {
+    background: #d4d0c8;
+}
+
+[data-theme="midnight"] .theme-selector-box {
+    background: #0b0f17;
+    border-color: #334155;
+}
+
+[data-theme="cyber-y2k"] .theme-selector-box {
+    background: #0c131d;
+    border-color: #00ff80;
+}
+
+[data-theme="candy-2000"] .theme-selector-box {
+    background: #e0f2fe;
+    border-color: #38bdf8;
+}
+
+[data-theme="scene-punk"] .theme-selector-box {
+    background: #141414;
+    border-color: #ff1493;
+}
+
+.theme-label {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 9px;
+    font-weight: bold;
+    color: var(--text-primary);
+    user-select: none;
+}
+
+.theme-selector-box select {
+    background: #ffffff;
+    border: 1px outset var(--bevel-light);
+    font-family: Tahoma, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 4px;
+    color: #000;
+    outline: none;
+}
+
+[data-theme="midnight"] .theme-selector-box select {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #475569;
+}
+
+[data-theme="cyber-y2k"] .theme-selector-box select {
+    background: #162032;
+    color: #00ff80;
+    border-color: #00ff80;
+}
+
+[data-theme="scene-punk"] .theme-selector-box select {
+    background: #222222;
+    color: #ff69b4;
+    border-color: #ff1493;
+}

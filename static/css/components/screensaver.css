@@ -1,0 +1,121 @@
+/* ==============================================
+   GAME PLAYER / SCREENSAVER DEMO WINDOW
+   ============================================== */
+.win-window {
+    background: #c0c0c0;
+    border: 2px outset var(--bevel-light);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.win-titlebar {
+    background: linear-gradient(90deg, #0a246a 0%, #1c52b8 60%, #a6caf0 100%);
+    color: #fff;
+    padding: 2px 6px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 1px #000;
+}
+
+[data-theme="cyber-y2k"] .win-titlebar {
+    background: linear-gradient(90deg, #7928ca 0%, #2a0845 60%, #00ff80 100%);
+    color: #00ff80;
+}
+
+[data-theme="candy-2000"] .win-titlebar {
+    background: linear-gradient(90deg, #0284c7 0%, #38bdf8 60%, #bae6fd 100%);
+    color: #ffffff;
+}
+
+[data-theme="scene-punk"] .win-titlebar {
+    background: linear-gradient(90deg, #ff1493 0%, #880055 60%, #000000 100%);
+    color: #ffffff;
+}
+
+.win-title {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.win-icon {
+    color: var(--accent-gold);
+    font-size: 10px;
+}
+
+.win-buttons {
+    display: flex;
+    gap: 2px;
+}
+
+.win-buttons button {
+    width: 16px;
+    height: 14px;
+    font-size: 9px;
+    line-height: 10px;
+    padding: 0;
+    background: #c0c0c0;
+    border: 1px outset var(--bevel-light);
+    font-weight: bold;
+    color: #000;
+}
+
+.win-buttons button:active {
+    border-style: inset;
+}
+
+.game-viewport-wrap,
+.win-body {
+    padding: 4px;
+    background: #000;
+    position: relative;
+    border: 2px inset var(--bevel-dark);
+}
+
+.game-viewport-wrap canvas,
+.win-body canvas {
+    display: block;
+    width: 100%;
+    height: 190px;
+    background: #000;
+    border: 1px inset var(--bevel-dark);
+}
+
+.canvas-overlay-notice {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 9px;
+    color: #00ff66;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 2px 6px;
+    margin-top: 2px;
+    text-align: center;
+}
+
+.win-statusbar {
+    background: #d4d0c8;
+    border-top: 1px inset #808080;
+    padding: 2px 6px;
+    font-family: "Lucida Console", monospace;
+    font-size: 9px;
+    display: flex;
+    justify-content: space-between;
+    color: #222;
+}
+
+.arcade-controls {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.wasm-notice {
+    margin-top: 6px;
+    text-align: center;
+    font-size: 9px;
+    color: var(--text-muted);
+}

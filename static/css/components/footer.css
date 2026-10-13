@@ -1,0 +1,56 @@
+/* ==============================================
+   FOOTER NOTE & BEVEL
+   ============================================== */
+.footer-note {
+    margin-top: 12px;
+    text-align: center;
+    color: #666;
+    font-size: 9px;
+    line-height: 14px;
+}
+
+[data-theme="midnight"] .footer-note {
+    color: #94a3b8;
+}
+
+[data-theme="cyber-y2k"] .footer-note {
+    color: #8892b0;
+}
+
+[data-theme="candy-2000"] .footer-note {
+    color: #64748b;
+}
+
+[data-theme="scene-punk"] .footer-note {
+    color: #888888;
+}
+
+.footer-bevel {
+    background: #e8e4da;
+    border: 1px solid var(--panel-border);
+    padding: 6px;
+}
+
+[data-theme="windows"] .footer-bevel {
+    background: #d4d0c8;
+}
+
+[data-theme="midnight"] .footer-bevel {
+    background: #111827;
+    border-color: #374151;
+}
+
+[data-theme="cyber-y2k"] .footer-bevel {
+    background: #0f1622;
+    border-color: #00ff80;
+}
+
+[data-theme="candy-2000"] .footer-bevel {
+    background: #f0f9ff;
+    border-color: #38bdf8;
+}
+
+[data-theme="scene-punk"] .footer-bevel {
+    background: #181818;
+    border-color: #ff1493;
+}

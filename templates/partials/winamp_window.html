@@ -1,0 +1,50 @@
+<!-- Winamp-Style Chiptune Audio Player Window -->
+<section class="panel desktop-window" id="music-player"
+         data-app-id="music-player"
+         data-app-title="Winamp_Mini.exe"
+         data-app-icon="🎵"
+         data-default-x="530"
+         data-default-y="50">
+  <div class="panel-header">
+    <div class="panel-header-title">
+      <span class="win-icon">🎵</span> {{ config.extra.strings.header_music | default(value="★ Audio Deck ★") }}
+    </div>
+  </div>
+  <div class="panel-body winamp-panel-body">
+    <!-- Green LCD Track Display -->
+    <div class="winamp-display">
+      <div class="winamp-time-box">
+        <span id="music-time">00:00</span>
+      </div>
+      <div class="winamp-track-marquee-box">
+        <div id="music-track-title" class="winamp-marquee">1. SPATOA - TEST 1 [8-BIT CHIPTUNE]</div>
+      </div>
+      <div class="winamp-bitrate">128 KBPS</div>
+    </div>
+
+    <!-- Mini Spectrum Visualizer Canvas -->
+    <div class="winamp-vis-container">
+      <canvas id="winamp-visualizer" width="360" height="36"></canvas>
+    </div>
+
+    <!-- Player Controls -->
+    <div class="winamp-controls">
+      <div class="winamp-btns">
+        <button class="retro-btn winamp-btn" id="music-prev" title="Previous Track">&#9664;&#9664;</button>
+        <button class="retro-btn winamp-btn" id="music-play" title="Play">&#9658;</button>
+        <button class="retro-btn winamp-btn" id="music-pause" title="Pause">&#10074;&#10074;</button>
+        <button class="retro-btn winamp-btn" id="music-stop" title="Stop">&#9632;</button>
+        <button class="retro-btn winamp-btn" id="music-next" title="Next Track">&#9654;&#9654;</button>
+      </div>
+
+      <div class="winamp-volume-box">
+        <label for="music-volume" class="vol-label">VOL:</label>
+        <input type="range" id="music-volume" min="0" max="100" value="65" class="retro-slider">
+      </div>
+    </div>
+
+    <div class="winamp-status-note">
+      <span id="music-status-txt">&#9658; READY TO PLAY &bull; CLICK PLAY FOR CHIPTUNE BGM</span>
+    </div>
+  </div>
+</section>

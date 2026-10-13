@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31" shape-rendering="crispEdges">
+  <rect width="88" height="31" fill="#c0c0c0"/>
+  <rect x="0" y="0" width="88" height="1" fill="#ffffff"/>
+  <rect x="0" y="0" width="1" height="31" fill="#ffffff"/>
+  <rect x="87" y="0" width="1" height="31" fill="#303030"/>
+  <rect x="0" y="30" width="88" height="1" fill="#303030"/>
+  <rect x="1" y="1" width="86" height="29" fill="#141414"/>
+  <!-- Left lightning bolt icon -->
+  <polygon points="12,4 6,17 12,17 9,27 18,13 13,13" fill="#ffff00" stroke="#ff8800" stroke-width="0.5"/>
+  <!-- Text -->
+  <text x="23" y="12" font-family="'Lucida Console', monospace" font-size="7" font-weight="bold" fill="#00e5ff" letter-spacing="-0.5">WINAMP 2.91</text>
+  <text x="23" y="23" font-family="'Lucida Console', monospace" font-size="9" font-weight="bold" fill="#ffcc00" letter-spacing="-0.5">IT WHIPS!</text>
+</svg>

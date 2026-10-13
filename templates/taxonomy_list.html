@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="breadcrumbs-bar">
+  <a href="{{ get_url(path='/') }}">&laquo; Home</a> / 
+  <a href="{{ get_url(path='blog/') }}">Blog Archive</a> / 
+  <span>Tags</span>
+</div>
+
+<section class="panel">
+  <div class="panel-header">&#9733; Tag Cloud / Index &#9733;</div>
+  <div class="panel-body">
+    <div class="tag-cloud">
+      {% for term in terms %}
+        <a href="{{ term.permalink }}" class="tag-pill tag-pill-lg">#{{ term.name }} ({{ term.pages | length }})</a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock content %}

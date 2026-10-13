@@ -1,2 +1,8 @@
 # Ignore VSCode folder
 .vscode/
+
+# Ignore Zola build output
+public/
+
+# Ignore nix direnv
+.direnv/

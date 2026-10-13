@@ -1,0 +1,130 @@
+/* ==============================================
+   HEADER, BANNER & LED TICKER
+   ============================================== */
+.banner {
+    background: var(--banner-gradient);
+    border: 2px outset var(--bevel-light);
+    padding: 14px 10px 10px 10px;
+    text-align: center;
+    position: relative;
+}
+
+.banner h1 {
+    margin: 0;
+    font-family: "Impact", "Arial Black", sans-serif;
+    font-size: 38px;
+    letter-spacing: 2px;
+    color: var(--banner-title-color);
+    text-shadow:
+        2px 2px 0 #000,
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        var(--banner-glow);
+}
+
+.led-ticker-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    background: #000;
+    border: 2px inset var(--bevel-dark);
+    padding: 3px 8px;
+}
+
+.ticker-prefix, .ticker-suffix {
+    color: #00ff66;
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0 6px;
+    user-select: none;
+    animation: blinkLed 1.2s infinite steps(1);
+}
+
+@keyframes blinkLed {
+    50% { opacity: 0.2; }
+}
+
+.led-ticker-track {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+}
+
+.led-ticker-content {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    white-space: nowrap;
+    animation: ledTickerScroll 30s linear infinite;
+    color: #00ff66;
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding-right: 16px;
+}
+
+.led-ticker-container:hover .led-ticker-content {
+    animation-play-state: paused;
+}
+
+@keyframes ledTickerScroll {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Update Stamp Bar */
+.update-stamp {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0f1c30;
+    border: 1px solid #1a365d;
+    padding: 3px 8px;
+    margin: 6px 0;
+    color: #a8c4e4;
+    font-size: 10px;
+    font-family: "Lucida Console", Monaco, monospace;
+}
+
+[data-theme="paper"] .update-stamp {
+    background: #e5e0d4;
+    border-color: #b5ad9e;
+    color: #2b3a4a;
+}
+
+[data-theme="windows"] .update-stamp {
+    background: #d4d0c8;
+    border-color: #808080;
+    color: #000000;
+}
+
+[data-theme="cyber-y2k"] .update-stamp {
+    background: #131c2b;
+    border-color: #00ff80;
+    color: #00ff80;
+}
+
+[data-theme="candy-2000"] .update-stamp {
+    background: #dbeafe;
+    border-color: #38bdf8;
+    color: #0369a1;
+}
+
+[data-theme="scene-punk"] .update-stamp {
+    background: #1e1e1e;
+    border-color: #ff1493;
+    color: #ff69b4;
+}
+
+.update-stamp .separator {
+    color: #888;
+}

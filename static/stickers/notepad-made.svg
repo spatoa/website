@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31" shape-rendering="crispEdges">
+  <rect width="88" height="31" fill="#c0c0c0"/>
+  <rect x="0" y="0" width="88" height="1" fill="#ffffff"/>
+  <rect x="0" y="0" width="1" height="31" fill="#ffffff"/>
+  <rect x="87" y="0" width="1" height="31" fill="#404040"/>
+  <rect x="0" y="30" width="88" height="1" fill="#404040"/>
+  <rect x="1" y="1" width="86" height="29" fill="#000080"/>
+  <!-- Left icon: Notepad document -->
+  <rect x="5" y="5" width="16" height="21" fill="#ffffff"/>
+  <rect x="6" y="6" width="14" height="2" fill="#00ffff"/>
+  <line x1="7" y1="10" x2="17" y2="10" stroke="#808080" stroke-width="1"/>
+  <line x1="7" y1="13" x2="17" y2="13" stroke="#808080" stroke-width="1"/>
+  <line x1="7" y1="16" x2="17" y2="16" stroke="#808080" stroke-width="1"/>
+  <line x1="7" y1="19" x2="17" y2="19" stroke="#808080" stroke-width="1"/>
+  <line x1="7" y1="22" x2="13" y2="22" stroke="#808080" stroke-width="1"/>
+  <!-- Text -->
+  <text x="26" y="13" font-family="'Lucida Console', monospace" font-size="7" font-weight="bold" fill="#ffffff" letter-spacing="-0.5">MADE WITH</text>
+  <text x="26" y="24" font-family="'Lucida Console', monospace" font-size="9" font-weight="bold" fill="#00ff66" letter-spacing="-0.5">NOTEPAD</text>
+</svg>

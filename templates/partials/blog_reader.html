@@ -1,0 +1,73 @@
+<section class="panel desktop-window" id="blog-reader-window"
+         data-app-id="blog-reader-window"
+         data-app-title="Blog_Reader.exe"
+         data-app-icon="📝"
+         data-default-x="120"
+         data-default-y="350"
+         style="width: 580px; max-width: calc(100vw - 20px);">
+  <div class="panel-header">
+    <div class="panel-header-title">
+      <span class="win-icon">&#128221;</span> Blog_Reader.exe &bull; Bulletin Viewer
+    </div>
+    <div class="window-controls">
+      <button type="button" class="window-btn" id="reader-min-btn" title="Minimize">_</button>
+      <button type="button" class="window-btn" id="reader-close-btn" title="Close">&#10005;</button>
+    </div>
+  </div>
+
+  <div class="panel-body reader-body" style="padding: 6px;">
+    <!-- Reader Toolbar -->
+    <div class="reader-toolbar">
+      <label for="reader-post-select" class="reader-label">ARTICLE:</label>
+      <select id="reader-post-select" class="reader-select">
+        {% set blog_section = get_section(path="blog/_index.md") %}
+        {% if blog_section and blog_section.pages %}
+          {% for post in blog_section.pages %}
+            <option value="{{ post.slug }}">{{ post.title }} ({{ post.date | date(format="%Y-%m-%d") }})</option>
+          {% endfor %}
+        {% else %}
+          <option value="">No articles published</option>
+        {% endif %}
+      </select>
+      <a href="{{ get_url(path='blog/') }}" target="_blank" rel="noopener" class="retro-btn" style="font-size: 9px; padding: 2px 6px; text-decoration: none;" title="Open in standard webpage archive">
+        Web Archive &#8599;
+      </a>
+    </div>
+
+    <!-- Reader Content Container -->
+    <div class="reader-content-box" id="reader-content-box">
+      {% if blog_section and blog_section.pages %}
+        {% for post in blog_section.pages %}
+          <article class="reader-article {% if loop.first %}active{% endif %}" id="reader-article-{{ post.slug }}" data-slug="{{ post.slug }}">
+            <header class="single-post-header">
+              <h2 class="single-post-title" style="font-size: 18px; margin: 4px 0;">{{ post.title }}</h2>
+              <div class="single-post-meta">
+                <span>&#128197; <strong>Date:</strong> {{ post.date | date(format="%B %d, %Y") }}</span>
+                <span class="meta-sep">|</span>
+                <span>&#9201; <strong>Reading Time:</strong> {{ post.reading_time }} min</span>
+                {% if post.taxonomies.tags %}
+                  <span class="meta-sep">|</span>
+                  {% for tag in post.taxonomies.tags %}
+                    <span class="tag-pill">#{{ tag }}</span>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </header>
+            <hr class="dotted-hr" style="margin: 8px 0;">
+            <div class="markdown-content reader-markdown">
+              {{ post.content | safe }}
+            </div>
+          </article>
+        {% endfor %}
+      {% else %}
+        <p style="padding: 12px; color: var(--text-muted); font-style: italic;">No bulletins published yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- Reader Status Bar -->
+    <div class="reader-statusbar">
+      <span id="reader-status-info">DOCUMENT LOADED &bull; 100% READY</span>
+      <span>MODE: LOCAL CACHE</span>
+    </div>
+  </div>
+</section>

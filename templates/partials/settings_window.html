@@ -1,0 +1,249 @@
+<!-- In-Desktop Settings & Display Properties Window (Settings.exe) -->
+<section class="panel desktop-window window-closed" id="settings-window"
+         data-app-id="settings-window"
+         data-app-title="Settings & System"
+         data-app-icon="⚙️"
+         data-default-x="280"
+         data-default-y="70"
+         style="width: 520px; max-width: calc(100vw - 20px);">
+  <div class="panel-header">
+    <div class="panel-header-title">
+      <span class="win-icon">&#9881;</span> Settings.exe &bull; System &amp; Display Properties
+    </div>
+  </div>
+
+  <div class="panel-body settings-panel-body" style="padding: 6px;">
+    <!-- Retro Tabbed Navigation Header -->
+    <div class="settings-tabs-nav" id="settings-tabs-nav" role="tablist">
+      <button type="button" class="settings-tab-btn active" data-tab="settings-tab-display" role="tab" aria-selected="true" aria-controls="settings-tab-display">
+        <span class="tab-icon">&#128421;</span> Display
+      </button>
+      <button type="button" class="settings-tab-btn" data-tab="settings-tab-about" role="tab" aria-selected="false" aria-controls="settings-tab-about">
+        <span class="tab-icon">&#128100;</span> About System
+      </button>
+      <button type="button" class="settings-tab-btn" data-tab="settings-tab-network" role="tab" aria-selected="false" aria-controls="settings-tab-network">
+        <span class="tab-icon">&#127760;</span> Network (Traffic)
+      </button>
+      <button type="button" class="settings-tab-btn" data-tab="settings-tab-status" role="tab" aria-selected="false" aria-controls="settings-tab-status">
+        <span class="tab-icon">&#9889;</span> System Status
+      </button>
+    </div>
+
+    <!-- TAB 1: DISPLAY SETTINGS -->
+    <div class="settings-tab-pane active" id="settings-tab-display" role="tabpanel">
+      <!-- Theme Palette Selector -->
+      <fieldset class="settings-fieldset">
+        <legend class="settings-legend">&#127912; Theme Color Scheme</legend>
+        <div class="settings-row">
+          <label for="settings-theme-select" class="settings-label">Active Palette:</label>
+          <select id="settings-theme-select" class="retro-select settings-select" onchange="window.switchSiteTheme(this.value)">
+            <option value="candy-2000">{{ config.extra.strings.theme_candy_2000 | default(value="Web 2.0 Candy (Aqua Gloss)") }}</option>
+            <option value="paper">{{ config.extra.strings.theme_paper | default(value="Tech Paper (Light)") }}</option>
+            <option value="windows">{{ config.extra.strings.theme_windows | default(value="Windows Classic (Light)") }}</option>
+            <option value="midnight">{{ config.extra.strings.theme_midnight | default(value="Midnight (Dark)") }}</option>
+            <option value="cyber-y2k">{{ config.extra.strings.theme_cyber_y2k | default(value="Cyber-Y2K (Neon Lime)") }}</option>
+            <option value="scene-punk">{{ config.extra.strings.theme_scene_punk | default(value="Scene Kid (Hot Pink)") }}</option>
+          </select>
+        </div>
+        <div class="settings-preview-box">
+          <div class="settings-sample-bar">SAMPLE WINDOW TITLEBAR</div>
+          <div class="settings-sample-text">Active palette adjusts all windows, wallpaper contrast, and taskbar styling.</div>
+        </div>
+      </fieldset>
+
+      <!-- Custom Desktop Wallpaper -->
+      <fieldset class="settings-fieldset">
+        <legend class="settings-legend">&#128444; Custom Desktop Wallpaper</legend>
+        <div class="settings-row">
+          <span class="settings-label">Image Source:</span>
+          <div class="settings-btn-group" style="display: flex; gap: 4px; flex-wrap: wrap; flex: 1;">
+            <label class="retro-btn" style="cursor: pointer; padding: 2px 7px; font-size: 10px;">
+              &#128193; Choose File...
+              <input type="file" id="settings-wallpaper-file" accept="image/*" style="display: none;">
+            </label>
+            <button type="button" class="retro-btn" id="settings-wallpaper-url-btn" style="padding: 2px 7px; font-size: 10px;" title="Provide an image web link">&#128279; Image URL</button>
+            <button type="button" class="retro-btn" id="settings-wallpaper-reset-btn" style="padding: 2px 7px; font-size: 10px;" title="Reset wallpaper to default theme pattern">&#8635; Default Pattern</button>
+          </div>
+        </div>
+
+        <!-- URL Input Row (toggled) -->
+        <div class="settings-row" id="settings-wallpaper-url-row" style="display: none; margin-top: 4px;">
+          <input type="url" id="settings-wallpaper-url-input" class="retro-input" placeholder="https://example.com/wallpaper.jpg" style="flex: 1; font-size: 10px; padding: 2px 4px;">
+          <button type="button" class="retro-btn" id="settings-wallpaper-url-apply" style="padding: 2px 6px; font-size: 10px;">Apply</button>
+        </div>
+
+        <div class="settings-row" style="margin-top: 6px;">
+          <label for="settings-wallpaper-fit" class="settings-label">Display Fit:</label>
+          <select id="settings-wallpaper-fit" class="retro-select settings-select" style="max-width: 160px;">
+            <option value="cover">Fill Screen (Cover)</option>
+            <option value="contain">Fit Entire Image (Contain)</option>
+            <option value="tile">Tile Pattern (Repeat)</option>
+            <option value="center">Centered (1:1)</option>
+          </select>
+        </div>
+
+        <div class="settings-wallpaper-preview" id="settings-wallpaper-preview-box">
+          <div class="wallpaper-preview-screen" id="wallpaper-preview-screen"></div>
+          <span class="wallpaper-preview-label" id="wallpaper-preview-label">Theme Default Pattern (Saved locally in client storage)</span>
+        </div>
+      </fieldset>
+
+      <!-- Font Size Accessibility -->
+      <fieldset class="settings-fieldset">
+        <legend class="settings-legend">&#128292; Accessibility &amp; Font Scaling</legend>
+        <div class="settings-font-row">
+          <span class="settings-label">System Font Size:</span>
+          <div class="settings-font-btns">
+            <button type="button" class="font-btn retro-btn" id="settings-font-sm" onclick="window.setFontScale('default')" title="Default compact font (11px)">A- (11px)</button>
+            <button type="button" class="font-btn retro-btn" id="settings-font-md" onclick="window.setFontScale('medium')" title="Medium readable font (13px)">A (13px)</button>
+            <button type="button" class="font-btn retro-btn" id="settings-font-lg" onclick="window.setFontScale('large')" title="Large accessible font (15px)">A+ (15px)</button>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Desktop Preferences & Motion -->
+      <fieldset class="settings-fieldset">
+        <legend class="settings-legend">&#128421; Workspace &amp; Windows</legend>
+        <div class="settings-row" style="margin-bottom: 6px;">
+          <label for="settings-sticker-motion-toggle" class="settings-label" style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" id="settings-sticker-motion-toggle" checked style="cursor: pointer;">
+            <span>Enable animated desktop stickers (floating &amp; subtle motion)</span>
+          </label>
+        </div>
+        <div class="settings-actions-row">
+          <button type="button" class="retro-btn" id="settings-reset-pos-btn" title="Reset all window positions to their defaults">&#8635; Reset Window Positions</button>
+          <button type="button" class="retro-btn" id="settings-clear-stickers-btn" title="Remove all stickers from desktop wallpaper">&#128465; Clear Desktop Stickers</button>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- TAB 2: ABOUT THIS SYSTEM -->
+    <div class="settings-tab-pane" id="settings-tab-about" role="tabpanel">
+      <div class="about-flex" style="margin-bottom: 8px;">
+        <div class="avatar-box">
+          <div class="avatar-pixel">{{ config.extra.avatar_icon | default(value="&#128421;") | safe }}</div>
+          <div class="avatar-caption">{{ config.extra.strings.about_avatar_caption | default(value="OPERATOR") }}</div>
+        </div>
+        <div class="about-text">
+          <p class="about-bio" style="margin-top: 0;">{{ config.extra.strings.about_bio | default(value=config.extra.author_bio | default(value="")) }}</p>
+          <table class="retro-meta-table">
+            <tr>
+              <td class="meta-label">{{ config.extra.strings.about_label_handle | default(value="Handle:") }}</td>
+              <td class="meta-val"><code>{{ config.extra.author }}</code></td>
+            </tr>
+            <tr>
+              <td class="meta-label">{{ config.extra.strings.about_label_interests | default(value="Interests:") }}</td>
+              <td class="meta-val">{{ config.extra.strings.about_interests | default(value="Low-level, CTFs, Retro Web, Linux, WASM") }}</td>
+            </tr>
+            <tr>
+              <td class="meta-label">{{ config.extra.strings.about_label_repos | default(value="Repositories:") }}</td>
+              <td class="meta-val"><a href="{{ config.extra.git_url }}" target="_blank" rel="noopener">git.lachlans.world &#8599;</a></td>
+            </tr>
+            <tr>
+              <td class="meta-label">{{ config.extra.strings.about_label_security | default(value="Security:") }}</td>
+              <td class="meta-val"><a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener">ctf.lachlans.world &#8599;</a></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bulletin Facts / Trivia -->
+      <fieldset class="settings-fieldset" style="margin-top: 8px;">
+        <legend class="settings-legend">&#128161; Bulletin Facts &amp; Architecture</legend>
+        <ul class="retro-bullet-list" style="margin: 4px 0 0 16px; padding: 0; font-size: 11px;">
+          {% set facts = config.extra.strings.trivia_facts | default(value=config.extra.trivia_facts) %}
+          {% if facts %}
+            {% for fact in facts %}
+              <li style="margin-bottom: 4px;">{{ fact }}</li>
+            {% endfor %}
+          {% else %}
+            <li style="margin-bottom: 4px;"><strong>Static Site Generation:</strong> This site compiles in under 50ms with Zola!</li>
+            <li style="margin-bottom: 4px;"><strong>Web 2.0 Relaunch:</strong> Version 2.0 sheds the extreme minimalism to bring back the fun!!</li>
+            <li style="margin-bottom: 4px;"><strong>WASM Ready:</strong> The interactive viewport on the right is wired for upcoming WebAssembly experiments...</li>
+          {% endif %}
+        </ul>
+      </fieldset>
+    </div>
+
+    <!-- TAB 3: NETWORK (TRAFFIC) -->
+    <div class="settings-tab-pane" id="settings-tab-network" role="tabpanel">
+      <fieldset class="settings-fieldset text-center">
+        <legend class="settings-legend">&#128290; User Session &amp; Visit Telemetry</legend>
+        <div class="counter-label" style="font-weight: bold; font-family: monospace; font-size: 11px; margin-bottom: 6px;">YOUR PERSONAL SITE VISITS:</div>
+        <div class="counter-box" id="settings-counter-box" style="margin: 0 auto 6px auto;">
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">0</span>
+          <span class="counter-digit">1</span>
+        </div>
+        <div class="counter-subtext" id="settings-counter-subtext" style="font-size: 10px; color: var(--text-muted); font-style: italic;">Logging user session...</div>
+      </fieldset>
+
+      <fieldset class="settings-fieldset" style="margin-top: 8px;">
+        <legend class="settings-legend">&#128225; Connection Status &amp; Ports</legend>
+        <table class="retro-meta-table" style="width: 100%; font-size: 10px;">
+          <tr>
+            <td class="meta-label">Protocol:</td>
+            <td class="meta-val">HTTP/1.1 (Static Asset CDN)</td>
+          </tr>
+          <tr>
+            <td class="meta-label">Client Handshake:</td>
+            <td class="meta-val"><span style="color: var(--term-green); font-weight: bold;">&#9679; CONNECTED (Local Session)</span></td>
+          </tr>
+          <tr>
+            <td class="meta-label">Latency:</td>
+            <td class="meta-val">&lt; 10ms (Local In-Memory Cache)</td>
+          </tr>
+          <tr>
+            <td class="meta-label">Data Storage:</td>
+            <td class="meta-val">HTML5 LocalStorage / Client Isolated</td>
+          </tr>
+        </table>
+      </fieldset>
+    </div>
+
+    <!-- TAB 4: SYSTEM STATUS -->
+    <div class="settings-tab-pane" id="settings-tab-status" role="tabpanel">
+      <fieldset class="settings-fieldset">
+        <legend class="settings-legend">&#128187; Operator Status &amp; Diagnostics</legend>
+        <div class="status-indicator" style="margin-bottom: 6px;">
+          <span class="status-dot"></span> <strong>{{ config.extra.strings.status_label_state | default(value="STATUS:") }}</strong> {{ config.extra.strings.status_state | default(value="ONLINE & READY") }}
+        </div>
+        <div class="status-line" style="margin-bottom: 4px;"><strong>{{ config.extra.strings.status_label_mood | default(value="Mood:") }}</strong> {{ config.extra.strings.status_mood | default(value="Busy Hacking") }}</div>
+        <div class="status-line" style="margin-bottom: 4px;"><strong>{{ config.extra.strings.status_label_project | default(value="Current Project:") }}</strong> {{ config.extra.strings.status_current_project | default(value="Personal Site v2") }}</div>
+        <div class="status-line" style="margin-bottom: 4px;"><strong>{{ config.extra.strings.status_label_arch | default(value="Server Architecture:") }}</strong> {{ config.extra.strings.status_server_arch | default(value="Linux x86_64 / NixOS") }}</div>
+      </fieldset>
+
+      <fieldset class="settings-fieldset" style="margin-top: 8px;">
+        <legend class="settings-legend">&#9881; Kernel Specifications</legend>
+        <table class="retro-meta-table" style="width: 100%; font-size: 10px;">
+          <tr>
+            <td class="meta-label">Operating System:</td>
+            <td class="meta-val">Lachlan's World OS [v2.0]</td>
+          </tr>
+          <tr>
+            <td class="meta-label">Subsystem:</td>
+            <td class="meta-val">Alpine Linux / WASM WebAssembly Engine</td>
+          </tr>
+          <tr>
+            <td class="meta-label">Display Resolution:</td>
+            <td class="meta-val"><span id="settings-screen-res">1024x768</span></td>
+          </tr>
+          <tr>
+            <td class="meta-label">Window Manager:</td>
+            <td class="meta-val">DesktopOS Retro Multi-Tasking Engine</td>
+          </tr>
+        </table>
+      </fieldset>
+    </div>
+
+    <!-- Dialog Action Footer -->
+    <div class="settings-dialog-footer" style="display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; padding-top: 6px; border-top: 1px dotted var(--panel-border);">
+      <button type="button" class="retro-btn settings-ok-btn" onclick="window.DesktopOS && window.DesktopOS.closeApp('settings-window')" style="padding: 3px 12px; font-weight: bold;">OK</button>
+      <button type="button" class="retro-btn" onclick="window.DesktopOS && window.DesktopOS.closeApp('settings-window')" style="padding: 3px 12px;">Close</button>
+    </div>
+  </div>
+</section>

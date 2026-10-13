@@ -17,7 +17,15 @@
         in
         {
           default = pkgs.mkShell {
-            packages = [ pkgs.zola ];
+            packages = [
+              pkgs.zola
+              pkgs.nodejs
+              pkgs.playwright-driver.browsers
+            ];
+            shellHook = ''
+              export PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}"
+              export PLAYWRIGHT_NODEJS_PATH="${pkgs.nodejs}/bin/node"
+            '';
           };
         });
 

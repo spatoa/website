@@ -1,0 +1,328 @@
+/* ==============================================================
+   POCKET_PET.EXE - CLEAN RETRO WINDOWS APPLIANCE DECK STYLES
+   Compact Recessed LCD Screen, 8 Framing Icons, & Mobile-Friendly Controls
+   ============================================================== */
+
+.pocket_pet-panel-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--panel-inner-bg, #ffffff);
+    padding: 10px 8px 6px;
+    gap: 8px;
+    user-select: none;
+    -webkit-user-select: none;
+    box-sizing: border-box;
+}
+
+/* Central Appliance Deck */
+.pocket_pet-deck {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 280px;
+    gap: 8px;
+    margin: 0 auto;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.pocket_pet-deck:focus-visible {
+    outline: 2px dashed var(--accent-gold, #b45309);
+    outline-offset: 4px;
+}
+
+/* Recessed Inset LCD Frame - Matched to site's inset bevel tokens */
+.pocket_pet-screen-bezel {
+    background: var(--panel-bg, #f0f0e8);
+    border: 2px inset var(--bevel-dark, #808080);
+    border-radius: 2px;
+    padding: 6px 8px;
+    box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 236px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* 8 LCD Icons Row */
+.pocket_pet-icon-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 2px 2px;
+    box-sizing: border-box;
+}
+
+.t-icon {
+    background: transparent;
+    border: 1px solid transparent;
+    font-size: 13px;
+    line-height: 1;
+    min-width: 28px;
+    min-height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    cursor: pointer;
+    filter: grayscale(100%) opacity(0.35);
+    transition: filter 0.1s, transform 0.1s, background-color 0.1s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.t-icon:hover,
+.t-icon:focus-visible {
+    filter: grayscale(30%) opacity(0.9);
+}
+
+.t-icon:active {
+    background: rgba(0, 0, 0, 0.2);
+    transform: scale(0.95);
+}
+
+.t-icon.active {
+    filter: none;
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--bevel-dark, #808080);
+    transform: scale(1.12);
+}
+
+.t-icon-alert {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    min-height: 26px;
+    filter: grayscale(100%) opacity(0.25);
+    font-size: 13px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.t-icon-alert.active {
+    filter: none;
+    opacity: 1;
+    animation: t-blink-alert 0.8s infinite alternate;
+}
+
+@keyframes t-blink-alert {
+    0% { opacity: 0.2; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.2); }
+}
+
+/* LCD Screen Canvas Container - Matching site's inset viewport styling */
+.pocket_pet-lcd-screen {
+    position: relative;
+    width: 176px;
+    height: 106px;
+    max-width: 100%;
+    background: #9bb084;
+    border: 2px inset var(--bevel-dark, #808080);
+    box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.5);
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Screen pixel canvas */
+.pocket_pet-canvas {
+    width: 160px;
+    height: 96px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    display: block;
+}
+
+/* CRT / Dot-Matrix Grid Texture Overlay */
+.pocket_pet-lcd-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+    background-size: 100% 2px, 3px 100%;
+}
+
+/* Primary Windows Pushbuttons (A, B, C) */
+.pocket_pet-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    max-width: 270px;
+    box-sizing: border-box;
+}
+
+.pocket_pet-controls .retro-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 6px;
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    white-space: nowrap;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.pocket_pet-controls .retro-btn:active {
+    border-style: inset;
+    transform: translateY(1px);
+}
+
+/* Sub-controls (Sound Toggle & Reset) */
+.pocket_pet-sub-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pocket_pet-sub-controls .retro-btn {
+    min-height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    padding: 2px 10px;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.pocket_pet-sub-controls .retro-btn:active {
+    border-style: inset;
+    transform: translateY(1px);
+}
+
+/* Retro Windows Status Bar */
+.pocket_pet-statusbar {
+    width: 100%;
+    margin-top: 4px;
+    border-top: 1px inset var(--bevel-dark, #808080);
+    background: var(--panel-bg, #d4d0c8);
+    color: var(--text-primary, #000);
+}
+
+/* ==============================================================
+   MOBILE & RESPONSIVE TOUCH ENHANCEMENTS
+   ============================================================== */
+
+@media (max-width: 768px) {
+    .pocket_pet-panel-body {
+        padding: 8px 6px 4px;
+    }
+
+    .pocket_pet-deck {
+        max-width: 100%;
+        gap: 10px;
+    }
+
+    .pocket_pet-screen-bezel {
+        max-width: 260px;
+        padding: 6px 10px;
+    }
+
+    /* Larger touch targets on mobile for comfortable tapping */
+    .t-icon {
+        min-width: 32px;
+        min-height: 32px;
+        font-size: 16px;
+    }
+
+    .t-icon-alert {
+        min-width: 32px;
+        min-height: 32px;
+        font-size: 16px;
+    }
+
+    .pocket_pet-controls {
+        max-width: 290px;
+        gap: 8px;
+    }
+
+    .pocket_pet-controls .retro-btn {
+        min-height: 40px;
+        font-size: 11px;
+        padding: 6px 8px;
+    }
+
+    .pocket_pet-sub-controls {
+        gap: 10px;
+    }
+
+    .pocket_pet-sub-controls .retro-btn {
+        min-height: 32px;
+        font-size: 10px;
+        padding: 4px 12px;
+    }
+
+    .pocket_pet-statusbar {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
+}
+
+/* Extra compact mobile displays (iPhone SE / 320px) */
+@media (max-width: 360px) {
+    .pocket_pet-controls .retro-btn {
+        font-size: 9px;
+        padding: 4px 2px;
+    }
+}
+
+/* ==============================================================
+   THEME ADAPTATIONS
+   ============================================================== */
+
+/* Midnight Dark Theme */
+[data-theme="midnight"] .pocket_pet-screen-bezel {
+    background: var(--panel-bg, #1a2232);
+    border-color: var(--bevel-dark, #334155);
+}
+
+[data-theme="midnight"] .pocket_pet-lcd-screen {
+    background: #849673;
+    border-color: var(--bevel-dark, #334155);
+}
+
+/* Cyber-Y2K Theme */
+[data-theme="cyber-y2k"] .pocket_pet-screen-bezel {
+    background: var(--panel-bg, #111a24);
+    border-color: var(--bevel-dark, #00ff80);
+}
+
+[data-theme="cyber-y2k"] .pocket_pet-lcd-screen {
+    background: #0f382a;
+    border-color: var(--bevel-dark, #00ff80);
+}
+
+/* Web 2.0 Candy Theme */
+[data-theme="candy-2000"] .pocket_pet-screen-bezel {
+    background: var(--panel-bg, #f0f9ff);
+    border-color: var(--bevel-dark, #0284c7);
+}
+
+/* Scene Kid Theme */
+[data-theme="scene-punk"] .pocket_pet-screen-bezel {
+    background: var(--panel-bg, #1f1f1f);
+    border-color: var(--bevel-dark, #ff1493);
+}

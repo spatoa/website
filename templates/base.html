@@ -4,35 +4,55 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% if page is defined and page.title %}{{ page.title }} - {% elif section is defined and section.title %}{{ section.title }} - {% endif %}{{ config.title }}</title>
-  <link rel="stylesheet" href="{{ get_url(path='css/style.css') | safe }}">
+  
+  <!-- Reader Mode & Search Metadata -->
+  <meta name="description" content="{% if page is defined and page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}">
+  <meta property="og:title" content="{% if page is defined and page.title %}{{ page.title }} - {% elif section is defined and section.title %}{{ section.title }} - {% endif %}{{ config.title }}">
+  <meta property="og:description" content="{% if page is defined and page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}">
+  <meta property="og:type" content="{% if page is defined %}article{% else %}website{% endif %}">
+  {% if page is defined and page.date %}
+  <meta property="article:published_time" content="{{ page.date | date(format='%Y-%m-%d') }}">
+  <meta property="article:author" content="{{ config.extra.author_name }}">
+  {% endif %}
+
+  {% include "partials/head_init.html" %}
 </head>
 <body>
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="skip-link">{{ config.extra.strings.skip_to_content | default(value="Skip to main content") }}</a>
+
   <div class="site-container">
-    <header class="banner">
-      <h1>LACHLAN'S WORLD</h1>
-      <div class="led-ticker">&#9658; WELCOME TO MY CORNER OF THE WEB &#9668;</div>
-    </header>
+    {% include "partials/banner.html" %}
+    {% include "partials/update_stamp.html" %}
+    {% include "partials/nav.html" %}
 
-    <div class="update-stamp">
-      Last Updated: {{ now() | date(format="%b %d, %Y") }}
-    </div>
-
-    <nav class="tab-bar">
-      <a href="{{ get_url(path='/') }}">[ HOME ]</a>
-      <a href="{{ get_url(path='blog/') }}">[ BLOG ]</a>
-      <a href="{{ get_url(path='cyber/') }}">[ CYBER / CTF ]</a>
-      <a href="#arcade">[ GAMES (WASM) ]</a>
-      <a href="{{ config.extra.git_url }}" target="_blank" rel="noopener">[ GIT ]</a>
-    </nav>
-
-    <main>
+    <main id="main-content" role="main">
       {% block content %}{% endblock content %}
     </main>
 
-    <footer class="footer-note">
-      <div>Best viewed at 1024x768</div>
-      <div>&copy; 2005-2026 LACHLAN - PROUDLY HOSTED ON MY OWN SERVERS</div>
-    </footer>
+    {% include "partials/footer.html" %}
   </div>
+
+  {% include "partials/sticker_book.html" %}
+
+  {% include "partials/site_config.html" %}
+
+  <script>
+    window.SEARCH_CONFIG = {
+      elasticlunrUrl: "{{ get_url(path='elasticlunr.min.js') | safe }}",
+      searchIndexUrl: "{{ get_url(path='search_index.en.js') | safe }}",
+      loadingText: "{{ config.extra.strings.search_loading | default(value='Searching index...') }}",
+      noResultsText: "{{ config.extra.strings.search_no_results | default(value='No matching records found.') }}",
+      resultsTitle: "{{ config.extra.strings.search_results_title | default(value='SEARCH RESULTS') }}",
+      matchesSuffix: "{{ config.extra.strings.search_matches_suffix | default(value='match(es) found') }}"
+    };
+  </script>
+  <script src="{{ get_url(path='js/theme-switcher.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/screensaver.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/music-player.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/visit-counter.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/search.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/sticker-book.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/pocket_pet.js') | safe }}" defer></script>
 </body>
 </html>

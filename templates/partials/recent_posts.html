@@ -1,0 +1,38 @@
+<section class="panel desktop-window" id="recent-posts"
+         data-app-id="recent-posts"
+         data-app-title="Blog Bulletins"
+         data-app-icon="📋"
+         data-default-x="530"
+         data-default-y="220">
+  <div class="panel-header">{{ config.extra.strings.header_posts | default(value="★ Recent Blog Posts & Bulletins ★") }}</div>
+  <div class="panel-body">
+    {% set blog_section = get_section(path="blog/_index.md") %}
+    {% if blog_section and blog_section.pages | length > 0 %}
+      <div class="recent-posts-list">
+        {% for post in blog_section.pages %}
+          {% if loop.index <= 3 %}
+            <article class="recent-post-item">
+              <div class="post-item-header">
+                <span class="post-date-badge">{{ post.date | date(format="%Y-%m-%d") }}</span>
+                <a href="{{ post.permalink }}" class="post-item-title">{{ post.title }}</a>
+              </div>
+              {% if post.description %}
+                <p class="post-item-summary">{{ post.description }}</p>
+              {% elif post.summary %}
+                <p class="post-item-summary">{{ post.summary | striptags | truncate(length=120) }}</p>
+              {% endif %}
+              <div class="post-readmore">
+                <a href="{{ post.permalink }}">[ Read Post &raquo; ]</a>
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="view-all-box">
+        <a href="{{ get_url(path='blog/') }}" class="retro-btn-link">&raquo; View All Posts in Archive ({{ blog_section.pages | length }}) &laquo;</a>
+      </div>
+    {% else %}
+      <p class="no-posts">{{ config.extra.strings.blog_no_posts | default(value="No blog posts published yet. Stay tuned!") }}</p>
+    {% endif %}
+  </div>
+</section>

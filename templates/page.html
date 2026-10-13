@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="single-post-container">
+  <nav aria-label="Breadcrumbs" class="breadcrumbs-bar">
+    <a href="{{ get_url(path='/') }}">{{ config.extra.strings.blog_breadcrumb_home | default(value="&laquo; Home Portal") | safe }}</a> / 
+    <a href="{{ get_url(path='blog/') }}">{{ config.extra.strings.blog_breadcrumb_archive | default(value="Blog Archive") }}</a> / 
+    <span aria-current="page">{{ page.title }}</span>
+  </nav>
+
+  <article class="h-entry panel post-panel" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="panel-header" aria-hidden="true">&#9733; Bulletin #{{ page.date | date(format="%Y%m%d") }} &bull; {{ page.title }} &#9733;</div>
+    
+    <div class="panel-body">
+      <header class="single-post-header">
+        <h1 class="single-post-title p-name" itemprop="headline">{{ page.title }}</h1>
+        
+        <div class="single-post-meta">
+          <span>&#128197; <strong>{{ config.extra.strings.post_date_prefix | default(value="Published:") }}</strong> 
+            <time itemprop="datePublished" datetime="{{ page.date | date(format='%Y-%m-%d') }}" class="dt-published">{{ page.date | date(format="%B %d, %Y") }}</time>
+          </span>
+          <span class="meta-sep" aria-hidden="true">|</span>
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person" class="p-author">
+            &#128100; <strong>{{ config.extra.strings.post_author_prefix | default(value="Author:") }}</strong> 
+            <span itemprop="name" rel="author">{{ page.extra.author | default(value=config.extra.author_name) }}</span>
+          </span>
+          <span class="meta-sep" aria-hidden="true">|</span>
+          <span>&#9201; <strong>{{ config.extra.strings.post_reading_time_prefix | default(value="Reading Time:") }}</strong> {{ page.reading_time }} min read</span>
+        </div>
+
+        {% if page.taxonomies.tags %}
+          <div class="post-tags-row">
+            <span class="tags-label">{{ config.extra.strings.post_tags_prefix | default(value="Categorized as:") }}</span>
+            {% for tag in page.taxonomies.tags %}
+              <span class="tag-pill p-category">#{{ tag }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </header>
+
+      <hr class="dotted-hr" aria-hidden="true">
+
+      <div itemprop="articleBody" class="e-content markdown-content">
+        {{ page.content | safe }}
+      </div>
+
+      <hr class="dotted-hr" aria-hidden="true">
+
+      <footer class="single-post-footer">
+        <div class="post-permalink-box">
+          <strong>{{ config.extra.strings.post_permalink_label | default(value="Entry URL:") }}</strong> 
+          <code itemprop="url">{{ page.permalink }}</code>
+        </div>
+
+        <nav class="post-nav-links" aria-label="Post Navigation">
+          {% if page.lower %}
+            <a href="{{ page.lower.permalink }}" class="retro-btn" rel="prev">
+              {{ config.extra.strings.post_prev | default(value="&laquo; Prev:") | safe }} {{ page.lower.title | truncate(length=28) }}
+            </a>
+          {% else %}
+            <span></span>
+          {% endif %}
+
+          <a href="{{ get_url(path='blog/') }}" class="retro-btn">
+            {{ config.extra.strings.post_return_blog | default(value="[ Return to Blog Archive ]") }}
+          </a>
+
+          {% if page.higher %}
+            <a href="{{ page.higher.permalink }}" class="retro-btn" rel="next">
+              {{ config.extra.strings.post_next | default(value="Next:") }} {{ page.higher.title | truncate(length=28) }} &raquo;
+            </a>
+          {% else %}
+            <span></span>
+          {% endif %}
+        </nav>
+      </footer>
+    </div>
+  </article>
+</div>
+{% endblock content %}

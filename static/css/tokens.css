@@ -1,0 +1,225 @@
+/* ==============================================
+   HIGH-CONTRAST THEMES & STYLED BACKGROUNDS
+   ============================================== */
+
+/* 1. Tech Weblog Paper (Default Light) - Maximum Readability */
+:root, [data-theme="paper"] {
+    --bg-page: #f4f1ea;
+    --grid-line: rgba(120, 110, 95, 0.22);
+    --shell-bg: #ffffff;
+    --panel-bg: #f9f8f5;
+    --panel-inner-bg: #ffffff;
+    --panel-border: #9e978b;
+    --panel-header-top: #1b3a4b;
+    --panel-header-bot: #0f2430;
+    --panel-header-text: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-muted: #555555;
+    --term-bg: #070d07;
+    --term-green: #008f11;
+    --term-cyan: #0284c7;
+    --bevel-light: #ffffff;
+    --bevel-dark: #7a7265;
+    --accent-gold: #b45309;
+    --accent-red: #b91c1c;
+    --link-color: #0369a1;
+    --meta-label-color: #1b3a4b;
+    --shell-border: 3px outset #9e978b;
+    --body-bg-pattern: linear-gradient(var(--grid-line) 1px, transparent 1px),
+                       linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    --body-bg-size: 20px 20px;
+    --banner-gradient: linear-gradient(180deg, #1b3a4b 0%, #0d212d 65%, #051016 100%);
+    --banner-title-color: #f8fafc;
+    --banner-glow: 0 3px 8px rgba(0, 0, 0, 0.6);
+    --desktop-icon-color: #1a1a1a;
+    --desktop-icon-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 3px #ffffff;
+}
+
+/* 2. Windows Classic / Silver (Light Workstation) */
+html[data-theme="windows"], :root[data-theme="windows"], [data-theme="windows"] {
+    --bg-page: #d4d0c8;
+    --grid-line: rgba(100, 100, 100, 0.25);
+    --shell-bg: #ece9d8;
+    --panel-bg: #f0f0e8;
+    --panel-inner-bg: #ffffff;
+    --panel-border: #808080;
+    --panel-header-top: #0a246a;
+    --panel-header-bot: #245edb;
+    --panel-header-text: #ffffff;
+    --text-primary: #000000;
+    --text-muted: #444444;
+    --term-bg: #000000;
+    --term-green: #008000;
+    --term-cyan: #0000ee;
+    --bevel-light: #ffffff;
+    --bevel-dark: #808080;
+    --accent-gold: #cc8800;
+    --accent-red: #cc0000;
+    --link-color: #0000ee;
+    --meta-label-color: #0a246a;
+    --shell-border: 3px outset #ffffff;
+    --body-bg-pattern: repeating-linear-gradient(0deg, #d4d0c8, #d4d0c8 2px, #cfcac1 2px, #cfcac1 4px);
+    --body-bg-size: auto;
+    --banner-gradient: linear-gradient(180deg, #0a246a 0%, #1c52b8 60%, #001f5c 100%);
+    --banner-title-color: #ffffff;
+    --banner-glow: 0 3px 8px rgba(0, 0, 0, 0.7);
+    --desktop-icon-color: #000000;
+    --desktop-icon-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 3px #ffffff;
+}
+
+/* 3. Midnight High-Contrast (Clean Accessible Dark Mode) */
+html[data-theme="midnight"], :root[data-theme="midnight"], [data-theme="midnight"] {
+    --bg-page: #0f141c;
+    --grid-line: rgba(59, 130, 246, 0.22);
+    --shell-bg: #151b26;
+    --panel-bg: #1a2232;
+    --panel-inner-bg: #101622;
+    --panel-border: #334155;
+    --panel-header-top: #1e3a5f;
+    --panel-header-bot: #0d2036;
+    --panel-header-text: #ffffff;
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+    --term-bg: #02060b;
+    --term-green: #22c55e;
+    --term-cyan: #38bdf8;
+    --bevel-light: #475569;
+    --bevel-dark: #0f172a;
+    --accent-gold: #f59e0b;
+    --accent-red: #ef4444;
+    --link-color: #38bdf8;
+    --meta-label-color: #93c5fd;
+    --shell-border: 3px outset #3b82f6;
+    --body-bg-pattern: linear-gradient(var(--grid-line) 1px, transparent 1px),
+                       linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    --body-bg-size: 24px 24px;
+    --banner-gradient: linear-gradient(180deg, #1e3a5f 0%, #0f172a 65%, #050811 100%);
+    --banner-title-color: #e0f2fe;
+    --banner-glow: 0 4px 12px rgba(56, 189, 248, 0.4);
+    --desktop-icon-color: #ffffff;
+    --desktop-icon-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+/* 4. Cyber-Y2K (Electric Lime & Cyber Violet Dark Mode) */
+html[data-theme="cyber-y2k"], :root[data-theme="cyber-y2k"], [data-theme="cyber-y2k"] {
+    --bg-page: #0a0e14;
+    --grid-line: rgba(0, 255, 128, 0.22);
+    --shell-bg: #0f1622;
+    --panel-bg: #131c2b;
+    --panel-inner-bg: #0b111a;
+    --panel-border: #00ff80;
+    --panel-header-top: #7928ca;
+    --panel-header-bot: #2a0845;
+    --panel-header-text: #00ff80;
+    --text-primary: #e6f1ff;
+    --text-muted: #8892b0;
+    --term-bg: #02070c;
+    --term-green: #00ff80;
+    --term-cyan: #00e5ff;
+    --bevel-light: #00ff80;
+    --bevel-dark: #2a0845;
+    --accent-gold: #ff007f;
+    --accent-red: #ff3366;
+    --link-color: #00e5ff;
+    --meta-label-color: #00ff80;
+    --shell-border: 3px outset #00ff80;
+    --body-bg-pattern: linear-gradient(var(--grid-line) 1px, transparent 1px),
+                       linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    --body-bg-size: 22px 22px;
+    --banner-gradient: linear-gradient(180deg, #7928ca 0%, #2a0845 60%, #05010a 100%);
+    --banner-title-color: #00ff80;
+    --banner-glow: 0 0 15px rgba(0, 255, 128, 0.6);
+    --desktop-icon-color: #00ff80;
+    --desktop-icon-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 6px rgba(0, 255, 128, 0.5);
+}
+
+/* 5. Web 2.0 Candy (Glossy Aqua, Sky Blue & Tangerine) */
+html[data-theme="candy-2000"], :root[data-theme="candy-2000"], [data-theme="candy-2000"] {
+    --bg-page: #e0f2fe;
+    --grid-line: rgba(2, 132, 199, 0.18);
+    --shell-bg: #ffffff;
+    --panel-bg: #f0f9ff;
+    --panel-inner-bg: #ffffff;
+    --panel-border: #38bdf8;
+    --panel-header-top: #0284c7;
+    --panel-header-bot: #0369a1;
+    --panel-header-text: #ffffff;
+    --text-primary: #0f172a;
+    --text-muted: #475569;
+    --term-bg: #0c1a2e;
+    --term-green: #10b981;
+    --term-cyan: #06b6d4;
+    --bevel-light: #ffffff;
+    --bevel-dark: #38bdf8;
+    --accent-gold: #ea580c;
+    --accent-red: #e11d48;
+    --link-color: #0284c7;
+    --meta-label-color: #0369a1;
+    --shell-border: 3px outset #38bdf8;
+    --body-bg-pattern: radial-gradient(circle, #38bdf8 10%, transparent 11%);
+    --body-bg-size: 16px 16px;
+    --banner-gradient: linear-gradient(180deg, #38bdf8 0%, #0284c7 60%, #0369a1 100%);
+    --banner-title-color: #ffffff;
+    --banner-glow: 0 4px 10px rgba(2, 132, 199, 0.5);
+    --desktop-icon-color: #034570;
+    --desktop-icon-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 4px #ffffff;
+}
+
+/* 6. Scene Kid / Emo (Hot Pink & Acid Black Neon) */
+html[data-theme="scene-punk"], :root[data-theme="scene-punk"], [data-theme="scene-punk"] {
+    --bg-page: #121212;
+    --grid-line: rgba(255, 20, 147, 0.22);
+    --shell-bg: #181818;
+    --panel-bg: #222222;
+    --panel-inner-bg: #141414;
+    --panel-border: #ff1493;
+    --panel-header-top: #ff1493;
+    --panel-header-bot: #880055;
+    --panel-header-text: #ffffff;
+    --text-primary: #ffffff;
+    --text-muted: #aaaaaa;
+    --term-bg: #000000;
+    --term-green: #39ff14;
+    --term-cyan: #00ffff;
+    --bevel-light: #ff69b4;
+    --bevel-dark: #4a0028;
+    --accent-gold: #ffff00;
+    --accent-red: #ff0055;
+    --link-color: #ff69b4;
+    --meta-label-color: #ff1493;
+    --shell-border: 3px outset #ff1493;
+    --body-bg-pattern: repeating-linear-gradient(45deg, #141414, #141414 10px, #1a1a1a 10px, #1a1a1a 20px);
+    --body-bg-size: auto;
+    --banner-gradient: linear-gradient(180deg, #ff1493 0%, #a0005a 60%, #30001a 100%);
+    --banner-title-color: #ffffff;
+    --banner-glow: 0 0 15px rgba(255, 20, 147, 0.7);
+    --desktop-icon-color: #ffffff;
+    --desktop-icon-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 6px rgba(255, 20, 147, 0.5);
+}
+
+/* ==============================================
+   ACCESSIBILITY: FONT SCALING TIERS
+   ============================================== */
+html[data-font-scale="default"] body {
+    font-size: 11px;
+}
+html[data-font-scale="default"] .markdown-content {
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+html[data-font-scale="medium"] body {
+    font-size: 13px;
+}
+html[data-font-scale="medium"] .markdown-content {
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+html[data-font-scale="large"] body {
+    font-size: 15px;
+}
+html[data-font-scale="large"] .markdown-content {
+    font-size: 17px;
+    line-height: 1.75;
+}

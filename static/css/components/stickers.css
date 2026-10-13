@@ -1,0 +1,295 @@
+/* ==============================================
+   INTERACTIVE STICKER BOOK & DRAGGABLE STICKERS
+   ============================================== */
+
+/* Free-floating desktop sticker canvas layer */
+#sticker-canvas-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 900;
+    overflow: hidden;
+}
+
+.desktop-sticker {
+    position: absolute;
+    pointer-events: auto;
+    touch-action: none;
+    user-select: none;
+    cursor: grab;
+    z-index: 901;
+    transition: filter 0.15s ease;
+    filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45));
+}
+
+.desktop-sticker:active,
+.desktop-sticker.is-dragging {
+    cursor: grabbing;
+    z-index: 1000;
+    filter: drop-shadow(4px 8px 12px rgba(0, 0, 0, 0.65));
+}
+
+.desktop-sticker:active img,
+.desktop-sticker.is-dragging img,
+.desktop-sticker:active svg,
+.desktop-sticker.is-dragging svg {
+    animation-play-state: paused !important;
+    transform: scale(1.08);
+}
+
+.desktop-sticker img,
+.desktop-sticker svg {
+    display: block;
+    pointer-events: none;
+    max-width: 110px;
+    max-height: 80px;
+    transform-origin: center center;
+    animation: stickerFloat var(--anim-duration, 3.8s) ease-in-out infinite alternate;
+    animation-delay: var(--anim-delay, 0s);
+    will-change: transform;
+    transition: transform 0.15s ease;
+}
+
+.desktop-sticker.anim-sway img,
+.desktop-sticker.anim-sway svg {
+    animation-name: stickerSway;
+}
+
+.desktop-sticker.anim-pulse img,
+.desktop-sticker.anim-pulse svg {
+    animation-name: stickerPulse;
+}
+
+.desktop-sticker.anim-shimmer img,
+.desktop-sticker.anim-shimmer svg {
+    animation-name: stickerShimmer;
+}
+
+.desktop-sticker.anim-float img,
+.desktop-sticker.anim-float svg {
+    animation-name: stickerFloat;
+}
+
+.desktop-sticker.is-spawned img,
+.desktop-sticker.is-spawned svg {
+    animation: stickerPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+}
+
+/* Excited motion when mouse cursor is nearby */
+@keyframes stickerNearbyExcited {
+    0% { transform: scale(1.04) rotate(-2deg); }
+    50% { transform: scale(1.06) rotate(2deg) translateY(-2px); }
+    100% { transform: scale(1.04) rotate(-2deg); }
+}
+
+.desktop-sticker.is-nearby img,
+.desktop-sticker.is-nearby svg {
+    animation: stickerNearbyExcited 0.75s ease-in-out infinite alternate !important;
+    filter: drop-shadow(3px 6px 7px rgba(0, 0, 0, 0.55));
+}
+
+.desktop-sticker .sticker-delete-btn {
+    display: none;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 16px;
+    height: 16px;
+    background: #e11d48;
+    color: #ffffff;
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+    font-size: 10px;
+    line-height: 14px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.desktop-sticker:hover .sticker-delete-btn {
+    display: block;
+}
+
+/* Animations */
+@keyframes stickerFloat {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-3.5px); }
+}
+
+@keyframes stickerSway {
+    0% { transform: rotate(-1.5deg); }
+    100% { transform: rotate(1.5deg); }
+}
+
+@keyframes stickerPulse {
+    0% { transform: scale(0.98); }
+    100% { transform: scale(1.02); }
+}
+
+@keyframes stickerShimmer {
+    0% { filter: brightness(1) drop-shadow(0 0 0 rgba(255, 215, 0, 0)); }
+    100% { filter: brightness(1.15) drop-shadow(0 0 5px rgba(255, 215, 0, 0.7)); }
+}
+
+@keyframes stickerPopIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    70% { transform: scale(1.12); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes stickerWobble {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.sticker-wobble:hover {
+    animation: stickerWobble 0.6s infinite ease-in-out;
+}
+
+/* Accessibility: prefers-reduced-motion & manual motion toggle */
+@media (prefers-reduced-motion: reduce) {
+    .desktop-sticker img,
+    .desktop-sticker svg,
+    .desktop-sticker.is-spawned img,
+    .desktop-sticker.is-spawned svg {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+html.stickers-motion-disabled .desktop-sticker img,
+html.stickers-motion-disabled .desktop-sticker svg,
+html.stickers-motion-disabled .desktop-sticker.is-spawned img,
+html.stickers-motion-disabled .desktop-sticker.is-spawned svg {
+    animation: none !important;
+}
+
+/* Collapsible Sticker Book Drawer */
+.sticker-book-drawer {
+    position: fixed;
+    bottom: 0;
+    right: 24px;
+    z-index: 9500;
+    font-family: Tahoma, sans-serif;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.sticker-book-drawer.collapsed {
+    transform: translateY(calc(100% - 28px));
+}
+
+.sticker-drawer-tab {
+    background: linear-gradient(180deg, #ff007f 0%, #aa0055 100%);
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    padding: 5px 14px;
+    border: 2px outset #ff69b4;
+    border-bottom: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.3);
+    user-select: none;
+}
+
+[data-theme="cyber-y2k"] .sticker-drawer-tab {
+    background: linear-gradient(180deg, #7928ca 0%, #00ff80 100%);
+    border-color: #00ff80;
+    color: #000000;
+}
+
+[data-theme="candy-2000"] .sticker-drawer-tab {
+    background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+    border-color: #bae6fd;
+    color: #ffffff;
+}
+
+.sticker-drawer-tab:hover {
+    filter: brightness(1.1);
+}
+
+.sticker-drawer-body {
+    width: 330px;
+    background: var(--shell-bg);
+    border: 2px outset var(--bevel-light);
+    padding: 8px;
+    box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sticker-drawer-title {
+    font-family: "Lucida Console", monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    text-align: center;
+    border-bottom: 1px dotted var(--panel-border);
+    padding-bottom: 4px;
+}
+
+.sticker-palette {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    overflow-y: auto;
+    max-height: 180px;
+    padding: 6px;
+    background: var(--panel-inner-bg);
+    border: 2px inset var(--bevel-dark);
+}
+
+.sticker-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px;
+    border: 1px dashed var(--panel-border);
+    cursor: grab;
+    background: var(--panel-bg);
+    border-radius: 3px;
+    user-select: none;
+    min-height: 48px;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.sticker-item:hover {
+    transform: scale(1.08) rotate(-2deg);
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+    background: #fff;
+}
+
+[data-theme="midnight"] .sticker-item:hover {
+    background: #1e293b;
+}
+
+.sticker-item img,
+.sticker-item svg {
+    max-width: 100%;
+    max-height: 38px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.sticker-drawer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 4px;
+}
+
+.sticker-hint {
+    font-size: 9px;
+    color: var(--text-muted);
+    font-style: italic;
+}

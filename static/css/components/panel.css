@@ -1,0 +1,396 @@
+/* ==============================================
+   STANDARD PANELS & RETRO CHROME
+   ============================================== */
+.panel {
+    background: var(--panel-bg);
+    border: 2px outset var(--bevel-light);
+    box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    background: linear-gradient(180deg, var(--panel-header-top) 0%, var(--panel-header-bot) 100%);
+    color: var(--panel-header-text);
+    padding: 4px 8px;
+    font-weight: bold;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--panel-border);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.panel-body {
+    padding: 10px;
+    background: var(--panel-bg);
+    color: var(--text-primary);
+}
+
+/* Retro Generic Button */
+.retro-btn {
+    background: #d4d0c8;
+    border: 2px outset var(--bevel-light);
+    font-family: Tahoma, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 3px 10px;
+    color: #000;
+    user-select: none;
+    text-decoration: none;
+}
+
+.retro-btn:hover {
+    background: #e2e0d8;
+    color: #0a246a;
+}
+
+.retro-btn:active {
+    border-style: inset;
+    background: #b8b4ac;
+}
+
+.retro-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+[data-theme="midnight"] .retro-btn {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #475569;
+}
+
+[data-theme="midnight"] .retro-btn:hover {
+    background: #334155;
+    color: #38bdf8;
+}
+
+[data-theme="cyber-y2k"] .retro-btn {
+    background: #131c2b;
+    color: #00ff80;
+    border-color: #00ff80;
+}
+
+[data-theme="cyber-y2k"] .retro-btn:hover {
+    background: #00ff80;
+    color: #000000;
+}
+
+[data-theme="candy-2000"] .retro-btn {
+    background: #e0f2fe;
+    color: #0284c7;
+    border-color: #38bdf8;
+}
+
+[data-theme="candy-2000"] .retro-btn:hover {
+    background: #38bdf8;
+    color: #ffffff;
+}
+
+[data-theme="scene-punk"] .retro-btn {
+    background: #222222;
+    color: #ff69b4;
+    border-color: #ff1493;
+}
+
+[data-theme="scene-punk"] .retro-btn:hover {
+    background: #ff1493;
+    color: #000000;
+}
+
+/* About Section */
+.about-flex {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.avatar-box {
+    width: 80px;
+    flex-shrink: 0;
+    text-align: center;
+    background: #e8e4da;
+    border: 2px inset var(--bevel-dark);
+    padding: 6px 2px;
+}
+
+[data-theme="windows"] .avatar-box {
+    background: #d4d0c8;
+}
+
+[data-theme="midnight"] .avatar-box {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+[data-theme="cyber-y2k"] .avatar-box {
+    background: #0b111a;
+    border-color: #00ff80;
+}
+
+[data-theme="candy-2000"] .avatar-box {
+    background: #e0f2fe;
+    border-color: #38bdf8;
+}
+
+[data-theme="scene-punk"] .avatar-box {
+    background: #141414;
+    border-color: #ff1493;
+}
+
+.avatar-pixel {
+    font-size: 38px;
+    line-height: 1;
+    filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.3));
+}
+
+.avatar-caption {
+    font-size: 9px;
+    font-weight: bold;
+    font-family: "Lucida Console", monospace;
+    background: #1b3a4b;
+    color: #ffffff;
+    margin-top: 4px;
+    padding: 1px;
+}
+
+[data-theme="windows"] .avatar-caption {
+    background: #0a246a;
+    color: #ffffff;
+}
+
+[data-theme="midnight"] .avatar-caption {
+    background: #000;
+    color: #22c55e;
+}
+
+[data-theme="cyber-y2k"] .avatar-caption {
+    background: #7928ca;
+    color: #00ff80;
+}
+
+[data-theme="candy-2000"] .avatar-caption {
+    background: #0284c7;
+    color: #ffffff;
+}
+
+[data-theme="scene-punk"] .avatar-caption {
+    background: #ff1493;
+    color: #ffffff;
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-bio {
+    margin: 0 0 8px 0;
+    line-height: 1.45;
+    color: var(--text-primary);
+}
+
+.retro-meta-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+.retro-meta-table td {
+    padding: 3px 4px;
+    border-top: 1px dotted #b0a89a;
+    color: var(--text-primary);
+}
+
+[data-theme="windows"] .retro-meta-table td {
+    border-top-color: #a0a0a0;
+}
+
+[data-theme="midnight"] .retro-meta-table td {
+    border-top-color: #334155;
+}
+
+[data-theme="cyber-y2k"] .retro-meta-table td {
+    border-top-color: #1a2736;
+}
+
+[data-theme="candy-2000"] .retro-meta-table td {
+    border-top-color: #bae6fd;
+}
+
+[data-theme="scene-punk"] .retro-meta-table td {
+    border-top-color: #333333;
+}
+
+.meta-label {
+    font-weight: bold;
+    color: var(--meta-label-color);
+    width: 90px;
+}
+
+.meta-val a {
+    color: var(--link-color);
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* Bullet Lists & Trivia */
+.retro-bullet-list {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.retro-bullet-list li {
+    margin-bottom: 6px;
+    color: var(--text-primary);
+}
+
+/* System Status */
+.status-indicator {
+    font-size: 11px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+}
+
+.status-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background: #00e676;
+    border: 1px solid #000;
+    margin-right: 4px;
+    box-shadow: 0 0 6px #00e676;
+    animation: blinkLed 1.5s infinite;
+}
+
+.status-line {
+    font-size: 10px;
+    margin-top: 3px;
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 2px;
+    color: var(--text-primary);
+}
+
+[data-theme="paper"] .status-line {
+    border-bottom-color: #c5beb1;
+}
+
+[data-theme="windows"] .status-line {
+    border-bottom-color: #b0b0b0;
+}
+
+[data-theme="midnight"] .status-line {
+    border-bottom-color: #334155;
+}
+
+[data-theme="cyber-y2k"] .status-line {
+    border-bottom-color: #1a2736;
+}
+
+[data-theme="candy-2000"] .status-line {
+    border-bottom-color: #bae6fd;
+}
+
+[data-theme="scene-punk"] .status-line {
+    border-bottom-color: #333333;
+}
+
+/* Status Divider & Integrated Visit Counter */
+.status-divider {
+    margin: 8px 0 6px 0;
+    border-top: 1px dotted #ccc;
+}
+
+[data-theme="paper"] .status-divider {
+    border-top-color: #c5beb1;
+}
+
+[data-theme="windows"] .status-divider {
+    border-top-color: #b0b0b0;
+}
+
+[data-theme="midnight"] .status-divider {
+    border-top-color: #334155;
+}
+
+[data-theme="cyber-y2k"] .status-divider {
+    border-top-color: #1a2736;
+}
+
+[data-theme="candy-2000"] .status-divider {
+    border-top-color: #bae6fd;
+}
+
+[data-theme="scene-punk"] .status-divider {
+    border-top-color: #333333;
+}
+
+.status-counter-section {
+    padding-top: 2px;
+}
+
+/* Personal Visit Counter */
+.text-center {
+    text-align: center;
+}
+
+.counter-label {
+    font-family: "Lucida Console", monospace;
+    font-size: 9px;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.counter-box {
+    background: #000;
+    border: 3px inset var(--bevel-dark);
+    padding: 4px;
+    display: inline-flex;
+    justify-content: center;
+    gap: 2px;
+    box-shadow: inset 0 0 8px #000;
+}
+
+.counter-digit {
+    background: linear-gradient(180deg, #111 0%, #222 49%, #000 51%, #151515 100%);
+    color: #00e676;
+    border: 1px solid #333;
+    padding: 2px 5px;
+    font-family: "Lucida Console", monospace;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1;
+    text-shadow: 0 0 4px #00e676;
+}
+
+.counter-subtext {
+    margin-top: 5px;
+    font-size: 9px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Construction Notice */
+.construction-box {
+    background: repeating-linear-gradient(
+        -45deg,
+        #ffcc00,
+        #ffcc00 12px,
+        #000000 12px,
+        #000000 24px
+    );
+    padding: 3px;
+    border: 2px solid #000;
+}
+
+.construction-box span {
+    display: block;
+    background: #ffcc00;
+    color: #000;
+    font-weight: bold;
+    font-size: 10px;
+    text-align: center;
+    padding: 4px 2px;
+    letter-spacing: 0.5px;
+}

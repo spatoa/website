@@ -1,0 +1,31 @@
+<!-- Immediate Theme & Font Scale Initialization (Prevents FOUC) -->
+<script>
+  (function () {
+    var defaultTheme = "{{ config.extra.default_theme }}";
+    var savedTheme = localStorage.getItem('lachlan_site_theme') || defaultTheme;
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    var savedFont = localStorage.getItem('lachlan_font_scale') || 'default';
+    document.documentElement.setAttribute('data-font-scale', savedFont);
+    if (localStorage.getItem('lachlan_sticker_motion') === 'disabled') {
+      document.documentElement.classList.add('stickers-motion-disabled');
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="{{ get_url(path='css/style.css') | safe }}">
+<link rel="icon" href="{{ get_url(path='favicon.ico') | safe }}">
+<style>
+  :root:not([data-theme="midnight"]):not([data-theme="windows"]):not([data-theme="cyber-y2k"]):not([data-theme="candy-2000"]):not([data-theme="scene-punk"]), [data-theme="paper"] {
+    {% if config.extra.colors.page_bg %}--bg-page: {{ config.extra.colors.page_bg }};{% endif %}
+    {% if config.extra.colors.grid_line %}--grid-line: {{ config.extra.colors.grid_line }};{% endif %}
+    {% if config.extra.colors.shell_bg %}--shell-bg: {{ config.extra.colors.shell_bg }};{% endif %}
+    {% if config.extra.colors.panel_bg %}--panel-bg: {{ config.extra.colors.panel_bg }};{% endif %}
+    {% if config.extra.colors.panel_inner_bg %}--panel-inner-bg: {{ config.extra.colors.panel_inner_bg }};{% endif %}
+    {% if config.extra.colors.panel_border %}--panel-border: {{ config.extra.colors.panel_border }};{% endif %}
+    {% if config.extra.colors.panel_header_top %}--panel-header-top: {{ config.extra.colors.panel_header_top }};{% endif %}
+    {% if config.extra.colors.panel_header_bot %}--panel-header-bot: {{ config.extra.colors.panel_header_bot }};{% endif %}
+    {% if config.extra.colors.term_green %}--term-green: {{ config.extra.colors.term_green }};{% endif %}
+    {% if config.extra.colors.accent_gold %}--accent-gold: {{ config.extra.colors.accent_gold }};{% endif %}
+    {% if config.extra.colors.accent_red %}--accent-red: {{ config.extra.colors.accent_red }};{% endif %}
+  }
+</style>

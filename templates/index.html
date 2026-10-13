@@ -1,133 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="layout-grid">
-  <!-- Left Sidebar -->
-  <aside class="sidebar">
-    <div class="panel">
-      <div class="panel-header">Status Panel</div>
-      <div class="panel-body">
-        <div class="status-indicator">
-          <span class="status-dot"></span> ONLINE
-        </div>
-        <div class="sidebar-item"><strong>Mood:</strong> Busy Hacking</div>
-        <div class="sidebar-item"><strong>Current Project:</strong> Space Sim WASM</div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-header">Visitor Count</div>
-      <div class="panel-body">
-        <div class="counter-box">
-          <span class="counter-digit">0</span>
-          <span class="counter-digit">1</span>
-          <span class="counter-digit">2</span>
-          <span class="counter-digit">3</span>
-          <span class="counter-digit">9</span>
-          <span class="counter-digit">8</span>
-          <span class="counter-digit">4</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-header">Quick Links</div>
-      <div class="panel-body">
-        <ul class="retro-list">
-          <li><a href="{{ config.extra.git_url }}" target="_blank" rel="noopener">git.lachlans.world</a></li>
-          <li><a href="#socials">Social Profiles</a></li>
-          <li><a href="{{ get_url(path='atom.xml') }}">Atom Feed</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-header">Badges</div>
-      <div class="panel-body badge-grid">
-        <div class="badge-mock">GET FIREFOX</div>
-        <div class="badge-mock">ZOLA SSG</div>
-        <div class="badge-mock">XHTML VALID</div>
-        <div class="badge-mock">CYBER SEC</div>
-        <div class="badge-mock">GIT LAB</div>
-        <div class="badge-mock">HOSTED LINUX</div>
-      </div>
-    </div>
-
-    <div class="construction-box">
-      <span>&#9888; Under Construction &#9888;</span>
-    </div>
-  </aside>
-
-  <!-- Right Content Grid -->
-  <div class="main-content">
-    <div class="content-row">
-      <!-- Welcome Panel -->
-      <section class="panel">
-        <div class="panel-header">&#9733; Welcome to my Personal Space on the Net! &#9733;</div>
-        <div class="panel-body">
-          <p>This site has 2000s style but uses modern Zola and WebAssembly.</p>
-          <hr class="dotted-hr">
-          <p>Check out the repository source on <a href="{{ config.extra.git_url }}" target="_blank" rel="noopener">git.lachlans.world</a>.</p>
-          {{ section.content | safe }}
-        </div>
-      </section>
-
-      <!-- Dev Log Panel -->
-      <section class="panel">
-        <div class="panel-header">&#9733; DEV LOG & NOTES &#9733;</div>
-        <div class="panel-body">
-          <ul class="devlog-list">
-            <li>
-              <strong>2026-10-13:</strong> Deployed Zola architecture with custom theme.
-            </li>
-            <li>
-              <strong>2026-10-12:</strong> Added WASM game container framework.
-            </li>
-            <li>
-              <strong>2026-10-09:</strong> Configured Git server deployment pipeline.
-            </li>
-          </ul>
-        </div>
-      </section>
-    </div>
-
-    <div class="content-row">
-      <!-- Cyber / Terminal Preview -->
-      <section class="panel">
-        <div class="panel-header">[ CYBER / CTF ] Preview</div>
-        <div class="terminal-window">
-          <div class="terminal-prompt">root@lachlan:~# ./ctf-writeups.sh</div>
-          <div class="terminal-section-title">Recent Security Writeups:</div>
-          <ul class="terminal-list">
-            <li>&gt; <a href="{{ get_url(path='cyber/') }}">Heap Exploitation & Kernel Audits</a></li>
-            <li>&gt; <a href="{{ get_url(path='cyber/') }}">Capture The Flag Team Writeups</a></li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- WASM Game Player -->
-      <section class="panel" id="arcade">
-        <div class="panel-header">[ GAMES ARCADE ] Area</div>
-        <div class="panel-body">
-          <div class="win-window">
-            <div class="win-titlebar">
-              <span>Game_Player.exe</span>
-              <div class="win-buttons">
-                <button aria-label="Minimize">_</button>
-                <button aria-label="Maximize">&#9633;</button>
-                <button aria-label="Close">&#10005;</button>
-              </div>
-            </div>
-            <div class="win-body">
-              <canvas id="wasm-canvas" width="320" height="200"></canvas>
-            </div>
-          </div>
-          <div class="arcade-controls">
-            <button class="retro-btn">Insert Coin</button>
-          </div>
-        </div>
-      </section>
-    </div>
+<div class="layout-portal">
+  <!-- LEFT COLUMN (50%) -->
+  <div class="portal-col left-col">
+    {% include "partials/about.html" %}
+    {% include "partials/recent_posts.html" %}
+    {% include "partials/pocket_pet_window.html" %}
+    {% include "partials/trivia.html" %}
   </div>
+
+  <!-- RIGHT COLUMN (50%) -->
+  <aside class="portal-col right-col" role="complementary" aria-label="Interactive Widgets & Arcade">
+    {% include "partials/game_window.html" %}
+    {% include "partials/winamp_window.html" %}
+    {% include "partials/status.html" %}
+  </aside>
 </div>
 {% endblock content %}

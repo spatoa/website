@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31" shape-rendering="crispEdges">
+  <rect width="88" height="31" fill="#7c2d12"/>
+  <rect x="0" y="0" width="88" height="1" fill="#fb923c"/>
+  <rect x="0" y="0" width="1" height="31" fill="#fb923c"/>
+  <rect x="87" y="0" width="1" height="31" fill="#431407"/>
+  <rect x="0" y="30" width="88" height="1" fill="#431407"/>
+  <rect x="1" y="1" width="86" height="29" fill="#c2410c"/>
+  <!-- Fox flame circle -->
+  <circle cx="16" cy="15" r="11" fill="#f97316"/>
+  <circle cx="15" cy="15" r="9" fill="#0284c7"/>
+  <path d="M12 18 C15 13, 22 13, 24 16 C20 22, 10 21, 12 18 Z" fill="#fbbf24"/>
+  <!-- Text -->
+  <text x="32" y="12" font-family="'Lucida Console', monospace" font-size="7" font-weight="bold" fill="#ffedd5">GET</text>
+  <text x="32" y="24" font-family="'Impact', Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff" letter-spacing="0.5">FIREFOX</text>
+</svg>

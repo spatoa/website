@@ -1,0 +1,59 @@
+<nav class="tab-bar" aria-label="Main Navigation">
+  <div class="nav-links">
+    <a href="{{ get_url(path='/') }}" class="nav-btn">{{ config.extra.strings.nav_home | default(value="[ HOME ]") }}</a>
+    <a href="{{ get_url(path='blog/') }}" class="nav-btn">{{ config.extra.strings.nav_blog | default(value="[ BLOG ]") }}</a>
+    <a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener" class="nav-btn">{{ config.extra.strings.nav_ctf | default(value="[ CTF ↗ ]") }}</a>
+    <a href="{{ get_url(path='desktop/') }}" class="nav-btn" title="Launch Interactive Retro Web OS">[ &#128421; Desktop OS ]</a>
+  </div>
+
+  <div class="nav-controls">
+    <!-- Accessible Font Size Toggle -->
+    <div class="font-size-box">
+      <span class="toolbar-label">{{ config.extra.strings.font_size_label | default(value="TEXT:") }}</span>
+      <button class="font-btn" id="font-btn-sm" onclick="window.setFontScale('default')" title="Default compact font (11px)">A-</button>
+      <button class="font-btn" id="font-btn-md" onclick="window.setFontScale('medium')" title="Medium readable font (13px)">A</button>
+      <button class="font-btn" id="font-btn-lg" onclick="window.setFontScale('large')" title="Large accessible font (15px)">A+</button>
+    </div>
+
+    <!-- Theme Selector -->
+    <div class="theme-selector-box">
+      <label for="theme-selector" class="theme-label">{{ config.extra.strings.theme_label | default(value="THEME:") }}</label>
+      <select id="theme-selector" onchange="window.switchSiteTheme(this.value)">
+        <option value="paper">{{ config.extra.strings.theme_paper | default(value="Tech Paper (Light)") }}</option>
+        <option value="windows">{{ config.extra.strings.theme_windows | default(value="Windows Classic (Light)") }}</option>
+        <option value="midnight">{{ config.extra.strings.theme_midnight | default(value="Midnight (Dark)") }}</option>
+        <option value="cyber-y2k">{{ config.extra.strings.theme_cyber_y2k | default(value="Cyber-Y2K (Neon Lime)") }}</option>
+        <option value="candy-2000">{{ config.extra.strings.theme_candy_2000 | default(value="Web 2.0 Candy (Aqua Gloss)") }}</option>
+        <option value="scene-punk">{{ config.extra.strings.theme_scene_punk | default(value="Scene Kid (Hot Pink)") }}</option>
+      </select>
+    </div>
+
+    <!-- Retro Client-Side Search Box -->
+    <div class="search-box">
+      <label for="site-search-input" class="search-label">{{ config.extra.strings.search_label | default(value="SEARCH:") }}</label>
+      <div class="search-input-wrap">
+        <input 
+          type="text" 
+          id="site-search-input" 
+          class="search-input" 
+          placeholder="{{ config.extra.strings.search_placeholder | default(value="Search... 🔍") }}" 
+          autocomplete="off" 
+          role="combobox"
+          aria-expanded="false"
+          aria-autocomplete="list"
+          aria-controls="search-results-list"
+          aria-label="{{ config.extra.strings.search_label | default(value="SEARCH:") }}"
+        />
+        <button type="button" id="site-search-clear" class="search-clear-btn" title="{{ config.extra.strings.search_clear_title | default(value="Clear search query") }}" aria-label="{{ config.extra.strings.search_clear_title | default(value="Clear search query") }}" hidden>&times;</button>
+      </div>
+      <div id="search-results-dropdown" class="search-results-dropdown" role="region" aria-label="{{ config.extra.strings.search_results_title | default(value="SEARCH RESULTS") }}" hidden>
+        <div class="search-results-header">
+          <span class="search-header-title">&#128269; {{ config.extra.strings.search_results_title | default(value="SEARCH RESULTS") }}</span>
+          <button type="button" id="search-close-btn" class="search-close-btn" title="{{ config.extra.strings.search_close_title | default(value="Close search results") }}" aria-label="{{ config.extra.strings.search_close_title | default(value="Close search results") }}">[x]</button>
+        </div>
+        <div id="search-status-bar" class="search-status-bar" aria-live="polite"></div>
+        <ul id="search-results-list" class="search-results-list" role="listbox"></ul>
+      </div>
+    </div>
+  </div>
+</nav>

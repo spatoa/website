@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desktop OS - {{ config.title }}</title>
+  <meta name="description" content="Interactive mid-2000s Web OS desktop experience with draggable windows, chiptune synth player, and starfield screensaver.">
+
+  {% include "partials/head_init.html" %}
+  <script>
+    (function () {
+      try {
+        var wall = localStorage.getItem('lachlan_custom_wallpaper');
+        if (wall) {
+          document.documentElement.classList.add('has-custom-wallpaper');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="desktop-os-page mode-desktop">
+  <!-- Desktop Top System Bar -->
+  <header class="desktop-top-bar" role="banner">
+    <div class="desktop-os-brand">
+      <span class="desktop-os-logo">&#128421;</span>
+      <strong>LACHLAN'S WORLD OS</strong>
+      <span class="desktop-os-version">[v2.0]</span>
+    </div>
+
+    <div class="desktop-top-controls">
+      <!-- Exit to Web Link (Settings is accessible via desktop icon and start menu) -->
+      <a href="{{ get_url(path='/') }}" class="desktop-exit-btn" title="Return to standard website layout">
+        &#127760; Exit to Website
+      </a>
+    </div>
+  </header>
+
+  <!-- Desktop Wallpaper & Window Canvas -->
+  <main id="desktop-viewport" class="desktop-viewport" role="main">
+    <!-- Desktop Shortcut Icons (Managed by DesktopOS Registry) -->
+    <div class="desktop-icons-container" id="desktop-icons" role="region" aria-label="Desktop Shortcut Icons">
+      <!-- App icons are rendered here dynamically by DesktopOS -->
+      <div class="desktop-icon" id="desktop-recycle-bin" tabindex="0" role="button" aria-label="Recycle Bin - Clear Desktop Stickers">
+        <div class="desktop-icon-img">&#128465;</div>
+        <div class="desktop-icon-label">Recycle Bin</div>
+      </div>
+      <a href="{{ get_url(path='/') }}" class="desktop-icon desktop-link-icon" aria-label="Return to Web Portal">
+        <div class="desktop-icon-img">&#127760;</div>
+        <div class="desktop-icon-label">Website.url</div>
+      </a>
+    </div>
+
+    <!-- Desktop Sticker Layer (Isolated for Desktop OS) -->
+    <div id="desktop-sticker-layer" class="desktop-sticker-layer" aria-hidden="true"></div>
+
+    <!-- Draggable Windows Area (Info apps consolidated inside Settings.exe tabs) -->
+    <div class="desktop-windows-layer" id="desktop-windows-layer">
+      {% include "partials/game_window.html" %}
+      {% include "partials/winamp_window.html" %}
+      {% include "partials/pocket_pet_window.html" %}
+      {% include "partials/blog_reader.html" %}
+      {% include "partials/file_explorer.html" %}
+      {% include "partials/desktop_sticker_window.html" %}
+      {% include "partials/settings_window.html" %}
+    </div>
+  </main>
+
+  <!-- Retro Taskbar & Start Menu -->
+  {% include "partials/taskbar.html" %}
+
+  {% include "partials/site_config.html" %}
+  <script src="{{ get_url(path='js/theme-switcher.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/screensaver.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/music-player.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/visit-counter.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/desktop-stickers.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/pocket_pet.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/window-manager.js') | safe }}" defer></script>
+</body>
+</html>

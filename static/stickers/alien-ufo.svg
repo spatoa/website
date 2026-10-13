@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="40" viewBox="0 0 56 40">
+  <!-- Beam of light -->
+  <polygon points="20,24 36,24 46,38 10,38" fill="rgba(0, 255, 128, 0.35)"/>
+  <!-- Cockpit dome -->
+  <ellipse cx="28" cy="14" rx="12" ry="9" fill="#00ffff" stroke="#000" stroke-width="2"/>
+  <circle cx="28" cy="14" r="5" fill="#39ff14"/>
+  <!-- Disc saucer -->
+  <ellipse cx="28" cy="20" rx="26" ry="7" fill="#7928ca" stroke="#000" stroke-width="2"/>
+  <!-- Running saucer lights -->
+  <circle cx="8" cy="20" r="2" fill="#ffff00"/>
+  <circle cx="18" cy="22" r="2" fill="#ff007f"/>
+  <circle cx="28" cy="23" r="2.5" fill="#00ff80"/>
+  <circle cx="38" cy="22" r="2" fill="#ff007f"/>
+  <circle cx="48" cy="20" r="2" fill="#ffff00"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31" shape-rendering="crispEdges">
+  <rect width="88" height="31" fill="#c0c0c0"/>
+  <rect x="0" y="0" width="88" height="1" fill="#ffffff"/>
+  <rect x="0" y="0" width="1" height="31" fill="#ffffff"/>
+  <rect x="87" y="0" width="1" height="31" fill="#404040"/>
+  <rect x="0" y="30" width="88" height="1" fill="#404040"/>
+  <rect x="1" y="1" width="86" height="29" fill="#003366"/>
+  <!-- Left Internet Explorer icon -->
+  <circle cx="12" cy="15" r="9" fill="#0080ff" stroke="#003399" stroke-width="1"/>
+  <path d="M 5,16 Q 12,9 19,13 Q 21,18 12,21 Q 6,19 7,14 Z" fill="#ffffff"/>
+  <ellipse cx="13" cy="15" rx="11" ry="4" fill="none" stroke="#ffcc00" stroke-width="1.5" transform="rotate(-30 13 15)"/>
+  <!-- Text -->
+  <text x="26" y="11" font-family="'Lucida Console', monospace" font-size="6" font-weight="bold" fill="#ffffff" letter-spacing="-0.5">BEST VIEWED IN</text>
+  <text x="26" y="21" font-family="'Lucida Console', monospace" font-size="8" font-weight="bold" fill="#38bdf8" letter-spacing="-0.5">EXPLORER 6.0</text>
+  <text x="26" y="27" font-family="'Lucida Console', monospace" font-size="5" fill="#ffd700">1024x768 RES</text>
+</svg>

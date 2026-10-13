@@ -9,10 +9,15 @@ compile_sass = false
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
+taxonomies = [
+    { name = "tags", feed = false },
+]
+
 [markdown]
 
 [markdown.highlighting]
 theme = "catppuccin-mocha"
+
 
 [search]
 include_title = true
@@ -22,4 +27,116 @@ include_path = true
 
 [extra]
 author = "spatoa"
+author_name = "Lachlan (spatoa)"
 git_url = "https://git.lachlans.world"
+ctf_url = "https://ctf.lachlans.world"
+default_theme = "windows"
+avatar_icon = "&#128421;"
+
+# Customizable Color Palette (injected into CSS root variables)
+[extra.colors]
+page_bg = "#f4f1ea"
+grid_line = "rgba(120, 110, 95, 0.2)"
+shell_bg = "#ffffff"
+panel_bg = "#f9f8f5"
+panel_inner_bg = "#ffffff"
+panel_border = "#9e978b"
+panel_header_top = "#1b3a4b"
+panel_header_bot = "#0f2430"
+term_green = "#008f11"
+accent_gold = "#b45309"
+accent_red = "#b91c1c"
+
+# Localizable UI Strings (ready for i18n / multi-lingual translations)
+[extra.strings]
+skip_to_content = "Skip to main content"
+ticker_text = "WELCOME TO MY WEBSITE ♦♦ LACHLAN'S WORLD \"WEB 2.0\" RELAUNCH IS LIVE ♦♦ ZERO FRAMEWORKS, PURE JS NONSENE ♦♦ LACHLAN HAS A NEW SERVER (THIS ONE) ♦♦ BEST VIEWED AT 1024x768 IN MOZILLA FIREFOX ♦♦ FIRST-CLASS IPV6 TRAFFIC ONLY!! ♦♦ UNDER CONSTRUCTION INDEFINITELY ♦♦ VISITOR COUNT: IDK? ♦♦ HUGE THANK YOU TO TCP/IP ♦♦ LACHLAN ROCKS ♦♦ BUY LACHLAN A COKE ZERO ♦♦ NO THANK YOU TO DNS, YOU SUCK"
+last_updated_prefix = "LAST UPDATED:"
+sys_status_tag = "SYS_STATUS: OPERATIONAL"
+
+# Navigation & Menus
+nav_home = "[ HOME ]"
+nav_blog = "[ BLOG ]"
+nav_ctf = "[ CTF ↗ ]"
+nav_git = "[ GIT ↗ ]"
+# Site Search
+search_label = "SEARCH ALL:"
+search_placeholder = "Search... 🔍"
+search_results_title = "SEARCH RESULTS"
+search_loading = "Searching index..."
+search_no_results = "No matching records found."
+search_clear_title = "Clear search query"
+search_close_title = "Close search results"
+search_matches_suffix = "match(es) found"
+
+# Toolbar
+font_size_label = "TEXT:"
+theme_label = "THEME:"
+theme_paper = "Tech Paper (Light)"
+theme_windows = "Windows Classic (Light)"
+theme_midnight = "Midnight (Dark)"
+theme_cyber_y2k = "Cyber-Y2K (Neon Lime)"
+theme_candy_2000 = "Web 2.0 Candy (Aqua Gloss)"
+theme_scene_punk = "Scene Kid (Hot Pink)"
+
+# Section Headers
+header_about = "★ About Me / My Profile ★"
+header_posts = "★ Recent Posts & Bulletins ★"
+header_trivia = "★ Did You Know? / Fun Facts! ★"
+header_game = "★ Interactive Canvas ★"
+header_music = "★ Audio Deck★ "
+header_status = "★ Server Status ★"
+header_pocket_pet = "★ Pocket_Pet.exe ★"
+
+# About Panel Content & Labels
+about_bio = "Welcome to my contribution to the World Wide Web. I am a programmer and cybersecurity graduate into radiofrequency systems, CTF challenges, Linux, and most recently the Reticulum Network Stack. This site is my digital footprint, designed with charm of websites I grew up with."
+about_avatar_caption = "USER"
+about_interests = "Radiofrequency, CTFs, Reticulum, Linux, Homelab"
+about_label_handle = "Handle:"
+about_label_interests = "Interests:"
+about_label_repos = "Repositories:"
+about_label_security = "Security:"
+
+# Status Panel Content & Labels
+status_label_state = "STATUS:"
+status_state = "ONLINE & READY"
+status_label_mood = "Mood:"
+status_mood = "Overworked and underemployed"
+status_label_project = "Current Project:"
+status_current_project = "www.lachlans.world (v2)"
+status_label_arch = "Server Architecture:"
+status_server_arch = "Linux x86_64 / Alpine Linux"
+counter_label = "YOUR VISIT COUNT:"
+
+# Blog Archive Strings
+blog_breadcrumb_home = "« Return to Home Portal"
+blog_breadcrumb_archive = "Blog Archive"
+blog_header = "★ Blog Archive & Personal Bulletins ★"
+blog_intro_text = "Welcome to the blog archive! All entries are presented in reverse chronological order below. Here you'll find reflections, reviews, and writeups regarding my dabbling with technology."
+blog_read_more = "[ Read Full Post » ]"
+blog_no_posts = "No blog posts found in this section yet."
+blog_prev_page = "« Newer Posts"
+blog_next_page = "Older Posts »"
+
+# Post View Strings
+post_author_prefix = "Author:"
+post_date_prefix = "Published:"
+post_reading_time_prefix = "Reading Time:"
+post_tags_prefix = "Categorized as:"
+post_permalink_label = "Entry URL:"
+post_return_blog = "[ Return to Blog Archive ]"
+post_prev = "« Prev:"
+post_next = "Next:"
+
+# Footer
+footer_view_note = "Best viewed at 1024x768 • Made with Zola SSG"
+footer_copyright = "Hosted on my servers"
+
+# Bullet points for Did You Know section
+trivia_facts = [
+    "Static Site Generation: This site builds super quick in under 50ms with Zola! WOW!!",
+    "\"Web 2.0\" Relaunch: Version 2.0 does away with the extreme minimalism to bring back the fun!!",
+    "WASM Ready: The interactive viewport is wired up for upcoming experiments...",
+    "Audio Player: A synth player running on your side!",
+    "Privacy Conscious: No analytics, zero tracking cookies, hosted only on the cheapest servers!!! Wait...",
+]

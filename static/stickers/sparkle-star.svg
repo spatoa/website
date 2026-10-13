@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- 4-pointed sparkle star -->
+  <path d="M24 2 Q24 24 2 24 Q24 24 24 46 Q24 24 46 24 Q24 24 24 2 Z" fill="#ffdd00" stroke="#ff007f" stroke-width="2" filter="url(#glow)"/>
+  <circle cx="24" cy="24" r="5" fill="#ffffff"/>
+  <!-- Little mini sparkles -->
+  <polygon points="10,8 12,12 10,16 8,12" fill="#00ffff"/>
+  <polygon points="38,36 40,40 38,44 36,40" fill="#00ff66"/>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="54" height="42" viewBox="0 0 54 42">
+  <!-- Butterfly Left Wing -->
+  <path d="M 27,21 C 20,5 3,3 4,18 C 5,26 18,25 27,24 Z" fill="url(#wingGrad1)" stroke="#000" stroke-width="1.2"/>
+  <path d="M 27,24 C 18,27 6,33 11,39 C 17,42 24,32 27,25 Z" fill="url(#wingGrad2)" stroke="#000" stroke-width="1.2"/>
+  <!-- Butterfly Right Wing -->
+  <path d="M 27,21 C 34,5 51,3 50,18 C 49,26 36,25 27,24 Z" fill="url(#wingGrad1)" stroke="#000" stroke-width="1.2"/>
+  <path d="M 27,24 C 36,27 48,33 43,39 C 37,42 30,32 27,25 Z" fill="url(#wingGrad2)" stroke="#000" stroke-width="1.2"/>
+  <!-- Body & Antennae -->
+  <ellipse cx="27" cy="23" rx="2.5" ry="10" fill="#222"/>
+  <circle cx="27" cy="11" r="3" fill="#ff007f"/>
+  <path d="M 27,9 Q 22,2 18,3" stroke="#000" stroke-width="1.2" fill="none"/>
+  <path d="M 27,9 Q 32,2 36,3" stroke="#000" stroke-width="1.2" fill="none"/>
+  <!-- Sparkles on wings -->
+  <circle cx="15" cy="14" r="2" fill="#ffffff"/>
+  <circle cx="39" cy="14" r="2" fill="#ffffff"/>
+  <circle cx="18" cy="33" r="1.5" fill="#00ffea"/>
+  <circle cx="36" cy="33" r="1.5" fill="#00ffea"/>
+  <defs>
+    <linearGradient id="wingGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff00a0"/>
+      <stop offset="50%" stop-color="#b000ff"/>
+      <stop offset="100%" stop-color="#00f0ff"/>
+    </linearGradient>
+    <linearGradient id="wingGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f0ff"/>
+      <stop offset="100%" stop-color="#ff00a0"/>
+    </linearGradient>
+  </defs>
+</svg>

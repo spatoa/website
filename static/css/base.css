@@ -1,0 +1,62 @@
+/* ==============================================
+   ACCESSIBILITY: SKIP TO CONTENT & BASE STYLES
+   ============================================== */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: 99999;
+}
+
+.skip-link:focus {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    width: auto;
+    height: auto;
+    background: #000;
+    color: #ffcc00;
+    border: 2px solid #ffcc00;
+    padding: 8px 14px;
+    font-weight: bold;
+    font-size: 12px;
+    text-decoration: underline;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Cursor */
+* {
+    box-sizing: border-box;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M0 0 L0 15 L4 11 L7 16 L9 15 L6 10 L11 10 Z' fill='%23ffffff' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E"), auto;
+}
+
+a, button, select, input, [role="button"], canvas {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M5 1 L7 1 L7 6 L9 6 L9 7 L11 7 L11 8 L13 8 L13 12 L12 15 L4 15 L3 11 L1 8 L3 7 L5 9 Z' fill='%23ffffff' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E"), pointer;
+}
+
+body {
+    margin: 0;
+    padding: 14px 8px;
+    background-color: var(--bg-page);
+    background-image: var(--body-bg-pattern);
+    background-size: var(--body-bg-size);
+    font-family: Tahoma, Verdana, Geneva, sans-serif;
+    line-height: 1.45;
+    color: var(--text-primary);
+    transition: background-color 0.15s ease;
+}

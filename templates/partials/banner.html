@@ -1,0 +1,15 @@
+<header class="banner" role="banner">
+  <h1>LACHLAN'S WORLD</h1>
+  <div class="led-ticker-container">
+    <span class="ticker-prefix" aria-hidden="true">&#9658;&#9658;</span>
+    <div class="led-ticker-track" aria-live="off">
+      <div class="led-ticker-content">
+        <span>{{ config.extra.strings.ticker_text | default(value="WELCOME TO MY CORNER OF THE WEB") }} &diams;&diams; </span>
+      </div>
+      <div class="led-ticker-content" aria-hidden="true">
+        <span>{{ config.extra.strings.ticker_text | default(value="WELCOME TO MY CORNER OF THE WEB") }} &diams;&diams; </span>
+      </div>
+    </div>
+    <span class="ticker-suffix" aria-hidden="true">&#9668;&#9668;</span>
+  </div>
+</header>

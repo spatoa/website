@@ -1,0 +1,5 @@
+<div class="update-stamp">
+  <span>&#128197; {{ config.extra.strings.last_updated_prefix | default(value="LAST UPDATED:") }} {{ now() | date(format="%b %d, %Y") }}</span>
+  <span class="separator" aria-hidden="true">|</span>
+  <span>&#128187; {{ config.extra.strings.sys_status_tag | default(value="SYS_STATUS: OPERATIONAL") }}</span>
+</div>
