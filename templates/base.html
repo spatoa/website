@@ -37,10 +37,12 @@
 
   {% include "partials/site_config.html" %}
 
+  {% set current_lang = lang | default(value=config.default_language | default(value="en")) %}
+  {% set search_index_filename = "search_index." ~ current_lang ~ ".js" %}
   <script>
     window.SEARCH_CONFIG = {
       elasticlunrUrl: "{{ get_url(path='elasticlunr.min.js') | safe }}",
-      searchIndexUrl: "{{ get_url(path='search_index.' ~ (lang | default(value=config.default_language | default(value='en'))) ~ '.js') | safe }}",
+      searchIndexUrl: "{{ get_url(path=search_index_filename) | safe }}",
       loadingText: "{{ config.extra.strings.search_loading | default(value='Searching index...') }}",
       noResultsText: "{{ config.extra.strings.search_no_results | default(value='No matching records found.') }}",
       resultsTitle: "{{ config.extra.strings.search_results_title | default(value='SEARCH RESULTS') }}",
