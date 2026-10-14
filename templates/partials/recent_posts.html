@@ -13,7 +13,7 @@
           {% if loop.index <= 3 %}
             <article class="recent-post-item">
               <div class="post-item-header">
-                <span class="post-date-badge">{{ post.date | date(format="%Y-%m-%d") }}</span>
+                <time class="post-date-badge" datetime="{{ post.date | date(format='%Y-%m-%d') }}">{{ post.date | date(format="%Y-%m-%d") }}</time>
                 <a href="{{ post.permalink }}" class="post-item-title">{{ post.title }}</a>
               </div>
               {% if post.description %}
@@ -22,7 +22,7 @@
                 <p class="post-item-summary">{{ post.summary | striptags | truncate(length=120) }}</p>
               {% endif %}
               <div class="post-readmore">
-                <a href="{{ post.permalink }}">[ Read Post &raquo; ]</a>
+                <a href="{{ post.permalink }}" aria-label="Read post: {{ post.title }}">{{ config.extra.strings.blog_read_short | default(value="[ Read Post &raquo; ]") | safe }}</a>
               </div>
             </article>
           {% endif %}

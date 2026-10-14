@@ -1,25 +1,25 @@
 <div class="about-flex">
   <div class="avatar-box">
-    <div class="avatar-pixel">{{ config.extra.avatar_icon | default(value="&#128421;") | safe }}</div>
+    <div class="avatar-pixel" role="img" aria-label="Operator workstation icon">{{ config.extra.avatar_icon | default(value="&#128421;") | safe }}</div>
     <div class="avatar-caption">{{ config.extra.strings.about_avatar_caption | default(value="OPERATOR") }}</div>
   </div>
   <div class="about-text">
     <p class="about-bio">{{ config.extra.strings.about_bio | default(value=config.extra.author_bio | default(value="")) }}</p>
     <table class="retro-meta-table">
       <tr>
-        <td class="meta-label">{{ config.extra.strings.about_label_handle | default(value="Handle:") }}</td>
+        <th scope="row" class="meta-label" style="text-align: left;">{{ config.extra.strings.about_label_handle | default(value="Handle:") }}</th>
         <td class="meta-val"><code>{{ config.extra.author }}</code></td>
       </tr>
       <tr>
-        <td class="meta-label">{{ config.extra.strings.about_label_interests | default(value="Interests:") }}</td>
+        <th scope="row" class="meta-label" style="text-align: left;">{{ config.extra.strings.about_label_interests | default(value="Interests:") }}</th>
         <td class="meta-val">{{ config.extra.strings.about_interests | default(value="Low-level, CTFs, Retro Web, Linux, WASM") }}</td>
       </tr>
       <tr>
-        <td class="meta-label">{{ config.extra.strings.about_label_repos | default(value="Repositories:") }}</td>
+        <th scope="row" class="meta-label" style="text-align: left;">{{ config.extra.strings.about_label_repos | default(value="Repositories:") }}</th>
         <td class="meta-val"><a href="{{ config.extra.git_url }}" target="_blank" rel="noopener">git.lachlans.world &#8599;</a></td>
       </tr>
       <tr>
-        <td class="meta-label">{{ config.extra.strings.about_label_security | default(value="Security:") }}</td>
+        <th scope="row" class="meta-label" style="text-align: left;">{{ config.extra.strings.about_label_security | default(value="Security:") }}</th>
         <td class="meta-val"><a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener">ctf.lachlans.world &#8599;</a></td>
       </tr>
     </table>

@@ -3,7 +3,7 @@
   <!-- LCD Screen Bezel Frame -->
   <div class="pocket_pet-screen-bezel">
     <!-- Top Row Icons (Feed, Light, Game, Medicine) -->
-    <div class="pocket_pet-icon-bar top-bar" aria-label="Pocket_Pet Top Menu Icons">
+    <div class="pocket_pet-icon-bar top-bar" role="group" aria-label="Pocket_Pet Top Menu Icons">
       <button type="button" class="t-icon" data-icon-index="0" data-icon-name="feed" title="Feed (Meal or Snack)" aria-label="Feed">🍽️</button>
       <button type="button" class="t-icon" data-icon-index="1" data-icon-name="light" title="Lights (Sleep)" aria-label="Lights">💡</button>
       <button type="button" class="t-icon" data-icon-index="2" data-icon-name="game" title="Game (Heading Minigame)" aria-label="Play Game">🎮</button>
@@ -12,21 +12,21 @@
 
     <!-- LCD Matrix Screen -->
     <div class="pocket_pet-lcd-screen">
-      <canvas class="pocket_pet-canvas" width="160" height="96" aria-label="Pocket_Pet LCD Screen"></canvas>
+      <canvas class="pocket_pet-canvas" width="160" height="96" role="img" aria-label="Pocket_Pet LCD Screen"></canvas>
       <div class="pocket_pet-lcd-overlay" aria-hidden="true"></div>
     </div>
 
     <!-- Bottom Row Icons (Clean, Meter, Discipline, Attention) -->
-    <div class="pocket_pet-icon-bar bottom-bar" aria-label="Pocket_Pet Bottom Menu Icons">
+    <div class="pocket_pet-icon-bar bottom-bar" role="group" aria-label="Pocket_Pet Bottom Menu Icons">
       <button type="button" class="t-icon" data-icon-index="4" data-icon-name="clean" title="Clean (Flush Poop)" aria-label="Clean">🦆</button>
       <button type="button" class="t-icon" data-icon-index="5" data-icon-name="meter" title="Status Meter (Age/Weight/Hearts)" aria-label="Status Meter">⚖️</button>
       <button type="button" class="t-icon" data-icon-index="6" data-icon-name="discipline" title="Discipline (Train)" aria-label="Discipline">📣</button>
-      <span class="t-icon-alert" data-icon-name="alert" title="Attention (Pet Needs Care)" aria-label="Attention Indicator">🚨</span>
+      <span class="t-icon-alert" data-icon-name="alert" role="status" title="Attention (Pet Needs Care)" aria-label="Attention Indicator">🚨</span>
     </div>
   </div>
 
   <!-- Windows Pushbuttons (A, B, C) -->
-  <div class="pocket_pet-controls">
+  <div class="pocket_pet-controls" role="group" aria-label="Pocket_Pet Primary Buttons">
     <button type="button" class="retro-btn btn-a" data-t-btn="a" title="Button A: Select / Cycle Icons (or Minigame Left)" aria-label="Button A: Select">
       [ A: Select ]
     </button>
@@ -40,7 +40,7 @@
 
   <!-- Sub Controls (Sound toggle, Reset, Pop-out) -->
   <div class="pocket_pet-sub-controls">
-    <button type="button" class="retro-btn btn-mute-toggle" id="pocket_pet-mute-toggle" title="Toggle 1-bit Sound (A+C)">
+    <button type="button" class="retro-btn btn-mute-toggle" id="pocket_pet-mute-toggle" title="Toggle 1-bit Sound (A+C)" aria-pressed="true">
       🔊 Sound: ON
     </button>
     <button type="button" class="retro-btn btn-reset-toggle" id="pocket_pet-reset-btn" title="Reset / Rebirth Pet (A+C)">
@@ -55,7 +55,7 @@
 </div>
 
 <!-- Retro Windows Status Bar -->
-<div class="win-statusbar pocket_pet-statusbar">
-  <span id="pocket_pet-status">STATUS: ACTIVE</span>
-  <span id="pocket_pet-stage">STAGE: EGG</span>
+<div class="win-statusbar pocket_pet-statusbar" role="status" aria-live="polite">
+  <span id="pocket_pet-status" class="pocket_pet-status-text">STATUS: ACTIVE</span>
+  <span id="pocket_pet-stage" class="pocket_pet-stage-text">STAGE: EGG</span>
 </div>

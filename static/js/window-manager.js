@@ -3,11 +3,13 @@
  * Dedicated to Lachlan's World Desktop OS (/desktop/)
  *
  * Implements a robust DesktopOS App Registry:
+ * - Hybrid activation logic combining window.matchMedia viewport checks with pointer/touch input support
+ * - Clean mobile isolation & dynamic resize teardown/re-initialization without listener or timer leaks
  * - Automatically discovers apps defined in HTML templates (.desktop-window with data-app-*)
- * - Dynamically renders Desktop Shortcut Icons and Start Menu Programs
+ * - Dynamically renders Desktop Shortcut Icons and Start Menu Programs using safe DOM methods
  * - Provides programmatic registration API: DesktopOS.registerApp() & DesktopOS.unregisterApp()
- * - Standardizes draggable window chrome with Minimize and Close controls
- * - Handles window lifecycles (pausing screensaver canvas & audio on close)
+ * - Standardizes draggable window chrome with Minimize and Close controls for mouse, touch, and pen
+ * - Handles window lifecycles (pausing screensaver canvas & audio on close or mobile teardown)
  * - Rich File Explorer with live search dropdown pane, folder navigation, and column sorting
  * - Dedicated Display Properties & Settings App (Settings.exe)
  */
@@ -16,27 +18,95 @@
   'use strict';
 
   // Only run inside the dedicated Desktop OS environment
-  if (!document.body.classList.contains('desktop-os-page')) {
+  if (!document.body || !document.body.classList.contains('desktop-os-page')) {
     return;
   }
 
   const POS_KEY = 'lachlan_desktop_window_positions';
+  const LEGACY_STATE_KEY = 'lachlan_window_states';
+  const DESKTOP_MODE_KEY = 'lachlan_desktop_mode';
+  const DESKTOP_BREAKPOINT_QUERY = '(min-width: 768px)';
+
   let highestZ = 500;
   let windowPositions = {};
+  let clockIntervalId = null;
+  let sessionController = null;
+  let initialBlogFileNodes = null;
+
+  function safeGetItem(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function safeSetItem(key, value) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function safeRemoveItem(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {}
+  }
 
   function loadWindowPositions() {
     try {
-      const data = localStorage.getItem(POS_KEY);
-      return data ? JSON.parse(data) : {};
+      const raw = safeGetItem(POS_KEY) || safeGetItem(LEGACY_STATE_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        return {};
+      }
+      const clean = {};
+      Object.keys(parsed).forEach(function (id) {
+        const entry = parsed[id];
+        if (entry && typeof entry === 'object' && typeof entry.x === 'number' && typeof entry.y === 'number' && isFinite(entry.x) && isFinite(entry.y)) {
+          clean[id] = {
+            x: Math.round(entry.x),
+            y: Math.round(entry.y)
+          };
+        }
+      });
+      return clean;
     } catch (e) {
       return {};
     }
   }
 
   function saveWindowPositions() {
-    try {
-      localStorage.setItem(POS_KEY, JSON.stringify(windowPositions));
-    } catch (e) {}
+    const serialized = JSON.stringify(windowPositions);
+    safeSetItem(POS_KEY, serialized);
+    safeSetItem(LEGACY_STATE_KEY, serialized);
+  }
+
+  /**
+   * Hybrid capability check:
+   * Combines viewport dimension checks via window.matchMedia('(min-width: 768px)')
+   * with hybrid input support (pointer: fine, pointer: coarse, any-pointer, or touch/mouse events)
+   * so traditional desktops, large-screen tablets, and touch-enabled laptops all activate cleanly,
+   * while small mobile viewports (< 768px) isolate and bypass the desktop window manager.
+   */
+  function checkDesktopCapability() {
+    if (typeof window.matchMedia !== 'function') {
+      return window.innerWidth >= 768;
+    }
+    const viewportMatches = window.matchMedia(DESKTOP_BREAKPOINT_QUERY).matches;
+    if (!viewportMatches) {
+      return false;
+    }
+    const finePointer = window.matchMedia('(any-pointer: fine), (pointer: fine)').matches;
+    const coarsePointer = window.matchMedia('(any-pointer: coarse), (pointer: coarse)').matches;
+    const hoverCapable = window.matchMedia('(any-hover: hover), (hover: hover)').matches;
+    const hasInputSupport = finePointer || coarsePointer || hoverCapable ||
+      ('PointerEvent' in window) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    return Boolean(viewportMatches && hasInputSupport);
   }
 
   // --- Clock updater ---
@@ -51,26 +121,41 @@
     clock.textContent = hours + ':' + minutes + ' ' + ampm;
   }
 
+  // Helper to attach Enter + Space keyboard activation to role="button"/menuitem/treeitem elements
+  function bindKeyboardActivation(el, handler, signal) {
+    if (!el) return;
+    const opts = signal ? { signal: signal } : undefined;
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handler(e);
+      }
+    }, opts);
+  }
+
   // --- DesktopOS Architecture ---
   const DesktopOS = {
     apps: new Map(),
+    isActive: false,
+
+    checkCapability: checkDesktopCapability,
 
     /**
      * Register a new application into Desktop OS
      * @param {Object} appConfig - { id, title, icon, defaultX, defaultY, panel, shortcut, startMenu, onClose, onOpen }
      */
     registerApp: function (appConfig) {
-      if (!appConfig || !appConfig.id) return;
-      const id = appConfig.id;
+      if (!appConfig || !appConfig.id) return null;
+      const id = String(appConfig.id);
       const panel = appConfig.panel || document.getElementById(id);
-      if (!panel) return;
+      if (!panel) return null;
 
       const app = {
         id: id,
         title: appConfig.title || this._extractTitle(panel, id),
         icon: appConfig.icon || this._extractIcon(panel, id),
-        defaultX: typeof appConfig.defaultX === 'number' ? appConfig.defaultX : (120 + this.apps.size * 30),
-        defaultY: typeof appConfig.defaultY === 'number' ? appConfig.defaultY : (60 + this.apps.size * 25),
+        defaultX: typeof appConfig.defaultX === 'number' && !isNaN(appConfig.defaultX) ? appConfig.defaultX : (120 + this.apps.size * 30),
+        defaultY: typeof appConfig.defaultY === 'number' && !isNaN(appConfig.defaultY) ? appConfig.defaultY : (60 + this.apps.size * 25),
         panel: panel,
         shortcut: appConfig.shortcut !== false,
         startMenu: appConfig.startMenu !== false,
@@ -80,19 +165,26 @@
 
       this.apps.set(id, app);
 
+      if (!this.isActive) {
+        return app;
+      }
+
       // Setup window UI & controls
       this._setupWindowChrome(app);
       this._positionWindow(app);
       this._setupWindowDrag(app);
 
-      // Start all windows closed by default on clean launch
+      // Start all windows closed by default on clean desktop launch
       panel.classList.add('desktop-window', 'window-closed');
       panel.classList.remove('window-focused', 'window-minimized');
 
-      // Click on window focuses it
+      // Click/tap on window focuses it
+      const signal = sessionController ? sessionController.signal : undefined;
       panel.addEventListener('pointerdown', function () {
-        DesktopOS.focusApp(id);
-      });
+        if (DesktopOS.isActive) {
+          DesktopOS.focusApp(id);
+        }
+      }, signal ? { signal: signal } : undefined);
 
       // Update UI representations
       this.renderDesktopIcons();
@@ -128,6 +220,7 @@
      * Open an application window
      */
     openApp: function (appId) {
+      if (!this.isActive) return;
       const app = this.apps.get(appId);
       const panel = app ? app.panel : document.getElementById(appId);
       if (!panel) return;
@@ -138,7 +231,7 @@
       // Lifecycle hook on open
       if (app && typeof app.onOpen === 'function') {
         app.onOpen();
-      } else if (appId === 'interactive-element' && window.startScreensaver) {
+      } else if (appId === 'interactive-element' && typeof window.startScreensaver === 'function') {
         window.startScreensaver();
       }
     },
@@ -147,6 +240,7 @@
      * Focus an application window (brings to front)
      */
     focusApp: function (appId) {
+      if (!this.isActive) return;
       const app = this.apps.get(appId);
       const panel = app ? app.panel : document.getElementById(appId);
       if (!panel) return;
@@ -163,8 +257,12 @@
       // Update taskbar button
       const taskBtn = this._createTaskbarButton(appId);
       if (taskBtn) {
-        document.querySelectorAll('.taskbar-item').forEach(function (b) { b.classList.remove('active'); });
+        document.querySelectorAll('.taskbar-item').forEach(function (b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
         taskBtn.classList.add('active');
+        taskBtn.setAttribute('aria-selected', 'true');
       }
     },
 
@@ -172,6 +270,7 @@
      * Minimize an application window
      */
     minimizeApp: function (appId) {
+      if (!this.isActive) return;
       const app = this.apps.get(appId);
       const panel = app ? app.panel : document.getElementById(appId);
       if (!panel) return;
@@ -182,6 +281,11 @@
       const taskBtn = document.getElementById('task-btn-' + appId);
       if (taskBtn) {
         taskBtn.classList.remove('active');
+        taskBtn.setAttribute('aria-selected', 'false');
+      }
+
+      if (appId === 'interactive-element' && typeof window.stopScreensaver === 'function') {
+        window.stopScreensaver();
       }
 
       // Focus topmost remaining visible window
@@ -196,7 +300,9 @@
       const panel = app ? app.panel : document.getElementById(appId);
       if (!panel) return;
 
-      panel.classList.add('window-closed');
+      if (this.isActive) {
+        panel.classList.add('window-closed');
+      }
       panel.classList.remove('window-focused', 'window-minimized');
 
       this._removeTaskbarButton(appId);
@@ -205,16 +311,17 @@
       if (app && typeof app.onClose === 'function') {
         app.onClose();
       } else {
-        if (appId === 'interactive-element' && window.stopScreensaver) {
+        if (appId === 'interactive-element' && typeof window.stopScreensaver === 'function') {
           window.stopScreensaver();
         }
-        if (appId === 'music-player' && window.stopMusicPlayback) {
+        if (appId === 'music-player' && typeof window.stopMusicPlayback === 'function') {
           window.stopMusicPlayback();
         }
       }
 
-      // Focus topmost remaining visible window
-      this._focusTopmost();
+      if (this.isActive) {
+        this._focusTopmost();
+      }
     },
 
     // --- Internal Helpers ---
@@ -265,8 +372,11 @@
 
     _setupWindowChrome: function (app) {
       const panel = app.panel;
-      let header = panel.querySelector('.panel-header');
+      const header = panel.querySelector('.panel-header');
       if (!header) return;
+
+      const signal = sessionController ? sessionController.signal : undefined;
+      const listenerOpts = signal ? { signal: signal } : undefined;
 
       // Ensure proper header title structure
       let titleContainer = header.querySelector('.panel-header-title');
@@ -278,6 +388,7 @@
 
         const iconSpan = document.createElement('span');
         iconSpan.className = 'win-icon';
+        iconSpan.setAttribute('aria-hidden', 'true');
         iconSpan.textContent = app.icon;
 
         titleContainer.appendChild(iconSpan);
@@ -297,10 +408,6 @@
         minBtn.textContent = '_';
         minBtn.title = 'Minimize';
         minBtn.setAttribute('aria-label', `Minimize ${app.title}`);
-        minBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          DesktopOS.minimizeApp(app.id);
-        });
 
         const closeBtn = document.createElement('button');
         closeBtn.type = 'button';
@@ -308,32 +415,26 @@
         closeBtn.textContent = '✕';
         closeBtn.title = 'Close';
         closeBtn.setAttribute('aria-label', `Close ${app.title}`);
-        closeBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          DesktopOS.closeApp(app.id);
-        });
 
         controls.appendChild(minBtn);
         controls.appendChild(closeBtn);
         header.appendChild(controls);
-      } else {
-        // Bind any existing buttons inside window-controls
-        const minBtn = controls.querySelector('button[title="Minimize"], #reader-min-btn, #sticker-win-min-btn, #explorer-min-btn');
-        if (minBtn && !minBtn._bound) {
-          minBtn._bound = true;
-          minBtn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            DesktopOS.minimizeApp(app.id);
-          });
-        }
-        const closeBtn = controls.querySelector('button[title="Close"], #reader-close-btn, #sticker-win-close-btn, #explorer-close-btn');
-        if (closeBtn && !closeBtn._bound) {
-          closeBtn._bound = true;
-          closeBtn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            DesktopOS.closeApp(app.id);
-          });
-        }
+      }
+
+      const minBtn = controls.querySelector('button[title="Minimize"], #reader-min-btn, #sticker-win-min-btn, #explorer-min-btn');
+      if (minBtn) {
+        minBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          DesktopOS.minimizeApp(app.id);
+        }, listenerOpts);
+      }
+
+      const closeBtn = controls.querySelector('button[title="Close"], #reader-close-btn, #sticker-win-close-btn, #explorer-close-btn');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          DesktopOS.closeApp(app.id);
+        }, listenerOpts);
       }
     },
 
@@ -342,24 +443,34 @@
       const saved = windowPositions[app.id];
       let posX, posY;
 
-      if (saved && typeof saved.x === 'number') {
-        posX = saved.x;
-        posY = saved.y;
+      const maxX = Math.max(10, window.innerWidth - 380);
+      const maxY = Math.max(40, window.innerHeight - 120);
+
+      if (saved && typeof saved.x === 'number' && typeof saved.y === 'number' && isFinite(saved.x) && isFinite(saved.y)) {
+        posX = Math.max(10, Math.min( Math.max(10, window.innerWidth - 100), saved.x));
+        posY = Math.max(36, Math.min(maxY, saved.y));
       } else {
-        posX = Math.min(app.defaultX, window.innerWidth - 380);
-        posY = app.defaultY;
+        posX = Math.max(10, Math.min(maxX, app.defaultX));
+        posY = Math.max(36, Math.min(maxY, app.defaultY));
       }
 
-      panel.style.left = Math.max(10, posX) + 'px';
-      panel.style.top = Math.max(40, posY) + 'px';
+      panel.style.left = posX + 'px';
+      panel.style.top = posY + 'px';
       panel.style.zIndex = highestZ++;
     },
 
+    /**
+     * Hybrid Window Drag Setup:
+     * Supports Pointer Events (mouse, pen, touch) with Touch/Mouse fallback
+     * while preventing conflict when both input types are available.
+     */
     _setupWindowDrag: function (app) {
       const panel = app.panel;
       const header = panel.querySelector('.panel-header');
-      if (!header || header._dragInitialized) return;
-      header._dragInitialized = true;
+      if (!header) return;
+
+      const signal = sessionController ? sessionController.signal : undefined;
+      const opts = signal ? { signal: signal } : undefined;
 
       let isDragging = false;
       let startX = 0;
@@ -367,47 +478,100 @@
       let initialX = 0;
       let initialY = 0;
 
-      header.addEventListener('pointerdown', function (e) {
-        if (e.target.closest('.window-controls') || e.target.closest('button')) return;
-
+      function startDrag(clientX, clientY, pointerId) {
+        if (!DesktopOS.isActive) return;
         isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
+        startX = clientX;
+        startY = clientY;
         initialX = panel.offsetLeft;
         initialY = panel.offsetTop;
-        header.setPointerCapture(e.pointerId);
+        if (pointerId !== undefined && typeof header.setPointerCapture === 'function') {
+          try { header.setPointerCapture(pointerId); } catch (err) {}
+        }
         DesktopOS.focusApp(app.id);
-        e.preventDefault();
-      });
+      }
 
-      header.addEventListener('pointermove', function (e) {
-        if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
+      function moveDrag(clientX, clientY) {
+        if (!isDragging || !DesktopOS.isActive) return;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
 
         let newX = initialX + dx;
         let newY = initialY + dy;
 
-        newX = Math.max(0, Math.min(window.innerWidth - 80, newX));
-        newY = Math.max(34, Math.min(window.innerHeight - 70, newY));
+        newX = Math.max(0, Math.min(Math.max(0, window.innerWidth - 80), newX));
+        newY = Math.max(34, Math.min(Math.max(34, window.innerHeight - 70), newY));
 
         panel.style.left = newX + 'px';
         panel.style.top = newY + 'px';
 
-        windowPositions[app.id] = { x: newX, y: newY };
-      });
+        windowPositions[app.id] = { x: Math.round(newX), y: Math.round(newY) };
+      }
 
-      function stopDrag(e) {
+      function stopDrag(pointerId) {
         if (!isDragging) return;
         isDragging = false;
-        try {
-          header.releasePointerCapture(e.pointerId);
-        } catch (err) {}
+        if (pointerId !== undefined && typeof header.releasePointerCapture === 'function') {
+          try { header.releasePointerCapture(pointerId); } catch (err) {}
+        }
         saveWindowPositions();
       }
 
-      header.addEventListener('pointerup', stopDrag);
-      header.addEventListener('pointercancel', stopDrag);
+      if ('PointerEvent' in window) {
+        header.addEventListener('pointerdown', function (e) {
+          if (e.target.closest('.window-controls') || e.target.closest('button')) return;
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          startDrag(e.clientX, e.clientY, e.pointerId);
+          e.preventDefault();
+        }, opts);
+
+        header.addEventListener('pointermove', function (e) {
+          moveDrag(e.clientX, e.clientY);
+        }, opts);
+
+        header.addEventListener('pointerup', function (e) {
+          stopDrag(e.pointerId);
+        }, opts);
+
+        header.addEventListener('pointercancel', function (e) {
+          stopDrag(e.pointerId);
+        }, opts);
+      } else {
+        let lastTouchTs = 0;
+        header.addEventListener('touchstart', function (e) {
+          if (e.target.closest('.window-controls') || e.target.closest('button')) return;
+          if (e.touches.length > 0) {
+            lastTouchTs = Date.now();
+            startDrag(e.touches[0].clientX, e.touches[0].clientY);
+            e.preventDefault();
+          }
+        }, signal ? { signal: signal, passive: false } : { passive: false });
+
+        header.addEventListener('touchmove', function (e) {
+          if (!isDragging || e.touches.length === 0) return;
+          moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+          e.preventDefault();
+        }, signal ? { signal: signal, passive: false } : { passive: false });
+
+        header.addEventListener('touchend', function () {
+          stopDrag();
+        }, opts);
+
+        header.addEventListener('mousedown', function (e) {
+          if (Date.now() - lastTouchTs < 500) return;
+          if (e.button !== 0 || e.target.closest('.window-controls') || e.target.closest('button')) return;
+          startDrag(e.clientX, e.clientY);
+          e.preventDefault();
+        }, opts);
+
+        window.addEventListener('mousemove', function (e) {
+          moveDrag(e.clientX, e.clientY);
+        }, opts);
+
+        window.addEventListener('mouseup', function () {
+          stopDrag();
+        }, opts);
+      }
     },
 
     _createTaskbarButton: function (appId) {
@@ -425,9 +589,13 @@
       taskBtn.type = 'button';
       taskBtn.className = 'taskbar-item active';
       taskBtn.id = 'task-btn-' + appId;
+      taskBtn.setAttribute('role', 'tab');
+      taskBtn.setAttribute('aria-selected', 'true');
+      taskBtn.setAttribute('aria-controls', appId);
       taskBtn.textContent = icon + titleText;
       taskBtn.title = titleText;
 
+      const signal = sessionController ? sessionController.signal : undefined;
       taskBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         const panel = app ? app.panel : document.getElementById(appId);
@@ -441,7 +609,7 @@
         } else {
           DesktopOS.focusApp(appId);
         }
-      });
+      }, signal ? { signal: signal } : undefined);
 
       taskbarTasks.appendChild(taskBtn);
       return taskBtn;
@@ -462,6 +630,8 @@
       if (!container) return;
 
       const recycleBin = document.getElementById('desktop-recycle-bin');
+      const signal = sessionController ? sessionController.signal : undefined;
+      const opts = signal ? { signal: signal } : undefined;
 
       // Clear existing app icons
       container.querySelectorAll('.desktop-icon[data-target]').forEach(function (el) {
@@ -481,6 +651,7 @@
 
         const iconImg = document.createElement('div');
         iconImg.className = 'desktop-icon-img';
+        iconImg.setAttribute('aria-hidden', 'true');
         iconImg.textContent = app.icon;
 
         const iconLabel = document.createElement('div');
@@ -494,40 +665,25 @@
           DesktopOS.openApp(app.id);
         }
 
-        iconEl.addEventListener('click', openIt);
-        iconEl.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') openIt();
-        });
+        iconEl.addEventListener('click', openIt, opts);
+        bindKeyboardActivation(iconEl, openIt, signal);
 
-        // Insert before system recycle bin
         if (recycleBin) {
           container.insertBefore(iconEl, recycleBin);
         } else {
           container.appendChild(iconEl);
         }
       });
-
-      // Wire Recycle Bin if not yet wired
-      if (recycleBin && !recycleBin._bound) {
-        recycleBin._bound = true;
-        recycleBin.addEventListener('click', function () {
-          if (confirm('Empty Recycle Bin? This will clear all stickers placed on your desktop wallpaper.')) {
-            if (window.clearDesktopStickers) {
-              window.clearDesktopStickers();
-            }
-          }
-        });
-      }
     },
 
     /**
-     * Render / Refresh Start Menu Programs list
+     * Render / Refresh Start Menu Programs list using safe DOM manipulation
      */
     renderStartMenu: function () {
       const group = document.getElementById('start-menu-apps');
       if (!group) return;
 
-      group.innerHTML = '';
+      group.replaceChildren();
 
       this.apps.forEach(function (app) {
         if (!app.startMenu) return;
@@ -535,11 +691,13 @@
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'start-menu-item';
+        btn.setAttribute('role', 'menuitem');
         btn.setAttribute('data-action', 'open-window');
         btn.setAttribute('data-target', app.id);
 
         const iconSpan = document.createElement('span');
         iconSpan.className = 'start-item-icon';
+        iconSpan.setAttribute('aria-hidden', 'true');
         iconSpan.textContent = app.icon;
 
         const labelSpan = document.createElement('span');
@@ -592,11 +750,132 @@
           panel: panel
         });
       });
+    },
+
+    /**
+     * Activate Desktop Mode (when hybrid capability check passes)
+     */
+    activate: function () {
+      if (this.isActive) return;
+      this.isActive = true;
+
+      if (sessionController) {
+        sessionController.abort();
+      }
+      sessionController = new AbortController();
+      const signal = sessionController.signal;
+
+      document.body.classList.add('mode-desktop');
+      document.body.classList.remove('desktop-mobile-isolated');
+      safeSetItem(DESKTOP_MODE_KEY, 'true');
+
+      windowPositions = loadWindowPositions();
+
+      // Start clock interval cleanly
+      if (clockIntervalId) {
+        clearInterval(clockIntervalId);
+      }
+      updateClock();
+      clockIntervalId = setInterval(updateClock, 1000);
+
+      // Pause screensaver initially since Game_Player.exe starts closed on desktop launch
+      if (typeof window.stopScreensaver === 'function') {
+        window.stopScreensaver();
+      }
+
+      this.apps.clear();
+      this.autoDiscover();
+
+      // Wire Recycle Bin click + keyboard
+      const recycleBin = document.getElementById('desktop-recycle-bin');
+      if (recycleBin) {
+        const emptyTrash = function () {
+          if (confirm('Empty Recycle Bin? This will clear all stickers placed on your desktop wallpaper.')) {
+            if (typeof window.clearDesktopStickers === 'function') {
+              window.clearDesktopStickers();
+            }
+          }
+        };
+        recycleBin.addEventListener('click', emptyTrash, { signal: signal });
+        bindKeyboardActivation(recycleBin, emptyTrash, signal);
+      }
+
+      initBlogReader(signal);
+      initFileExplorer(signal);
+      initShowDesktopBtn(signal);
+      initStartMenu(signal);
+      initSettingsApp(signal);
+
+      // Delegated window close handler for dialog buttons
+      document.addEventListener('click', function (e) {
+        const closeBtn = e.target && typeof e.target.closest === 'function' && e.target.closest('[data-window-close]');
+        if (closeBtn) {
+          const appId = closeBtn.getAttribute('data-window-close');
+          if (appId) DesktopOS.closeApp(appId);
+        }
+      }, { signal: signal });
+    },
+
+    /**
+     * Deactivate / Isolate Desktop Mode on small mobile viewports (< 768px):
+     * Cleanly tears down DOM listeners, clock interval, and background animations/audio.
+     */
+    deactivate: function () {
+      if (sessionController) {
+        sessionController.abort();
+        sessionController = null;
+      }
+      if (clockIntervalId) {
+        clearInterval(clockIntervalId);
+        clockIntervalId = null;
+      }
+
+      if (typeof window.stopScreensaver === 'function') {
+        window.stopScreensaver();
+      }
+      if (typeof window.stopMusicPlayback === 'function') {
+        window.stopMusicPlayback();
+      }
+
+      this.isActive = false;
+      document.body.classList.remove('mode-desktop');
+      document.body.classList.add('desktop-mobile-isolated');
+      safeSetItem(DESKTOP_MODE_KEY, 'false');
+
+      // Remove dynamic taskbar buttons and desktop shortcut icons
+      const taskbarTasks = document.getElementById('taskbar-tasks');
+      if (taskbarTasks) {
+        taskbarTasks.replaceChildren();
+      }
+      const iconsContainer = document.getElementById('desktop-icons');
+      if (iconsContainer) {
+        iconsContainer.querySelectorAll('.desktop-icon[data-target]').forEach(function (el) {
+          el.remove();
+        });
+      }
+      const startMenu = document.getElementById('desktop-start-menu');
+      if (startMenu) {
+        startMenu.setAttribute('hidden', '');
+      }
+      const startBtn = document.getElementById('start-menu-btn');
+      if (startBtn) {
+        startBtn.setAttribute('aria-expanded', 'false');
+        startBtn.classList.remove('active');
+      }
+
+      // Clean inline positioning and closed/minimized states so mobile layout stacks cleanly
+      document.querySelectorAll('.desktop-windows-layer .panel').forEach(function (panel) {
+        panel.classList.remove('window-closed', 'window-minimized', 'window-focused');
+        panel.style.left = '';
+        panel.style.top = '';
+        panel.style.zIndex = '';
+      });
     }
   };
 
   // --- Show Desktop Toggle (Bottom Right System Tray) ---
   function toggleShowDesktop() {
+    if (!DesktopOS.isActive) return;
     const openWindows = Array.from(document.querySelectorAll('.desktop-windows-layer .panel'))
       .filter(function (p) {
         return !p.classList.contains('window-closed');
@@ -613,13 +892,19 @@
         p.classList.add('window-minimized');
         p.classList.remove('window-focused');
         const btn = document.getElementById('task-btn-' + p.id);
-        if (btn) btn.classList.remove('active');
+        if (btn) {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-selected', 'false');
+        }
       });
     } else {
       openWindows.forEach(function (p) {
         p.classList.remove('window-minimized');
         const btn = document.getElementById('task-btn-' + p.id);
-        if (btn) btn.classList.add('active');
+        if (btn) {
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+        }
       });
       openWindows.sort(function (a, b) {
         return (parseInt(b.style.zIndex || 0, 10) - parseInt(a.style.zIndex || 0, 10));
@@ -629,10 +914,12 @@
   }
 
   // --- Blog Reader Manager ---
-  function initBlogReader() {
+  function initBlogReader(signal) {
     const select = document.getElementById('reader-post-select');
+    const opts = signal ? { signal: signal } : undefined;
 
     function switchArticle(slug) {
+      if (!slug) return;
       const articles = document.querySelectorAll('.reader-article');
       let found = false;
       articles.forEach(function (art) {
@@ -647,7 +934,7 @@
 
       const status = document.getElementById('reader-status-info');
       if (status) {
-        status.textContent = 'ARTICLE: ' + slug.toUpperCase();
+        status.textContent = 'ARTICLE: ' + String(slug).toUpperCase();
       }
 
       DesktopOS.openApp('blog-reader-window');
@@ -656,20 +943,24 @@
     if (select) {
       select.addEventListener('change', function () {
         switchArticle(this.value);
-      });
+      }, opts);
     }
 
-    // Intercept clicks on blog post links & archive links within Desktop OS
+    // Intercept clicks on internal blog post links & archive links within Desktop OS
     document.addEventListener('click', function (e) {
-      const archiveLink = e.target.closest('.view-all-box a, .retro-btn-link');
-      if (archiveLink) {
+      if (!DesktopOS.isActive) return;
+      const targetEl = e.target && typeof e.target.closest === 'function' ? e.target : null;
+      if (!targetEl) return;
+
+      const archiveLink = targetEl.closest('.view-all-box a, .retro-btn-link');
+      if (archiveLink && archiveLink.getAttribute('target') !== '_blank') {
         e.preventDefault();
         DesktopOS.openApp('file-explorer-window');
         return;
       }
 
-      const anyLink = e.target.closest('a');
-      if (anyLink) {
+      const anyLink = targetEl.closest('a');
+      if (anyLink && anyLink.getAttribute('target') !== '_blank') {
         const href = anyLink.getAttribute('href') || '';
         if (href.endsWith('/blog/') || href.endsWith('/blog') || href === 'blog/' || href === 'blog') {
           e.preventDefault();
@@ -681,16 +972,61 @@
         if (match && match[1] && match[1] !== 'index' && match[1] !== 'blog') {
           e.preventDefault();
           switchArticle(match[1]);
-          return;
         }
       }
-    });
+    }, opts);
 
     window.openDesktopArticle = switchArticle;
   }
 
+  // --- Safe DOM Row Builders for File Explorer ---
+  function createExplorerFileRow(cfg) {
+    const row = document.createElement('div');
+    row.className = 'explorer-file-row';
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('role', 'button');
+    if (cfg.title) row.title = cfg.title;
+    if (cfg.launch) row.setAttribute('data-launch', cfg.launch);
+    if (cfg.nav) row.setAttribute('data-nav', cfg.nav);
+    if (cfg.slug) row.setAttribute('data-slug', cfg.slug);
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'file-name';
+
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'file-icon';
+    iconSpan.setAttribute('aria-hidden', 'true');
+    iconSpan.textContent = cfg.icon || '📄';
+
+    const textSpan = document.createElement('span');
+    textSpan.className = 'file-title-text';
+    textSpan.textContent = cfg.name || '';
+
+    nameDiv.appendChild(iconSpan);
+    nameDiv.appendChild(textSpan);
+
+    const dateDiv = document.createElement('div');
+    dateDiv.className = 'file-date';
+    dateDiv.textContent = cfg.date || '';
+
+    const typeDiv = document.createElement('div');
+    typeDiv.className = 'file-type';
+    typeDiv.textContent = cfg.type || '';
+
+    const sizeDiv = document.createElement('div');
+    sizeDiv.className = 'file-size';
+    sizeDiv.textContent = cfg.size || '--';
+
+    row.appendChild(nameDiv);
+    row.appendChild(dateDiv);
+    row.appendChild(typeDiv);
+    row.appendChild(sizeDiv);
+
+    return row;
+  }
+
   // --- File Explorer Integration (Explorer.exe) ---
-  function initFileExplorer() {
+  function initFileExplorer(signal) {
     const searchInput = document.getElementById('explorer-search-input');
     const searchClear = document.getElementById('explorer-search-clear');
     const searchDropdown = document.getElementById('explorer-search-dropdown');
@@ -704,11 +1040,15 @@
     const forwardBtn = document.getElementById('explorer-forward-btn');
     const upBtn = document.getElementById('explorer-up-btn');
     const treeItems = document.querySelectorAll('#explorer-tree .tree-item[data-folder]');
+    const opts = signal ? { signal: signal } : undefined;
 
-    // Cache initial blog files HTML
-    const initialBlogFilesHTML = filesList ? filesList.innerHTML : '';
+    // Cache initial blog file DOM nodes once via cloneNode (no innerHTML)
+    if (filesList && !initialBlogFileNodes) {
+      initialBlogFileNodes = Array.from(filesList.childNodes).map(function (node) {
+        return node.cloneNode(true);
+      });
+    }
 
-    // Navigation History Stack
     let folderHistory = ['blog-archive'];
     let historyIdx = 0;
     let currentFolder = 'blog-archive';
@@ -733,162 +1073,182 @@
 
       updateNavButtons();
 
-      // Highlight active tree item
+      // Highlight active tree item and sync aria-selected
       treeItems.forEach(function (ti) {
         const match = ti.getAttribute('data-folder') === folderKey;
         ti.classList.toggle('tree-active', match);
+        ti.setAttribute('aria-selected', match ? 'true' : 'false');
       });
 
-      // Clear search if open
+      // Clear search dropdown if open
       if (searchDropdown) {
         searchDropdown.hidden = true;
         searchDropdown.style.display = 'none';
       }
 
+      filesList.replaceChildren();
+
       if (folderKey === 'blog-archive') {
         if (addressInput) addressInput.value = 'C:\\Documents\\Blog_Archive\\';
-        filesList.innerHTML = initialBlogFilesHTML;
+        if (initialBlogFileNodes) {
+          initialBlogFileNodes.forEach(function (node) {
+            filesList.appendChild(node.cloneNode(true));
+          });
+        }
         bindFileRows();
         const total = filesList.querySelectorAll('.explorer-file-row').length;
         if (statusCount) statusCount.textContent = total + ' Object(s)';
       } else if (folderKey === 'desktop') {
         if (addressInput) addressInput.value = 'C:\\Desktop\\';
-        // Render desktop shortcuts as items in files pane
-        let html = '';
         DesktopOS.apps.forEach(function (app) {
-          html += `
-            <div class="explorer-file-row" data-launch="${app.id}" tabindex="0" role="button" title="Double click or press Enter to launch ${app.title}">
-              <div class="file-name">
-                <span class="file-icon">${app.icon}</span>
-                <span class="file-title-text">${app.title}.lnk</span>
-              </div>
-              <div class="file-date">2026-10-13</div>
-              <div class="file-type">Application Shortcut</div>
-              <div class="file-size">1 KB</div>
-            </div>
-          `;
+          const row = createExplorerFileRow({
+            launch: app.id,
+            title: `Click or press Enter to launch ${app.title}`,
+            icon: app.icon,
+            name: `${app.title}.lnk`,
+            date: '2026-10-13',
+            type: 'Application Shortcut',
+            size: '1 KB'
+          });
+          filesList.appendChild(row);
         });
-        filesList.innerHTML = html;
         bindAppRows();
         if (statusCount) statusCount.textContent = DesktopOS.apps.size + ' Object(s)';
       } else if (folderKey === 'documents') {
         if (addressInput) addressInput.value = 'C:\\Documents\\';
-        filesList.innerHTML = `
-          <div class="explorer-file-row" data-nav="blog-archive" tabindex="0" role="button" title="Open Blog Archive">
-            <div class="file-name">
-              <span class="file-icon">&#128194;</span>
-              <span class="file-title-text">Blog_Archive</span>
-            </div>
-            <div class="file-date">2026-10-13</div>
-            <div class="file-type">File Folder</div>
-            <div class="file-size">--</div>
-          </div>
-          <div class="explorer-file-row" data-launch="sticker-album-window" tabindex="0" role="button" title="Open Sticker Album">
-            <div class="file-name">
-              <span class="file-icon">&#9733;</span>
-              <span class="file-title-text">Sticker_Album.exe</span>
-            </div>
-            <div class="file-date">2026-10-13</div>
-            <div class="file-type">Application Shortcut</div>
-            <div class="file-size">2 KB</div>
-          </div>
-        `;
+        filesList.appendChild(createExplorerFileRow({
+          nav: 'blog-archive',
+          title: 'Open Blog Archive',
+          icon: '📂',
+          name: 'Blog_Archive',
+          date: '2026-10-13',
+          type: 'File Folder',
+          size: '--'
+        }));
+        filesList.appendChild(createExplorerFileRow({
+          launch: 'sticker-album-window',
+          title: 'Open Sticker Album',
+          icon: '★',
+          name: 'Sticker_Album.exe',
+          date: '2026-10-13',
+          type: 'Application Shortcut',
+          size: '2 KB'
+        }));
         bindNavRows();
         if (statusCount) statusCount.textContent = '2 Object(s)';
       } else if (folderKey === 'disk-c') {
         if (addressInput) addressInput.value = 'C:\\';
-        filesList.innerHTML = `
-          <div class="explorer-file-row" data-nav="desktop" tabindex="0" role="button" title="Open Desktop folder">
-            <div class="file-name"><span class="file-icon">&#128194;</span><span class="file-title-text">Desktop</span></div>
-            <div class="file-date">2026-10-13</div>
-            <div class="file-type">File Folder</div>
-            <div class="file-size">--</div>
-          </div>
-          <div class="explorer-file-row" data-nav="documents" tabindex="0" role="button" title="Open Documents folder">
-            <div class="file-name"><span class="file-icon">&#128194;</span><span class="file-title-text">Documents</span></div>
-            <div class="file-date">2026-10-13</div>
-            <div class="file-type">File Folder</div>
-            <div class="file-size">--</div>
-          </div>
-          <div class="explorer-file-row" tabindex="0" role="button" title="Windows System Folder">
-            <div class="file-name"><span class="file-icon">&#128194;</span><span class="file-title-text">WINDOWS</span></div>
-            <div class="file-date">2005-08-24</div>
-            <div class="file-type">System Folder</div>
-            <div class="file-size">--</div>
-          </div>
-          <div class="explorer-file-row" tabindex="0" role="button" title="Program Files">
-            <div class="file-name"><span class="file-icon">&#128194;</span><span class="file-title-text">Program Files</span></div>
-            <div class="file-date">2026-10-13</div>
-            <div class="file-type">File Folder</div>
-            <div class="file-size">--</div>
-          </div>
-        `;
+        filesList.appendChild(createExplorerFileRow({
+          nav: 'desktop',
+          title: 'Open Desktop folder',
+          icon: '📂',
+          name: 'Desktop',
+          date: '2026-10-13',
+          type: 'File Folder',
+          size: '--'
+        }));
+        filesList.appendChild(createExplorerFileRow({
+          nav: 'documents',
+          title: 'Open Documents folder',
+          icon: '📂',
+          name: 'Documents',
+          date: '2026-10-13',
+          type: 'File Folder',
+          size: '--'
+        }));
+        filesList.appendChild(createExplorerFileRow({
+          title: 'Windows System Folder',
+          icon: '📂',
+          name: 'WINDOWS',
+          date: '2005-08-24',
+          type: 'System Folder',
+          size: '--'
+        }));
+        filesList.appendChild(createExplorerFileRow({
+          title: 'Program Files',
+          icon: '📂',
+          name: 'Program Files',
+          date: '2026-10-13',
+          type: 'File Folder',
+          size: '--'
+        }));
         bindNavRows();
         if (statusCount) statusCount.textContent = '4 Object(s)';
       } else if (folderKey === 'floppy') {
         if (addressInput) addressInput.value = 'A:\\';
-        filesList.innerHTML = `
-          <div style="padding: 24px; text-align: center; color: var(--text-muted); font-family: monospace;">
-            <div style="font-size: 32px; margin-bottom: 8px;">&#128190;</div>
-            <strong>Drive A: is not ready.</strong><br>
-            Please insert a 3½-inch floppy disk into drive A: to browse files.
-          </div>
-        `;
+        const msgBox = document.createElement('div');
+        msgBox.style.cssText = 'padding: 24px; text-align: center; color: var(--text-muted); font-family: monospace;';
+
+        const floppyIcon = document.createElement('div');
+        floppyIcon.style.cssText = 'font-size: 32px; margin-bottom: 8px;';
+        floppyIcon.setAttribute('aria-hidden', 'true');
+        floppyIcon.textContent = '💾';
+
+        const strongEl = document.createElement('strong');
+        strongEl.textContent = 'Drive A: is not ready.';
+
+        const brEl = document.createElement('br');
+        const subText = document.createTextNode('Please insert a 3½-inch floppy disk into drive A: to browse files.');
+
+        msgBox.appendChild(floppyIcon);
+        msgBox.appendChild(strongEl);
+        msgBox.appendChild(brEl);
+        msgBox.appendChild(subText);
+        filesList.appendChild(msgBox);
         if (statusCount) statusCount.textContent = '0 Object(s)';
       }
     }
 
     function bindFileRows() {
+      if (!filesList) return;
       const fileRows = filesList.querySelectorAll('.explorer-file-row[data-slug]');
       fileRows.forEach(function (row) {
         function openFile() {
           const slug = row.getAttribute('data-slug');
-          if (slug && window.openDesktopArticle) {
+          if (slug && typeof window.openDesktopArticle === 'function') {
             window.openDesktopArticle(slug);
           }
         }
-        row.addEventListener('click', openFile);
-        row.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') openFile();
-        });
+        row.addEventListener('click', openFile, opts);
+        bindKeyboardActivation(row, openFile, signal);
       });
     }
 
     function bindAppRows() {
+      if (!filesList) return;
       const appRows = filesList.querySelectorAll('.explorer-file-row[data-launch]');
       appRows.forEach(function (row) {
         function launch() {
           const id = row.getAttribute('data-launch');
           if (id) DesktopOS.openApp(id);
         }
-        row.addEventListener('click', launch);
-        row.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') launch();
-        });
+        row.addEventListener('click', launch, opts);
+        bindKeyboardActivation(row, launch, signal);
       });
     }
 
     function bindNavRows() {
+      if (!filesList) return;
       const navRows = filesList.querySelectorAll('.explorer-file-row[data-nav]');
       navRows.forEach(function (row) {
         function nav() {
           const target = row.getAttribute('data-nav');
           if (target) renderFolderContent(target, true);
         }
-        row.addEventListener('click', nav);
-        row.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') nav();
-        });
+        row.addEventListener('click', nav, opts);
+        bindKeyboardActivation(row, nav, signal);
       });
       bindAppRows();
     }
 
-    // Bind Left Folder Tree items
+    // Bind Left Folder Tree items (click + keyboard Enter/Space)
     treeItems.forEach(function (item) {
-      item.addEventListener('click', function () {
+      function selectFolder() {
         const folder = item.getAttribute('data-folder');
         if (folder) renderFolderContent(folder, true);
-      });
+      }
+      item.addEventListener('click', selectFolder, opts);
+      bindKeyboardActivation(item, selectFolder, signal);
     });
 
     // Toolbar navigation buttons
@@ -898,7 +1258,7 @@
           historyIdx--;
           renderFolderContent(folderHistory[historyIdx], false);
         }
-      });
+      }, opts);
     }
 
     if (forwardBtn) {
@@ -907,7 +1267,7 @@
           historyIdx++;
           renderFolderContent(folderHistory[historyIdx], false);
         }
-      });
+      }, opts);
     }
 
     if (upBtn) {
@@ -917,10 +1277,10 @@
         } else if (currentFolder === 'documents' || currentFolder === 'desktop') {
           renderFolderContent('disk-c', true);
         }
-      });
+      }, opts);
     }
 
-    // --- Explorer Live Search & Dropdown Pane ---
+    // --- Explorer Live Search & Dropdown Pane (Safe DOM Manipulation) ---
     function doSearch() {
       if (!searchInput) return;
       const query = searchInput.value.trim().toLowerCase();
@@ -939,7 +1299,6 @@
         return;
       }
 
-      // Query blog documents and apps
       const results = [];
       const blogArticles = document.querySelectorAll('.reader-article');
 
@@ -950,7 +1309,6 @@
         const text = art.textContent.toLowerCase();
 
         if (slug.includes(query) || title.toLowerCase().includes(query) || text.includes(query)) {
-          // Extract short snippet around query
           let snippet = '';
           const idx = text.indexOf(query);
           if (idx !== -1) {
@@ -962,34 +1320,36 @@
             type: 'article',
             id: slug,
             title: title,
-            meta: `Blog Bulletin &bull; ${slug}.doc`,
+            meta: `Blog Bulletin \u2022 ${slug}.doc`,
             snippet: snippet
           });
         }
       });
 
-      // Also match desktop apps
       DesktopOS.apps.forEach(function (app) {
         if (app.title.toLowerCase().includes(query) || app.id.toLowerCase().includes(query)) {
           results.push({
             type: 'app',
             id: app.id,
             title: app.title,
-            meta: `Application &bull; ${app.icon}`,
+            meta: `Application \u2022 ${app.icon}`,
             snippet: `Desktop Program Shortcut: ${app.title}.lnk`
           });
         }
       });
 
-      // Render search results dropdown pane
       if (searchDropdown && searchResultsList) {
         searchDropdown.hidden = false;
         searchDropdown.style.display = 'flex';
-        searchResultsList.innerHTML = '';
+        searchResultsList.replaceChildren();
 
         if (results.length === 0) {
           if (searchStatusBar) searchStatusBar.textContent = `No records matching "${query}"`;
-          searchResultsList.innerHTML = `<li class="explorer-search-result-item" style="cursor: default; font-style: italic; color: var(--text-muted);">No records found. Try searching by keywords like "reticulum", "linux", "game", or "synth".</li>`;
+          const emptyLi = document.createElement('li');
+          emptyLi.className = 'explorer-search-result-item';
+          emptyLi.style.cssText = 'cursor: default; font-style: italic; color: var(--text-muted);';
+          emptyLi.textContent = 'No records found. Try searching by keywords like "reticulum", "linux", "game", or "synth".';
+          searchResultsList.appendChild(emptyLi);
         } else {
           if (searchStatusBar) searchStatusBar.textContent = `${results.length} match(es) found`;
           results.forEach(function (res) {
@@ -997,10 +1357,12 @@
             li.className = 'explorer-search-result-item';
             li.setAttribute('tabindex', '0');
             li.setAttribute('role', 'option');
+
             const titleDiv = document.createElement('div');
             titleDiv.className = 'explorer-result-title';
 
             const iconSpan = document.createElement('span');
+            iconSpan.setAttribute('aria-hidden', 'true');
             iconSpan.textContent = res.type === 'app' ? '⚙️' : '📄';
 
             const strongTitle = document.createElement('strong');
@@ -1027,19 +1389,15 @@
             function openResult() {
               if (res.type === 'app') {
                 DesktopOS.openApp(res.id);
-              } else {
-                if (window.openDesktopArticle) {
-                  window.openDesktopArticle(res.id);
-                }
+              } else if (typeof window.openDesktopArticle === 'function') {
+                window.openDesktopArticle(res.id);
               }
               searchDropdown.hidden = true;
               searchDropdown.style.display = 'none';
             }
 
-            li.addEventListener('click', openResult);
-            li.addEventListener('keydown', function (e) {
-              if (e.key === 'Enter') openResult();
-            });
+            li.addEventListener('click', openResult, opts);
+            bindKeyboardActivation(li, openResult, signal);
 
             searchResultsList.appendChild(li);
           });
@@ -1048,14 +1406,14 @@
     }
 
     if (searchInput) {
-      searchInput.addEventListener('input', doSearch);
+      searchInput.addEventListener('input', doSearch, opts);
       searchInput.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
           searchInput.value = '';
           doSearch();
           searchInput.blur();
         }
-      });
+      }, opts);
     }
 
     if (searchClear) {
@@ -1065,7 +1423,7 @@
           doSearch();
           searchInput.focus();
         }
-      });
+      }, opts);
     }
 
     if (searchClose) {
@@ -1074,7 +1432,7 @@
           searchDropdown.hidden = true;
           searchDropdown.style.display = 'none';
         }
-      });
+      }, opts);
     }
 
     // --- Column Header Sorting ---
@@ -1082,6 +1440,7 @@
     let sortAsc = true;
 
     function sortFiles(col) {
+      if (!filesList) return;
       const rows = Array.from(filesList.querySelectorAll('.explorer-file-row'));
       if (rows.length === 0) return;
 
@@ -1092,15 +1451,16 @@
         sortAsc = true;
       }
 
-      // Update indicator arrows on headers
-      document.querySelectorAll('.explorer-files-header span').forEach(function (h) {
+      document.querySelectorAll('.explorer-files-header span[id^="explorer-sort-"]').forEach(function (h) {
         const ind = h.querySelector('.sort-indicator');
         if (ind) ind.textContent = '';
+        h.removeAttribute('aria-sort');
       });
       const activeHeader = document.getElementById('explorer-sort-' + col);
       if (activeHeader) {
         const ind = activeHeader.querySelector('.sort-indicator');
         if (ind) ind.textContent = sortAsc ? '▲' : '▼';
+        activeHeader.setAttribute('aria-sort', sortAsc ? 'ascending' : 'descending');
       }
 
       rows.sort(function (a, b) {
@@ -1115,8 +1475,8 @@
           valA = a.querySelector('.file-type')?.textContent || '';
           valB = b.querySelector('.file-type')?.textContent || '';
         } else if (col === 'size') {
-          valA = parseInt(a.querySelector('.file-size')?.textContent || '0', 10);
-          valB = parseInt(b.querySelector('.file-size')?.textContent || '0', 10);
+          valA = parseInt(a.querySelector('.file-size')?.textContent || '0', 10) || 0;
+          valB = parseInt(b.querySelector('.file-size')?.textContent || '0', 10) || 0;
           return sortAsc ? (valA - valB) : (valB - valA);
         }
         return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
@@ -1128,20 +1488,21 @@
     ['name', 'date', 'type', 'size'].forEach(function (col) {
       const header = document.getElementById('explorer-sort-' + col);
       if (header) {
-        header.addEventListener('click', function () { sortFiles(col); });
+        header.addEventListener('click', function () { sortFiles(col); }, opts);
+        bindKeyboardActivation(header, function () { sortFiles(col); }, signal);
       }
     });
 
-    // --- Menu Bar Interactivity ---
+    // --- Menu Bar Interactivity (Click + Keyboard) ---
     document.querySelectorAll('.explorer-menubar .explorer-menu-item').forEach(function (item) {
-      item.addEventListener('click', function () {
+      function handleMenuAction() {
         const menu = item.getAttribute('data-menu');
         if (menu === 'file') {
           if (confirm('Close Explorer.exe session?')) {
             DesktopOS.closeApp('file-explorer-window');
           }
         } else if (menu === 'view') {
-          filesList.classList.toggle('view-compact');
+          if (filesList) filesList.classList.toggle('view-compact');
         } else if (menu === 'tools') {
           if (searchInput) {
             searchInput.value = '';
@@ -1151,30 +1512,32 @@
         } else if (menu === 'help') {
           alert("Explorer.exe (Version 2.0)\nAuthentic Retro File Manager & Blog Archive Navigator for Lachlan's World OS.");
         }
-      });
+      }
+      item.addEventListener('click', handleMenuAction, opts);
+      bindKeyboardActivation(item, handleMenuAction, signal);
     });
 
     // Initial binding
-    bindFileRows();
-    updateNavButtons();
+    renderFolderContent('blog-archive', false);
   }
 
   // --- Show Desktop Button (Taskbar Tray) ---
-  function initShowDesktopBtn() {
+  function initShowDesktopBtn(signal) {
     const showDesktopBtn = document.getElementById('show-desktop-btn');
     if (showDesktopBtn) {
       showDesktopBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         toggleShowDesktop();
-      });
+      }, signal ? { signal: signal } : undefined);
     }
   }
 
   // --- Start Menu Management ---
-  function initStartMenu() {
+  function initStartMenu(signal) {
     const startBtn = document.getElementById('start-menu-btn');
     const startMenu = document.getElementById('desktop-start-menu');
     const blogFolder = document.getElementById('start-blog-folder');
+    const opts = signal ? { signal: signal } : undefined;
 
     if (!startBtn || !startMenu) return;
 
@@ -1190,6 +1553,7 @@
       startBtn.classList.remove('active');
       const submenu = startMenu.querySelector('.start-menu-has-submenu');
       if (submenu) submenu.classList.remove('open');
+      if (blogFolder) blogFolder.setAttribute('aria-expanded', 'false');
     }
 
     function toggleStartMenu() {
@@ -1203,31 +1567,37 @@
     startBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       toggleStartMenu();
-    });
+    }, opts);
 
     document.addEventListener('click', function (e) {
       if (!startMenu.contains(e.target) && e.target !== startBtn && !startBtn.contains(e.target)) {
         closeStartMenu();
       }
-    });
+    }, opts);
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !startMenu.hasAttribute('hidden')) {
         closeStartMenu();
+        startBtn.focus();
       }
-    });
+    }, opts);
 
     if (blogFolder) {
-      blogFolder.addEventListener('click', function (e) {
-        e.stopPropagation();
+      function toggleSubmenu(e) {
+        if (e) e.stopPropagation();
         const parent = blogFolder.closest('.start-menu-has-submenu');
-        if (parent) parent.classList.toggle('open');
-      });
+        if (parent) {
+          const isOpen = parent.classList.toggle('open');
+          blogFolder.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+      }
+      blogFolder.addEventListener('click', toggleSubmenu, opts);
+      bindKeyboardActivation(blogFolder, toggleSubmenu, signal);
     }
 
     startMenu.addEventListener('click', function (e) {
-      const item = e.target.closest('.start-menu-item');
-      if (!item) return;
+      const item = e.target && typeof e.target.closest === 'function' ? e.target.closest('.start-menu-item') : null;
+      if (!item || item === blogFolder) return;
 
       const action = item.getAttribute('data-action');
       if (action === 'open-window') {
@@ -1242,41 +1612,29 @@
       } else if (item.tagName === 'A') {
         closeStartMenu();
       }
-    });
+    }, opts);
   }
 
   // --- Settings App Integration ---
-  function initSettingsApp() {
+  function initSettingsApp(signal) {
     const themeSelect = document.getElementById('settings-theme-select');
     const resSpan = document.getElementById('settings-screen-res');
     const resetPosBtn = document.getElementById('settings-reset-pos-btn');
     const clearStickersBtn = document.getElementById('settings-clear-stickers-btn');
-
-    // Settings Window Close / OK Buttons
-    document.querySelectorAll('#settings-window [data-window-close], #settings-window .settings-ok-btn').forEach(function (btn) {
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        DesktopOS.closeApp('settings-window');
-      });
-    });
+    const opts = signal ? { signal: signal } : undefined;
 
     if (themeSelect) {
       themeSelect.addEventListener('change', function () {
         if (typeof window.switchSiteTheme === 'function') {
           window.switchSiteTheme(themeSelect.value);
         }
-      });
+      }, opts);
     }
 
-    // Update screen resolution display
     if (resSpan) {
       resSpan.textContent = `${window.innerWidth}x${window.innerHeight}`;
-      window.addEventListener('resize', function () {
-        resSpan.textContent = `${window.innerWidth}x${window.innerHeight}`;
-      });
     }
 
-    // Sync theme select with active theme
     function syncTheme() {
       const current = document.documentElement.getAttribute('data-theme') || (window.SITE_CONFIG && window.SITE_CONFIG.defaultTheme) || 'paper';
       if (themeSelect && themeSelect.value !== current) {
@@ -1284,69 +1642,84 @@
       }
     }
     syncTheme();
-    window.addEventListener('site:themechange', syncTheme);
+    window.addEventListener('site:themechange', syncTheme, opts);
 
-    // Reset window positions button
     if (resetPosBtn) {
       resetPosBtn.addEventListener('click', function () {
-        try {
-          localStorage.removeItem(POS_KEY);
-          windowPositions = {};
-          DesktopOS.apps.forEach(function (app) {
-            DesktopOS._positionWindow(app);
-          });
-          alert('Window positions successfully reset to system defaults!');
-        } catch (e) {}
-      });
+        safeRemoveItem(POS_KEY);
+        safeRemoveItem(LEGACY_STATE_KEY);
+        windowPositions = {};
+        DesktopOS.apps.forEach(function (app) {
+          DesktopOS._positionWindow(app);
+        });
+        alert('Window positions successfully reset to system defaults!');
+      }, opts);
     }
 
-    // Clear desktop stickers button
     if (clearStickersBtn) {
       clearStickersBtn.addEventListener('click', function () {
         if (confirm('Clear all stickers from your desktop wallpaper?')) {
-          if (window.clearDesktopStickers) {
+          if (typeof window.clearDesktopStickers === 'function') {
             window.clearDesktopStickers();
           }
         }
-      });
+      }, opts);
     }
 
-    // Animated desktop stickers toggle
     const motionToggle = document.getElementById('settings-sticker-motion-toggle');
     if (motionToggle) {
-      const isMotionDisabled = localStorage.getItem('lachlan_sticker_motion') === 'disabled';
+      const isMotionDisabled = safeGetItem('lachlan_sticker_motion') === 'disabled';
       motionToggle.checked = !isMotionDisabled;
       motionToggle.addEventListener('change', function () {
         const newState = motionToggle.checked ? 'enabled' : 'disabled';
-        try {
-          localStorage.setItem('lachlan_sticker_motion', newState);
-        } catch (e) {}
+        safeSetItem('lachlan_sticker_motion', newState);
         document.documentElement.classList.toggle('stickers-motion-disabled', !motionToggle.checked);
-        if (window.applyStickerMotionPreference) {
+        if (typeof window.applyStickerMotionPreference === 'function') {
           window.applyStickerMotionPreference();
         }
-      });
+      }, opts);
     }
 
-    // Tabs switching in Settings.exe
-    const tabButtons = document.querySelectorAll('.settings-tab-btn');
-    tabButtons.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        const targetId = btn.getAttribute('data-tab');
-        tabButtons.forEach(function (b) {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-        });
-        document.querySelectorAll('.settings-tab-pane').forEach(function (p) {
-          p.classList.remove('active');
-        });
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-        const targetPane = document.getElementById(targetId);
-        if (targetPane) {
-          targetPane.classList.add('active');
-        }
+    // Tabs switching in Settings.exe (with ArrowLeft / ArrowRight keyboard support)
+    const tabButtons = Array.from(document.querySelectorAll('.settings-tab-btn'));
+    function activateTab(btn) {
+      const targetId = btn.getAttribute('data-tab');
+      tabButtons.forEach(function (b) {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
       });
+      document.querySelectorAll('.settings-tab-pane').forEach(function (p) {
+        p.classList.remove('active');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      const targetPane = document.getElementById(targetId);
+      if (targetPane) {
+        targetPane.classList.add('active');
+      }
+    }
+
+    tabButtons.forEach(function (btn, idx) {
+      btn.addEventListener('click', function () {
+        activateTab(btn);
+      }, opts);
+      btn.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          const next = tabButtons[(idx + 1) % tabButtons.length];
+          if (next) {
+            next.focus();
+            activateTab(next);
+          }
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const prev = tabButtons[(idx - 1 + tabButtons.length) % tabButtons.length];
+          if (prev) {
+            prev.focus();
+            activateTab(prev);
+          }
+        }
+      }, opts);
     });
 
     // Custom Wallpaper Management
@@ -1375,9 +1748,9 @@
     }
 
     function applyCustomWallpaper() {
-      const rawWall = localStorage.getItem(WALLPAPER_KEY);
+      const rawWall = safeGetItem(WALLPAPER_KEY);
       const customWall = sanitizeWallpaperUrl(rawWall);
-      const fitMode = localStorage.getItem(WALLPAPER_FIT_KEY) || 'cover';
+      const fitMode = safeGetItem(WALLPAPER_FIT_KEY) || 'cover';
       const body = document.body;
       if (!body) return;
 
@@ -1426,7 +1799,6 @@
       }
     }
 
-    // Toggle URL row
     if (wallUrlBtn && wallUrlRow) {
       wallUrlBtn.addEventListener('click', function () {
         const isHidden = wallUrlRow.style.display === 'none';
@@ -1434,10 +1806,9 @@
         if (isHidden && wallUrlInput) {
           wallUrlInput.focus();
         }
-      });
+      }, opts);
     }
 
-    // Apply URL
     if (wallUrlApply && wallUrlInput) {
       wallUrlApply.addEventListener('click', function () {
         const rawUrl = wallUrlInput.value.trim();
@@ -1446,26 +1817,30 @@
           alert('Invalid Image URL! Please provide a valid HTTP/HTTPS image URL (e.g. https://example.com/wallpaper.jpg) or upload a local file.');
           return;
         }
-        try {
-          localStorage.setItem(WALLPAPER_KEY, validUrl);
+        if (safeSetItem(WALLPAPER_KEY, validUrl)) {
           applyCustomWallpaper();
           if (wallUrlRow) wallUrlRow.style.display = 'none';
-        } catch (e) {
-          alert('Could not save wallpaper URL: ' + e.message);
+        } else {
+          alert('Could not save wallpaper URL due to browser storage restrictions.');
         }
-      });
+      }, opts);
     }
 
-    // File input handler (reads image, resizes if needed, saves as Data URL)
     if (wallFileInput) {
       wallFileInput.addEventListener('change', function (e) {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
 
         const reader = new FileReader();
+        reader.onerror = function () {
+          alert('Failed to read selected image file.');
+        };
         reader.onload = function (evt) {
           const rawData = evt.target.result;
           const img = new Image();
+          img.onerror = function () {
+            alert('Invalid or corrupted image file.');
+          };
           img.onload = function () {
             const MAX_WIDTH = 1920;
             const MAX_HEIGHT = 1080;
@@ -1482,41 +1857,35 @@
             canvas.width = width;
             canvas.height = height;
             const ctx = canvas.getContext('2d');
+            if (!ctx) return;
             ctx.drawImage(img, 0, 0, width, height);
 
             const compressedData = canvas.toDataURL('image/jpeg', 0.85);
-            try {
-              localStorage.setItem(WALLPAPER_KEY, compressedData);
+            if (safeSetItem(WALLPAPER_KEY, compressedData)) {
               applyCustomWallpaper();
-            } catch (err) {
+            } else {
               alert('Image file is too large for browser storage quota! Please try a smaller image.');
             }
           };
           img.src = rawData;
         };
         reader.readAsDataURL(file);
-      });
+      }, opts);
     }
 
-    // Fit mode selector
     if (wallFitSelect) {
       wallFitSelect.addEventListener('change', function () {
-        try {
-          localStorage.setItem(WALLPAPER_FIT_KEY, wallFitSelect.value);
-        } catch (e) {}
+        safeSetItem(WALLPAPER_FIT_KEY, wallFitSelect.value);
         applyCustomWallpaper();
-      });
+      }, opts);
     }
 
-    // Reset Wallpaper
     if (wallResetBtn) {
       wallResetBtn.addEventListener('click', function () {
-        try {
-          localStorage.removeItem(WALLPAPER_KEY);
-          localStorage.removeItem(WALLPAPER_FIT_KEY);
-        } catch (e) {}
+        safeRemoveItem(WALLPAPER_KEY);
+        safeRemoveItem(WALLPAPER_FIT_KEY);
         applyCustomWallpaper();
-      });
+      }, opts);
     }
 
     applyCustomWallpaper();
@@ -1528,29 +1897,61 @@
   window.closeDesktopWindow = function (appId) { DesktopOS.closeApp(appId); };
   window.minimizeDesktopWindow = function (appId) { DesktopOS.minimizeApp(appId); };
 
-  // --- Boot Desktop OS ---
-  function init() {
-    windowPositions = loadWindowPositions();
+  // --- Viewport Breakpoint & Hybrid Capability Sync ---
+  function syncViewportMode() {
+    const resSpan = document.getElementById('settings-screen-res');
+    if (resSpan) {
+      resSpan.textContent = `${window.innerWidth}x${window.innerHeight}`;
+    }
 
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    DesktopOS.autoDiscover();
-    initBlogReader();
-    initFileExplorer();
-    initShowDesktopBtn();
-    initStartMenu();
-    initSettingsApp();
-
-    // Delegated window close handler for dialog buttons
-    document.addEventListener('click', function (e) {
-      const closeBtn = e.target && e.target.closest('[data-window-close]');
-      if (closeBtn) {
-        const appId = closeBtn.getAttribute('data-window-close');
-        if (appId) DesktopOS.closeApp(appId);
+    if (checkDesktopCapability()) {
+      if (!DesktopOS.isActive) {
+        DesktopOS.activate();
+      } else {
+        // Clamp existing window positions inside new viewport bounds
+        DesktopOS.apps.forEach(function (app) {
+          if (app.panel && !app.panel.classList.contains('window-closed')) {
+            const curLeft = parseInt(app.panel.style.left, 10);
+            const curTop = parseInt(app.panel.style.top, 10);
+            if (!isNaN(curLeft) && !isNaN(curTop)) {
+              const clampedX = Math.max(0, Math.min(Math.max(0, window.innerWidth - 100), curLeft));
+              const clampedY = Math.max(34, Math.min(Math.max(34, window.innerHeight - 70), curTop));
+              app.panel.style.left = clampedX + 'px';
+              app.panel.style.top = clampedY + 'px';
+            }
+          }
+        });
       }
-    });
+    } else {
+      if (DesktopOS.isActive || document.body.classList.contains('mode-desktop')) {
+        DesktopOS.deactivate();
+      }
+    }
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  // --- Boot Desktop OS ---
+  let booted = false;
+  function boot() {
+    if (booted) return;
+    booted = true;
+
+    syncViewportMode();
+
+    if (typeof window.matchMedia === 'function') {
+      const mql = window.matchMedia(DESKTOP_BREAKPOINT_QUERY);
+      if (typeof mql.addEventListener === 'function') {
+        mql.addEventListener('change', syncViewportMode);
+      } else if (typeof mql.addListener === 'function') {
+        mql.addListener(syncViewportMode);
+      }
+    }
+
+    window.addEventListener('resize', syncViewportMode);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();

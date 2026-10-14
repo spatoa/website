@@ -9,49 +9,49 @@
   <div class="start-menu-main">
     <div class="start-menu-section-header">PROGRAMS</div>
     <!-- Dynamically populated by DesktopOS App Registry -->
-    <div class="start-menu-group" id="start-menu-apps"></div>
+    <div class="start-menu-group" id="start-menu-apps" role="group" aria-label="Programs"></div>
 
-    <div class="start-menu-divider"></div>
+    <div class="start-menu-divider" role="separator"></div>
 
     <!-- Blog Posts Directory Submenu -->
     <div class="start-menu-has-submenu">
-      <div class="start-menu-item start-folder-item" id="start-blog-folder" tabindex="0">
-        <span class="start-item-icon">&#128193;</span>
+      <div class="start-menu-item start-folder-item" id="start-blog-folder" tabindex="0" role="menuitem" aria-haspopup="true" aria-expanded="false">
+        <span class="start-item-icon" aria-hidden="true">&#128193;</span>
         <span class="start-item-label">Blog Posts Directory</span>
         <span class="start-arrow" aria-hidden="true">&#9658;</span>
       </div>
-      <div class="start-flyout-menu" id="start-blog-flyout">
+      <div class="start-flyout-menu" id="start-blog-flyout" role="menu" aria-label="Published Articles">
         <div class="start-flyout-header">PUBLISHED ARTICLES</div>
         {% set blog_section = get_section(path="blog/_index.md") %}
         {% if blog_section and blog_section.pages %}
           {% for post in blog_section.pages %}
-            <a href="{{ post.permalink }}" class="start-menu-item">
-              <span class="start-item-icon">&#128196;</span>
+            <a href="{{ post.permalink }}" class="start-menu-item" role="menuitem">
+              <span class="start-item-icon" aria-hidden="true">&#128196;</span>
               <span class="start-item-label">{{ post.title }}</span>
             </a>
           {% endfor %}
         {% else %}
           <div class="start-menu-item empty-label">No articles published yet</div>
         {% endif %}
-        <div class="start-menu-divider"></div>
-        <button type="button" class="start-menu-item" data-action="open-window" data-target="file-explorer-window">
-          <span class="start-item-icon">&#128194;</span>
+        <div class="start-menu-divider" role="separator"></div>
+        <button type="button" class="start-menu-item" role="menuitem" data-action="open-window" data-target="file-explorer-window">
+          <span class="start-item-icon" aria-hidden="true">&#128194;</span>
           <span class="start-item-label">Browse Blog Archive in Explorer &raquo;</span>
         </button>
       </div>
     </div>
 
     <!-- CTF Challenges Link -->
-    <a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener" class="start-menu-item">
-      <span class="start-item-icon">&#128272;</span>
+    <a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener" class="start-menu-item" role="menuitem">
+      <span class="start-item-icon" aria-hidden="true">&#128272;</span>
       <span class="start-item-label">CTF Challenges &#8599;</span>
     </a>
 
-    <div class="start-menu-divider"></div>
+    <div class="start-menu-divider" role="separator"></div>
 
     <!-- Switch Back to Grid Mode -->
-    <a href="{{ get_url(path='/') }}" class="start-menu-item start-action-exit">
-      <span class="start-item-icon">&#128421;</span>
+    <a href="{{ get_url(path='/') }}" class="start-menu-item start-action-exit" role="menuitem">
+      <span class="start-item-icon" aria-hidden="true">&#128421;</span>
       <span class="start-item-label">Exit to Website</span>
     </a>
   </div>

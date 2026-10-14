@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang | default(value=config.default_language | default(value='en')) }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% if page is defined and page.title %}{{ page.title }} - {% elif section is defined and section.title %}{{ section.title }} - {% endif %}{{ config.title }}</title>
+  <title>{% if page is defined and page.title %}{{ page.title }} - {% elif section is defined and section.title %}{{ section.title }} - {% elif term is defined and term.name %}#{{ term.name }} - {% elif taxonomy is defined and taxonomy.name %}{{ taxonomy.name | capitalize }} - {% endif %}{{ config.title }}</title>
   
   <!-- Reader Mode & Search Metadata -->
   <meta name="description" content="{% if page is defined and page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}">
@@ -26,7 +26,7 @@
     {% include "partials/update_stamp.html" %}
     {% include "partials/nav.html" %}
 
-    <main id="main-content" role="main">
+    <main id="main-content" role="main" tabindex="-1">
       {% block content %}{% endblock content %}
     </main>
 
@@ -40,7 +40,7 @@
   <script>
     window.SEARCH_CONFIG = {
       elasticlunrUrl: "{{ get_url(path='elasticlunr.min.js') | safe }}",
-      searchIndexUrl: "{{ get_url(path='search_index.en.js') | safe }}",
+      searchIndexUrl: "{{ get_url(path='search_index.' ~ (lang | default(value=config.default_language | default(value='en'))) ~ '.js') | safe }}",
       loadingText: "{{ config.extra.strings.search_loading | default(value='Searching index...') }}",
       noResultsText: "{{ config.extra.strings.search_no_results | default(value='No matching records found.') }}",
       resultsTitle: "{{ config.extra.strings.search_results_title | default(value='SEARCH RESULTS') }}",

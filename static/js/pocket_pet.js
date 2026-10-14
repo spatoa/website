@@ -34,16 +34,20 @@
     },
 
     _getAudioContext: function () {
-      if (!this.ctx) {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (AudioCtx) {
-          this.ctx = new AudioCtx();
+      try {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+          }
         }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(function () {});
+        }
+        return this.ctx;
+      } catch (e) {
+        return null;
       }
-      if (this.ctx && this.ctx.state === 'suspended') {
-        this.ctx.resume().catch(function () {});
-      }
-      return this.ctx;
     },
 
     toggleMute: function () {
@@ -153,9 +157,7 @@
   };
 
   // --- Pixel Art 16x16 / 8x8 Sprite Definitions ---
-  // Represented as binary strings (1 = pixel drawn, 0 = transparent)
   const SPRITES = {
-    // Egg (16x16)
     egg_0: [
       ".....11111......",
       "...11.....11....",
@@ -192,7 +194,6 @@
       "....11.....11...",
       "......11111....."
     ],
-    // Egg Hatching / Cracking
     egg_crack: [
       ".....11111......",
       "...11.....11....",
@@ -211,8 +212,6 @@
       "...11.....11....",
       ".....11111......"
     ],
-
-    // Babytchi (16x16)
     babytchi_0: [
       "................",
       ".......11.......",
@@ -249,8 +248,6 @@
       "................",
       "................"
     ],
-
-    // Marutchi (16x16)
     marutchi_0: [
       "................",
       "....11111111....",
@@ -287,8 +284,6 @@
       "................",
       "................"
     ],
-
-    // Tamatchi (Teen Good)
     tamatchi_0: [
       "..111......111..",
       ".1...1....1...1.",
@@ -325,8 +320,6 @@
       "................",
       "................"
     ],
-
-    // Kuchitamatchi (Teen Bad)
     kuchitamatchi_0: [
       "....11111111....",
       "..11........11..",
@@ -363,8 +356,6 @@
       "................",
       "................"
     ],
-
-    // Mametchi (Adult - Genius/Best)
     mametchi_0: [
       "..1111....1111..",
       ".111111..111111.",
@@ -401,8 +392,6 @@
       "..111......111..",
       "................"
     ],
-
-    // Kuchipatchi (Adult - Cute Duck Lips)
     kuchipatchi_0: [
       "....11111111....",
       "...1........1...",
@@ -439,8 +428,6 @@
       "................",
       "................"
     ],
-
-    // Ginjirotchi (Adult - Penguin)
     ginjirotchi_0: [
       "...1...11...1...",
       "...11..11..11...",
@@ -477,8 +464,6 @@
       "................",
       "................"
     ],
-
-    // Ghost / Tombstone on Death
     ghost_0: [
       ".....111111.....",
       "....1......1....",
@@ -515,8 +500,6 @@
       "...1........1...",
       "................"
     ],
-
-    // 8x8 Accessories & Items
     poop: [
       "...11...",
       "..1111..",
@@ -629,6 +612,9 @@
     if (typeof raw.bornTimestamp === 'number' && !isNaN(raw.bornTimestamp) && raw.bornTimestamp > 0) {
       clean.bornTimestamp = raw.bornTimestamp;
     }
+    if (typeof raw.hatchedTimestamp === 'number' && !isNaN(raw.hatchedTimestamp) && raw.hatchedTimestamp > 0) {
+      clean.hatchedTimestamp = raw.hatchedTimestamp;
+    }
     if (typeof raw.lastTickTimestamp === 'number' && !isNaN(raw.lastTickTimestamp)) {
       clean.lastTickTimestamp = Math.min(Date.now(), Math.max(clean.bornTimestamp, raw.lastTickTimestamp));
     }
@@ -664,8 +650,8 @@
     if (typeof raw.species === 'string' && VALID_SPECIES.includes(raw.species.toLowerCase())) {
       clean.species = raw.species.toLowerCase();
     }
-    if (raw.deathCause === 'sickness' || raw.deathCause === 'starvation' || raw.deathCause === 'old_age') {
-      clean.deathCause = raw.deathCause;
+    if (raw.deathCause === 'sickness' || raw.deathCause === 'starvation' || raw.deathCause === 'old_age' || typeof raw.deathCause === 'string') {
+      clean.deathCause = String(raw.deathCause).slice(0, 64);
     }
 
     return clean;
@@ -674,23 +660,24 @@
   // --- Main Pocket_Pet Engine Object ---
   const Pocket_Pet = {
     state: createDefaultState(),
-    selectedIconIndex: null, // null (idle) or 0..6
-    mode: 'IDLE',           // 'IDLE', 'FEED_SELECT', 'GAME_PLAY', 'METER_VIEW', 'ANIMATING'
-    meterPage: 0,           // 0: Age/Weight, 1: Discipline, 2: Hunger, 3: Happiness
-    feedChoice: 'MEAL',     // 'MEAL' or 'SNACK'
-    gameRound: 0,           // 1 to 5
+    selectedIconIndex: null,
+    mode: 'IDLE',
+    meterPage: 0,
+    feedChoice: 'MEAL',
+    gameRound: 0,
     gameWins: 0,
-    gamePlayerChoice: null, // 'L' or 'R'
-    gamePetChoice: null,    // 'L' or 'R'
+    gamePlayerChoice: null,
+    gamePetChoice: null,
     animFrame: 0,
-    petX: 8,                // 0 to 16 (center is 8)
-    petDirection: 1,        // 1 (right) or -1 (left)
-    specialAnim: null,      // 'EAT', 'FLUSH', 'NO', 'JUMP', 'CURE'
+    petX: 8,
+    petDirection: 1,
+    specialAnim: null,
     specialAnimTimer: 0,
     tickIntervalId: null,
     animIntervalId: null,
     storageBound: false,
     _keydownBound: false,
+    _audioUnlockBound: false,
 
     init: function () {
       if (!document.querySelector('.pocket_pet-canvas') && !document.querySelector('.pocket_pet-deck')) {
@@ -735,14 +722,17 @@
         });
       }
 
-      // Mobile audio unlock on first touch gesture
-      const unlockAudio = function () {
-        AudioEngine._getAudioContext();
-        document.removeEventListener('touchstart', unlockAudio);
-        document.removeEventListener('pointerdown', unlockAudio);
-      };
-      document.addEventListener('touchstart', unlockAudio, { passive: true });
-      document.addEventListener('pointerdown', unlockAudio, { passive: true });
+      // Mobile audio unlock on first touch/pointer gesture (bound once)
+      if (!this._audioUnlockBound) {
+        this._audioUnlockBound = true;
+        const unlockAudio = function () {
+          AudioEngine._getAudioContext();
+          document.removeEventListener('touchstart', unlockAudio);
+          document.removeEventListener('pointerdown', unlockAudio);
+        };
+        document.addEventListener('touchstart', unlockAudio, { passive: true });
+        document.addEventListener('pointerdown', unlockAudio, { passive: true });
+      }
 
       this.applyCurrentSkin();
       this.bindDOM();
@@ -834,13 +824,11 @@
 
       if (elapsedMinutes <= 0) return;
 
-      // If already dead, nothing changes
       if (this.state.stage === 'DEAD') {
         this.saveState();
         return;
       }
 
-      // Egg stage hatching check
       if (this.state.stage === 'EGG') {
         const eggAgeMin = Math.floor((now - this.state.bornTimestamp) / 60000);
         if (eggAgeMin >= 1) {
@@ -850,11 +838,9 @@
         return;
       }
 
-      // Age calculation (1 day = 24 hours)
       const totalAgeDays = Math.floor((now - (this.state.hatchedTimestamp || now)) / 86400000);
       this.state.age = Math.max(this.state.age, totalAgeDays);
 
-      // Metabolism rate based on stage
       let hungerRateMin = 50;
       let happyRateMin = 60;
       let poopRateMin = 120;
@@ -869,7 +855,6 @@
         poopRateMin = 80;
       }
 
-      // Offline stat decay
       const hungerDrop = Math.floor(elapsedMinutes / hungerRateMin);
       const happyDrop = Math.floor(elapsedMinutes / happyRateMin);
       const newPoops = Math.floor(elapsedMinutes / poopRateMin);
@@ -878,20 +863,17 @@
       this.state.happiness = Math.max(0, this.state.happiness - happyDrop);
       this.state.poopCount = Math.min(4, this.state.poopCount + newPoops);
 
-      // Neglect & Sickness
       if (this.state.hunger === 0 || this.state.poopCount >= 3) {
         if (elapsedMinutes >= 180) {
           this.state.isSick = true;
         }
       }
 
-      // Hardcore Fatal Neglect Check (unattended > 24 hours while sick / 0 hunger)
       if (elapsedMinutes >= 1440 && (this.state.hunger === 0 || this.state.isSick)) {
         this.killPet('Severe Neglect (Offline Starvation)');
         return;
       }
 
-      // Evolution check
       this.checkEvolution(now);
       this.saveState();
     },
@@ -903,7 +885,6 @@
 
       if (this.state.stage === 'DEAD') return;
 
-      // Egg auto-hatch after 60 seconds
       if (this.state.stage === 'EGG') {
         const eggAgeSec = Math.floor((now - this.state.bornTimestamp) / 1000);
         if (eggAgeSec >= 60) {
@@ -912,7 +893,6 @@
         return;
       }
 
-      // Nighttime sleep schedule (8:00 PM to 8:00 AM)
       const currentHour = new Date(now).getHours();
       const shouldSleep = (currentHour >= 20 || currentHour < 8);
       if (shouldSleep && !this.state.isSleeping) {
@@ -922,19 +902,15 @@
         this.state.lightsOn = true;
       }
 
-      // Evolution check
       this.checkEvolution(now);
 
-      // Attention trigger check
       const needsCare = (this.state.hunger === 0 || this.state.happiness === 0 || this.state.isSick || this.state.poopCount >= 2);
       this.updateAttentionLight(needsCare);
 
-      // Periodic random attention beep
       if (needsCare && Math.random() < 0.05) {
         AudioEngine.beepAttention();
       }
 
-      // Save every 30 seconds
       if (Math.floor(now / 1000) % 30 === 0) {
         this.saveState();
       }
@@ -956,24 +932,19 @@
       if (!this.state.hatchedTimestamp) return;
       const ageHours = (now - this.state.hatchedTimestamp) / 3600000;
 
-      // Baby -> Child (after 1 hour)
       if (this.state.stage === 'BABY' && ageHours >= 1) {
         this.state.stage = 'CHILD';
         this.state.species = 'marutchi';
         this.state.weight = Math.max(10, this.state.weight);
         AudioEngine.beepEvolve();
         this.saveState();
-      }
-      // Child -> Teen (after 24 hours)
-      else if (this.state.stage === 'CHILD' && ageHours >= 24) {
+      } else if (this.state.stage === 'CHILD' && ageHours >= 24) {
         this.state.stage = 'TEEN';
         this.state.species = (this.state.discipline >= 50 && this.state.careMistakes <= 2) ? 'tamatchi' : 'kuchitamatchi';
         this.state.weight = Math.max(20, this.state.weight);
         AudioEngine.beepEvolve();
         this.saveState();
-      }
-      // Teen -> Adult (after 72 hours)
-      else if (this.state.stage === 'TEEN' && ageHours >= 72) {
+      } else if (this.state.stage === 'TEEN' && ageHours >= 72) {
         this.state.stage = 'ADULT';
         if (this.state.discipline >= 75 && this.state.careMistakes <= 1) {
           this.state.species = 'mametchi';
@@ -999,11 +970,9 @@
       this.renderAll();
     },
 
-    // --- Animation & Movement Loop ---
     updateAnimation: function () {
       this.animFrame = (this.animFrame + 1) % 2;
 
-      // Handle special animations countdown
       if (this.specialAnim) {
         this.specialAnimTimer--;
         if (this.specialAnimTimer <= 0) {
@@ -1014,7 +983,6 @@
         }
       }
 
-      // Idle movement across screen
       if (this.mode === 'IDLE' && this.state.stage !== 'EGG' && this.state.stage !== 'DEAD' && !this.state.isSleeping) {
         if (Math.random() < 0.4) {
           this.petX += this.petDirection;
@@ -1031,44 +999,34 @@
       this.renderScreen();
     },
 
-    // --- Controls: 3 Buttons (A, B, C) ---
     pressA: function () {
       AudioEngine.beepClick();
 
-      if (this.state.stage === 'DEAD') {
-        // Can't interact except reset
-        return;
-      }
-
+      if (this.state.stage === 'DEAD') return;
       if (this.specialAnim) return;
 
-      // In Minigame: Button A chooses LEFT
       if (this.mode === 'GAME_PLAY') {
         this.handleGameChoice('L');
         return;
       }
 
-      // In Feed Select: Toggle between MEAL and SNACK
       if (this.mode === 'FEED_SELECT') {
         this.feedChoice = (this.feedChoice === 'MEAL') ? 'SNACK' : 'MEAL';
         this.renderScreen();
         return;
       }
 
-      // In Meter View: Cycle pages
       if (this.mode === 'METER_VIEW') {
         this.meterPage = (this.meterPage + 1) % 4;
         this.renderScreen();
         return;
       }
 
-      // Egg hatching fast-forward
       if (this.state.stage === 'EGG') {
         this.hatchEgg();
         return;
       }
 
-      // In Idle: Cycle 7 icons (0 to 6)
       if (this.selectedIconIndex === null) {
         this.selectedIconIndex = 0;
       } else {
@@ -1081,39 +1039,33 @@
 
     pressB: function () {
       if (this.state.stage === 'DEAD') {
-        // A+B or B on dead restarts egg
         this.resetPet();
         return;
       }
 
       if (this.specialAnim) return;
 
-      // In Minigame: Button B chooses RIGHT
       if (this.mode === 'GAME_PLAY') {
         this.handleGameChoice('R');
         return;
       }
 
-      // In Feed Select: Confirm feeding choice
       if (this.mode === 'FEED_SELECT') {
         this.executeFeed(this.feedChoice);
         return;
       }
 
-      // In Meter View: Page through stats
       if (this.mode === 'METER_VIEW') {
         this.meterPage = (this.meterPage + 1) % 4;
         this.renderScreen();
         return;
       }
 
-      // Egg quick-hatch
       if (this.state.stage === 'EGG') {
         this.hatchEgg();
         return;
       }
 
-      // If an icon is selected, execute its action
       if (this.selectedIconIndex !== null) {
         AudioEngine.beepSelect();
         this.executeIconAction(this.selectedIconIndex);
@@ -1123,7 +1075,6 @@
     pressC: function () {
       AudioEngine.beepCancel();
 
-      // Return to Idle from any mode/menu
       this.selectedIconIndex = null;
       this.mode = 'IDLE';
       this.specialAnim = null;
@@ -1131,7 +1082,6 @@
       this.renderScreen();
     },
 
-    // --- Action Execution ---
     executeIconAction: function (iconIndex) {
       switch (iconIndex) {
         case 0: // FEED
@@ -1152,7 +1102,7 @@
           this.renderScreen();
           break;
 
-        case 2: // GAME (Heading Minigame)
+        case 2: // GAME
           if (this.state.isSleeping || this.state.isSick) {
             this.triggerNoAnim();
             return;
@@ -1195,14 +1145,12 @@
         this.triggerSpecialAnim('EAT_BURGER', 6);
         AudioEngine.beepEat();
       } else {
-        // Snack
         if (this.state.happiness >= 4 && Math.random() < 0.5) {
           this.triggerNoAnim();
           return;
         }
         this.state.happiness = Math.min(4, this.state.happiness + 1);
         this.state.weight += 2;
-        // Risk of toothache/sickness from candy
         if (Math.random() < 0.15 && this.state.weight > 20) {
           this.state.isSick = true;
         }
@@ -1251,7 +1199,6 @@
         this.triggerSpecialAnim('HAPPY_JUMP', 5);
         AudioEngine.beepWin();
       } else {
-        // Unfair discipline
         this.state.happiness = Math.max(0, this.state.happiness - 1);
         this.triggerNoAnim();
       }
@@ -1270,8 +1217,8 @@
     },
 
     handleGameChoice: function (choice) {
+      if (this.gamePlayerChoice !== null) return;
       this.gamePlayerChoice = choice;
-      // 50/50 pet heading
       this.gamePetChoice = (Math.random() < 0.5) ? 'L' : 'R';
 
       const isWin = (this.gamePlayerChoice === this.gamePetChoice);
@@ -1334,15 +1281,13 @@
     },
 
     _drawCanvas: function (canvas) {
-      const self = this;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
       const V_W = 32;
       const V_H = 19;
-      const P_SIZE = 5; // Scaled to 160x95
+      const P_SIZE = 5;
 
-      // Read dynamic CSS custom properties from computed style
       let computedStyle = null;
       try {
         computedStyle = window.getComputedStyle(canvas);
@@ -1361,7 +1306,6 @@
       ctx.fillStyle = lcdBg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Pixel draw helper
       function setPixel(x, y, on) {
         if (!on) return;
         if (x < 0 || x >= V_W || y < 0 || y >= V_H) return;
@@ -1381,7 +1325,6 @@
         }
       }
 
-      // Draw text string using 3x5 font
       function drawText(text, x, y) {
         const FONT = {
           '0': ["111","1.1","1.1","1.1","111"],
@@ -1441,20 +1384,15 @@
         }
       }
 
-      // --- Mode Rendering Branching ---
-
-      // 1. Minigame Mode
       if (this.mode === 'GAME_PLAY') {
         drawText(`RND ${this.gameRound}/5`, 2, 1);
         drawText(`WIN ${this.gameWins}`, 20, 1);
 
         if (this.gamePlayerChoice) {
-          // Show Choices
           drawText(this.gamePlayerChoice, 6, 8);
           drawText('VS', 14, 8);
           drawText(this.gamePetChoice, 22, 8);
         } else {
-          // Pet waiting in center
           const petSprite = SPRITES[`${this.state.species}_${this.animFrame}`] || SPRITES.babytchi_0;
           drawSprite(petSprite, 8, 3);
           drawText('< A   B >', 4, 13);
@@ -1462,7 +1400,6 @@
         return;
       }
 
-      // 2. Feed Choice Mode
       if (this.mode === 'FEED_SELECT') {
         drawText('FEED PET', 8, 1);
         if (this.feedChoice === 'MEAL') {
@@ -1477,7 +1414,6 @@
         return;
       }
 
-      // 3. Status Meter Mode
       if (this.mode === 'METER_VIEW') {
         if (this.meterPage === 0) {
           drawText('AGE & WEIGHT', 3, 1);
@@ -1486,7 +1422,6 @@
         } else if (this.meterPage === 1) {
           drawText('DISCIPLINE', 4, 1);
           drawText(`${this.state.discipline}%`, 10, 8);
-          // Discipline bar
           const barWidth = Math.floor((this.state.discipline / 100) * 20);
           for (let bx = 0; bx < 20; bx++) {
             setPixel(6 + bx, 14, bx < barWidth);
@@ -1508,14 +1443,12 @@
         return;
       }
 
-      // 4. Dead / Ghost Screen
       if (this.state.stage === 'DEAD') {
         drawSprite(SPRITES[`ghost_${this.animFrame}`], 8, 1);
         drawText('R.I.P.', 10, 13);
         return;
       }
 
-      // 5. Special Animations
       if (this.specialAnim === 'EAT_BURGER') {
         const petSprite = SPRITES[`${this.state.species}_${this.animFrame}`] || SPRITES.babytchi_0;
         drawSprite(petSprite, 3, 2);
@@ -1548,29 +1481,24 @@
         return;
       }
 
-      // 6. Idle Screen (Standard View)
       if (this.state.stage === 'EGG') {
         const eggSprite = SPRITES[`egg_${this.animFrame}`];
         drawSprite(eggSprite, 8, 2);
       } else {
-        // Active Creature
         const spriteKey = `${this.state.species}_${this.animFrame}`;
         const petSprite = SPRITES[spriteKey] || SPRITES.babytchi_0;
         const posY = this.state.isSleeping ? 3 : 2;
         drawSprite(petSprite, this.petX, posY);
 
-        // Sleeping ZZZ
         if (this.state.isSleeping) {
           drawText('Z', 22, 2);
           drawText('Z', 25, 6);
         }
 
-        // Sickness Skull
         if (this.state.isSick) {
           drawSprite(SPRITES.skull, 22, 1);
         }
 
-        // Poops on screen
         if (this.state.poopCount > 0) {
           for (let p = 0; p < this.state.poopCount; p++) {
             const px = 22 - (p % 2) * 5;
@@ -1585,7 +1513,6 @@
     bindDOM: function () {
       const self = this;
 
-      // Bind all button As
       document.querySelectorAll('.btn-a, [data-t-btn="a"]').forEach(function (btn) {
         if (!btn._bound) {
           btn._bound = true;
@@ -1596,7 +1523,6 @@
         }
       });
 
-      // Bind all button Bs
       document.querySelectorAll('.btn-b, [data-t-btn="b"]').forEach(function (btn) {
         if (!btn._bound) {
           btn._bound = true;
@@ -1607,7 +1533,6 @@
         }
       });
 
-      // Bind all button Cs
       document.querySelectorAll('.btn-c, [data-t-btn="c"]').forEach(function (btn) {
         if (!btn._bound) {
           btn._bound = true;
@@ -1618,7 +1543,6 @@
         }
       });
 
-      // Direct clickable icons
       document.querySelectorAll('.t-icon[data-icon-index]').forEach(function (iconEl) {
         if (!iconEl._bound) {
           iconEl._bound = true;
@@ -1635,7 +1559,6 @@
         }
       });
 
-      // Mute toggle buttons
       document.querySelectorAll('.btn-mute-toggle, #pocket_pet-mute-toggle').forEach(function (btn) {
         if (!btn._bound) {
           btn._bound = true;
@@ -1650,7 +1573,6 @@
         }
       });
 
-      // Reset / Rebirth buttons
       document.querySelectorAll('.btn-reset-toggle, #pocket_pet-reset-btn').forEach(function (btn) {
         if (!btn._bound) {
           btn._bound = true;
@@ -1663,16 +1585,13 @@
         }
       });
 
-      // Scoped Keyboard Controls (A, B, C or Left, Enter, Escape)
       if (!self._keydownBound) {
         self._keydownBound = true;
         document.addEventListener('keydown', function (e) {
-          // Don't intercept when user is typing in inputs, textareas, or select dropdowns
           if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
             return;
           }
 
-          // Only handle if pet deck or pet window is focused or has focus-within, OR on standalone pet page
           const isStandalonePage = document.body.classList.contains('pet-standalone-page');
           const petDeck = document.querySelector('.pocket_pet-deck');
           const petWindow = document.getElementById('pocket_pet-app');
@@ -1701,49 +1620,44 @@
       const self = this;
       document.querySelectorAll('.t-icon[data-icon-index]').forEach(function (el) {
         const idx = parseInt(el.getAttribute('data-icon-index'), 10);
-        if (self.selectedIconIndex === idx) {
-          el.classList.add('active');
-        } else {
-          el.classList.remove('active');
-        }
+        const isActive = self.selectedIconIndex === idx;
+        el.classList.toggle('active', isActive);
+        el.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
     },
 
     updateAttentionLight: function (isActive) {
       document.querySelectorAll('.t-icon-alert').forEach(function (alertEl) {
-        if (isActive) {
-          alertEl.classList.add('active');
-        } else {
-          alertEl.classList.remove('active');
-        }
+        alertEl.classList.toggle('active', isActive);
       });
     },
 
     updateSoundUI: function (isUnmuted) {
       document.querySelectorAll('.btn-mute-toggle, #pocket_pet-mute-toggle').forEach(function (btn) {
         btn.textContent = isUnmuted ? '🔊 Sound: ON' : '🔇 Sound: OFF';
+        btn.setAttribute('aria-pressed', isUnmuted ? 'true' : 'false');
       });
     },
 
     updateStatusBarUI: function () {
-      const statusEl = document.getElementById('pocket_pet-status');
-      const stageEl = document.getElementById('pocket_pet-stage');
-      if (statusEl) {
-        if (this.state.stage === 'DEAD') {
-          statusEl.textContent = 'STATUS: DECEASED (R.I.P.)';
-        } else if (this.state.isSleeping) {
-          statusEl.textContent = 'STATUS: ASLEEP (ZZZ)';
-        } else if (this.state.isSick) {
-          statusEl.textContent = 'STATUS: SICK (NEED MED)';
-        } else if (this.state.hunger === 0) {
-          statusEl.textContent = 'STATUS: STARVING';
-        } else {
-          statusEl.textContent = 'STATUS: ACTIVE';
-        }
+      let statusText = 'STATUS: ACTIVE';
+      if (this.state.stage === 'DEAD') {
+        statusText = 'STATUS: DECEASED (R.I.P.)';
+      } else if (this.state.isSleeping) {
+        statusText = 'STATUS: ASLEEP (ZZZ)';
+      } else if (this.state.isSick) {
+        statusText = 'STATUS: SICK (NEED MED)';
+      } else if (this.state.hunger === 0) {
+        statusText = 'STATUS: STARVING';
       }
-      if (stageEl) {
-        stageEl.textContent = 'STAGE: ' + (this.state.species || this.state.stage).toUpperCase();
-      }
+      const stageText = 'STAGE: ' + (this.state.species || this.state.stage).toUpperCase();
+
+      document.querySelectorAll('#pocket_pet-status, .pocket_pet-status-text').forEach(function (el) {
+        el.textContent = statusText;
+      });
+      document.querySelectorAll('#pocket_pet-stage, .pocket_pet-stage-text').forEach(function (el) {
+        el.textContent = stageText;
+      });
     },
 
     renderAll: function () {
@@ -1754,7 +1668,6 @@
     }
   };
 
-  // Run on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       Pocket_Pet.init();
@@ -1763,7 +1676,6 @@
     Pocket_Pet.init();
   }
 
-  // Export globally for testing or desktop window integration
   window.Pocket_Pet = Pocket_Pet;
   window.pocket_pet = Pocket_Pet;
 })();

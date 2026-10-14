@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang | default(value=config.default_language | default(value='en')) }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,10 +19,13 @@
   </script>
 </head>
 <body class="desktop-os-page mode-desktop">
+  <!-- Accessibility Skip Link -->
+  <a href="#desktop-viewport" class="skip-link">{{ config.extra.strings.skip_to_content | default(value="Skip to main content") }}</a>
+
   <!-- Desktop Top System Bar -->
   <header class="desktop-top-bar" role="banner">
     <div class="desktop-os-brand">
-      <span class="desktop-os-logo">&#128421;</span>
+      <span class="desktop-os-logo" aria-hidden="true">&#128421;</span>
       <strong>LACHLAN'S WORLD OS</strong>
       <span class="desktop-os-version">[v2.0]</span>
     </div>
@@ -30,26 +33,26 @@
     <div class="desktop-top-controls">
       <!-- Exit to Web Link (Settings is accessible via desktop icon and start menu) -->
       <a href="{{ get_url(path='/') }}" class="desktop-exit-btn" title="Return to standard website layout">
-        &#127760; Exit to Website
+        <span aria-hidden="true">&#127760;</span> Exit to Website
       </a>
     </div>
   </header>
 
   <!-- Desktop Wallpaper & Window Canvas -->
-  <main id="desktop-viewport" class="desktop-viewport" role="main">
+  <main id="desktop-viewport" class="desktop-viewport" role="main" tabindex="-1">
     <!-- Desktop Shortcut Icons (Managed by DesktopOS Registry) -->
     <div class="desktop-icons-container" id="desktop-icons" role="region" aria-label="Desktop Shortcut Icons">
       <!-- App icons are rendered here dynamically by DesktopOS -->
       <div class="desktop-icon" id="desktop-recycle-bin" tabindex="0" role="button" aria-label="Recycle Bin - Clear Desktop Stickers">
-        <div class="desktop-icon-img">&#128465;</div>
+        <div class="desktop-icon-img" aria-hidden="true">&#128465;</div>
         <div class="desktop-icon-label">Recycle Bin</div>
       </div>
       <a href="{{ get_url(path='/') }}" class="desktop-icon desktop-link-icon" aria-label="Return to Web Portal">
-        <div class="desktop-icon-img">&#127760;</div>
+        <div class="desktop-icon-img" aria-hidden="true">&#127760;</div>
         <div class="desktop-icon-label">Website.url</div>
       </a>
-      <a href="{{ get_url(path='pet') }}" class="desktop-icon desktop-link-icon" aria-label="Open Pocket Pet Standalone Mobile PWA" target="_blank">
-        <div class="desktop-icon-img">&#129370;</div>
+      <a href="{{ get_url(path='pet') }}" class="desktop-icon desktop-link-icon" aria-label="Open Pocket Pet Standalone Mobile PWA" target="_blank" rel="noopener">
+        <div class="desktop-icon-img" aria-hidden="true">&#129370;</div>
         <div class="desktop-icon-label">Pocket_Pet_PWA.url</div>
       </a>
     </div>

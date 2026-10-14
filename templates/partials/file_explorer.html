@@ -7,17 +7,17 @@
          style="width: 600px; max-width: calc(100vw - 20px);">
   <div class="panel-header">
     <div class="panel-header-title">
-      <span class="win-icon">&#128194;</span> Explorer.exe &bull; C:\Documents\Blog_Archive\
+      <span class="win-icon" aria-hidden="true">&#128194;</span> Explorer.exe &bull; C:\Documents\Blog_Archive\
     </div>
     <div class="window-controls">
-      <button type="button" class="window-btn" id="explorer-min-btn" title="Minimize">_</button>
-      <button type="button" class="window-btn" id="explorer-close-btn" title="Close">&#10005;</button>
+      <button type="button" class="window-btn" id="explorer-min-btn" title="Minimize" aria-label="Minimize Explorer.exe">_</button>
+      <button type="button" class="window-btn" id="explorer-close-btn" title="Close" aria-label="Close Explorer.exe">&#10005;</button>
     </div>
   </div>
 
   <div class="panel-body explorer-body" style="padding: 4px;">
     <!-- Explorer Menu Bar -->
-    <div class="explorer-menubar" role="menubar">
+    <div class="explorer-menubar" role="menubar" aria-label="Explorer Menu Bar">
       <span class="explorer-menu-item" tabindex="0" data-menu="file" role="menuitem">File</span>
       <span class="explorer-menu-item" tabindex="0" data-menu="edit" role="menuitem">Edit</span>
       <span class="explorer-menu-item" tabindex="0" data-menu="view" role="menuitem">View</span>
@@ -36,7 +36,7 @@
       <div class="explorer-address-bar">
         <label for="explorer-address-input" class="explorer-address-label">Address:</label>
         <div class="explorer-address-box">
-          <span class="explorer-address-icon">&#128194;</span>
+          <span class="explorer-address-icon" aria-hidden="true">&#128194;</span>
           <input type="text" id="explorer-address-input" class="explorer-address-input" value="C:\Documents\Blog_Archive\" readonly>
         </div>
       </div>
@@ -61,7 +61,7 @@
             <button type="button" id="explorer-search-close-btn" class="search-close-btn" title="Close search results" aria-label="Close search results">[x]</button>
           </div>
           <div id="explorer-search-status-bar" class="search-status-bar" aria-live="polite"></div>
-          <ul id="explorer-search-results-list" class="explorer-search-results-list" role="listbox"></ul>
+          <ul id="explorer-search-results-list" class="explorer-search-results-list" role="listbox" aria-label="Explorer Search Results"></ul>
         </div>
       </div>
     </div>
@@ -71,23 +71,23 @@
       <!-- Left Folder Tree Pane -->
       <aside class="explorer-sidebar" aria-label="Folders">
         <div class="explorer-pane-header">Folders</div>
-        <div class="explorer-tree" id="explorer-tree">
-          <div class="tree-item" data-folder="desktop"><span class="tree-icon">&#128421;</span> Desktop</div>
-          <div class="tree-item tree-expanded" data-folder="documents"><span class="tree-icon">&#128194;</span> My Documents</div>
-          <div class="tree-item tree-sub tree-active" data-folder="blog-archive"><span class="tree-icon">&#128194;</span> Blog_Archive</div>
-          <div class="tree-item" data-folder="floppy"><span class="tree-icon">&#128190;</span> 3½ Floppy (A:)</div>
-          <div class="tree-item" data-folder="disk-c"><span class="tree-icon">&#128191;</span> Local Disk (C:)</div>
-          <div class="tree-item"><a href="{{ get_url(path='blog/') }}" target="_blank" rel="noopener" class="tree-link"><span class="tree-icon">&#127760;</span> Web Archive &#8599;</a></div>
+        <div class="explorer-tree" id="explorer-tree" role="tree" aria-label="Folder Tree">
+          <div class="tree-item" data-folder="desktop" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128421;</span> Desktop</div>
+          <div class="tree-item tree-expanded" data-folder="documents" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128194;</span> My Documents</div>
+          <div class="tree-item tree-sub tree-active" data-folder="blog-archive" role="treeitem" aria-selected="true" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128194;</span> Blog_Archive</div>
+          <div class="tree-item" data-folder="floppy" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128190;</span> 3½ Floppy (A:)</div>
+          <div class="tree-item" data-folder="disk-c" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128191;</span> Local Disk (C:)</div>
+          <div class="tree-item" role="treeitem" aria-selected="false"><a href="{{ get_url(path='blog/') }}" target="_blank" rel="noopener" class="tree-link"><span class="tree-icon" aria-hidden="true">&#127760;</span> Web Archive &#8599;</a></div>
         </div>
       </aside>
 
       <!-- Right Files Pane -->
       <div class="explorer-files-pane" id="explorer-files-pane">
         <div class="explorer-files-header">
-          <span class="col-name" id="explorer-sort-name" style="cursor: pointer;" title="Sort by Name">Name <span class="sort-indicator">▲</span></span>
-          <span class="col-date" id="explorer-sort-date" style="cursor: pointer;" title="Sort by Date">Date Modified <span class="sort-indicator"></span></span>
-          <span class="col-type" id="explorer-sort-type" style="cursor: pointer;" title="Sort by Type">Type <span class="sort-indicator"></span></span>
-          <span class="col-size" id="explorer-sort-size" style="cursor: pointer;" title="Sort by Size">Size <span class="sort-indicator"></span></span>
+          <span class="col-name" id="explorer-sort-name" role="button" tabindex="0" style="cursor: pointer;" title="Sort by Name">Name <span class="sort-indicator" aria-hidden="true">▲</span></span>
+          <span class="col-date" id="explorer-sort-date" role="button" tabindex="0" style="cursor: pointer;" title="Sort by Date">Date Modified <span class="sort-indicator" aria-hidden="true"></span></span>
+          <span class="col-type" id="explorer-sort-type" role="button" tabindex="0" style="cursor: pointer;" title="Sort by Type">Type <span class="sort-indicator" aria-hidden="true"></span></span>
+          <span class="col-size" id="explorer-sort-size" role="button" tabindex="0" style="cursor: pointer;" title="Sort by Size">Size <span class="sort-indicator" aria-hidden="true"></span></span>
         </div>
         <div class="explorer-files-list">
           {% set blog_section = get_section(path="blog/_index.md") %}
@@ -95,7 +95,7 @@
             {% for post in blog_section.pages %}
               <div class="explorer-file-row" data-slug="{{ post.slug }}" data-title="{{ post.title }}" data-description="{{ post.description | default(value='') }}" tabindex="0" role="button" title="Click to open in Blog_Reader.exe">
                 <div class="file-name">
-                  <span class="file-icon">&#128196;</span>
+                  <span class="file-icon" aria-hidden="true">&#128196;</span>
                   <span class="file-title-text">{{ post.slug }}.doc</span>
                 </div>
                 <div class="file-date">{{ post.date | date(format="%Y-%m-%d") }}</div>
@@ -113,7 +113,7 @@
 
     <!-- Explorer Status Bar -->
     <div class="explorer-statusbar">
-      <span id="explorer-status-count">
+      <span id="explorer-status-count" aria-live="polite">
         {% if blog_section and blog_section.pages %}{{ blog_section.pages | length }}{% else %}0{% endif %} Object(s)
       </span>
       <span>Local Disk (C:)</span>

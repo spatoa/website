@@ -88,58 +88,66 @@
   const visCtx = visCanvas ? visCanvas.getContext('2d') : null;
 
   function initAudio() {
-    if (!audioCtx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioCtx = new AudioContext();
-      masterGain = audioCtx.createGain();
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 64;
-      masterGain.gain.setValueAtTime(volumeVal, audioCtx.currentTime);
-      masterGain.connect(analyser);
-      analyser.connect(audioCtx.destination);
-    }
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
+    try {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return false;
+        audioCtx = new AudioContext();
+        masterGain = audioCtx.createGain();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+        masterGain.gain.setValueAtTime(volumeVal, audioCtx.currentTime);
+        masterGain.connect(analyser);
+        analyser.connect(audioCtx.destination);
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(function () {});
+      }
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 
   function playNote(freq, dur) {
     if (!audioCtx || !isPlaying) return;
 
-    // Lead Square Wave Oscillator
-    const osc = audioCtx.createOscillator();
-    const noteGain = audioCtx.createGain();
+    try {
+      // Lead Square Wave Oscillator
+      const osc = audioCtx.createOscillator();
+      const noteGain = audioCtx.createGain();
 
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
-    // Chiptune envelope
-    const now = audioCtx.currentTime;
-    noteGain.gain.setValueAtTime(0.01, now);
-    noteGain.gain.linearRampToValueAtTime(0.25, now + 0.03);
-    noteGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+      // Chiptune envelope
+      const now = audioCtx.currentTime;
+      noteGain.gain.setValueAtTime(0.01, now);
+      noteGain.gain.linearRampToValueAtTime(0.25, now + 0.03);
+      noteGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
 
-    osc.connect(noteGain);
-    noteGain.connect(masterGain);
+      osc.connect(noteGain);
+      noteGain.connect(masterGain);
 
-    osc.start(now);
-    osc.stop(now + dur);
+      osc.start(now);
+      osc.stop(now + dur);
 
-    // Sub Bass Oscillator (Triangle Wave)
-    const subOsc = audioCtx.createOscillator();
-    const subGain = audioCtx.createGain();
-    subOsc.type = 'triangle';
-    subOsc.frequency.setValueAtTime(freq / 2, now);
+      // Sub Bass Oscillator (Triangle Wave)
+      const subOsc = audioCtx.createOscillator();
+      const subGain = audioCtx.createGain();
+      subOsc.type = 'triangle';
+      subOsc.frequency.setValueAtTime(freq / 2, now);
 
-    subGain.gain.setValueAtTime(0.01, now);
-    subGain.gain.linearRampToValueAtTime(0.18, now + 0.02);
-    subGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+      subGain.gain.setValueAtTime(0.01, now);
+      subGain.gain.linearRampToValueAtTime(0.18, now + 0.02);
+      subGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
 
-    subOsc.connect(subGain);
-    subGain.connect(masterGain);
+      subOsc.connect(subGain);
+      subGain.connect(masterGain);
 
-    subOsc.start(now);
-    subOsc.stop(now + dur);
+      subOsc.start(now);
+      subOsc.stop(now + dur);
+    } catch (e) {}
   }
 
   function scheduleNextNote() {
@@ -161,7 +169,10 @@
     if (titleEl) titleEl.textContent = tracks[currentTrackIdx].title;
     if (statusEl) statusEl.textContent = '▶ PLAYING: ' + tracks[currentTrackIdx].title;
 
-    clearTimeout(synthTimer);
+    if (synthTimer) {
+      clearTimeout(synthTimer);
+      synthTimer = null;
+    }
     scheduleNextNote();
     startVisualizer();
 
@@ -180,7 +191,10 @@
   function pausePlayback() {
     isPlaying = false;
     isPaused = true;
-    clearTimeout(synthTimer);
+    if (synthTimer) {
+      clearTimeout(synthTimer);
+      synthTimer = null;
+    }
     stopVisualizer();
     if (statusEl) statusEl.textContent = '❚❚ PAUSED';
   }
@@ -188,10 +202,15 @@
   function stopPlayback() {
     isPlaying = false;
     isPaused = false;
-    clearTimeout(synthTimer);
+    if (synthTimer) {
+      clearTimeout(synthTimer);
+      synthTimer = null;
+    }
     stopVisualizer();
-    clearInterval(clockTimer);
-    clockTimer = null;
+    if (clockTimer) {
+      clearInterval(clockTimer);
+      clockTimer = null;
+    }
     elapsedSeconds = 0;
     noteIndex = 0;
     if (timeEl) timeEl.textContent = '00:00';
@@ -203,7 +222,9 @@
     noteIndex = 0;
     elapsedSeconds = 0;
     if (titleEl) titleEl.textContent = tracks[currentTrackIdx].title;
+    if (timeEl && !isPlaying) timeEl.textContent = '00:00';
     if (isPlaying) {
+      if (statusEl) statusEl.textContent = '▶ PLAYING: ' + tracks[currentTrackIdx].title;
       clearTimeout(synthTimer);
       scheduleNextNote();
     }
@@ -214,7 +235,9 @@
     noteIndex = 0;
     elapsedSeconds = 0;
     if (titleEl) titleEl.textContent = tracks[currentTrackIdx].title;
+    if (timeEl && !isPlaying) timeEl.textContent = '00:00';
     if (isPlaying) {
+      if (statusEl) statusEl.textContent = '▶ PLAYING: ' + tracks[currentTrackIdx].title;
       clearTimeout(synthTimer);
       scheduleNextNote();
     }
@@ -235,9 +258,14 @@
 
   if (volSlider) {
     volSlider.addEventListener('input', function (e) {
-      volumeVal = parseFloat(e.target.value) / 100;
-      if (masterGain && audioCtx) {
-        masterGain.gain.setValueAtTime(volumeVal, audioCtx.currentTime);
+      const parsed = parseFloat(e.target.value);
+      if (!isNaN(parsed)) {
+        volumeVal = Math.max(0, Math.min(1, parsed / 100));
+        if (masterGain && audioCtx) {
+          try {
+            masterGain.gain.setValueAtTime(volumeVal, audioCtx.currentTime);
+          } catch (err) {}
+        }
       }
     });
   }
@@ -264,7 +292,9 @@
 
     let freqData = new Uint8Array(numBars);
     if (analyser && isPlaying) {
-      analyser.getByteFrequencyData(freqData);
+      try {
+        analyser.getByteFrequencyData(freqData);
+      } catch (e) {}
     }
 
     const startX = 6;

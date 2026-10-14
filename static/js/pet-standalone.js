@@ -11,6 +11,23 @@
   const THEME_KEY = 'lachlan_site_theme';
   const THEMES = ['windows', 'paper', 'midnight', 'cyber-y2k', 'candy-2000', 'scene-punk'];
 
+  function safeGetItem(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function safeSetItem(key, value) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   // Register PWA Service Worker for offline play
   function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
@@ -41,19 +58,25 @@
       });
     }
 
-    menuButtons.forEach(function (btn) {
+    function openMenuButton(btn) {
+      closeAllMenus();
+      btn.classList.add('active');
+      btn.setAttribute('aria-expanded', 'true');
+      const menuId = btn.getAttribute('data-menu');
+      const targetMenu = document.getElementById(menuId);
+      if (targetMenu) {
+        targetMenu.classList.add('open');
+      }
+    }
+
+    menuButtons.forEach(function (btn, idx) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
         const isOpen = btn.classList.contains('active');
-        closeAllMenus();
-        if (!isOpen) {
-          btn.classList.add('active');
-          btn.setAttribute('aria-expanded', 'true');
-          const menuId = btn.getAttribute('data-menu');
-          const targetMenu = document.getElementById(menuId);
-          if (targetMenu) {
-            targetMenu.classList.add('open');
-          }
+        if (isOpen) {
+          closeAllMenus();
+        } else {
+          openMenuButton(btn);
         }
       });
 
@@ -62,20 +85,54 @@
           return b.classList.contains('active');
         });
         if (anyOpen) {
-          closeAllMenus();
-          btn.classList.add('active');
-          btn.setAttribute('aria-expanded', 'true');
+          openMenuButton(btn);
+        }
+      });
+
+      btn.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openMenuButton(btn);
           const menuId = btn.getAttribute('data-menu');
           const targetMenu = document.getElementById(menuId);
-          if (targetMenu) {
-            targetMenu.classList.add('open');
+          const firstItem = targetMenu ? targetMenu.querySelector('.win-dropdown-item') : null;
+          if (firstItem) firstItem.focus();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          const nextBtn = menuButtons[(idx + 1) % menuButtons.length];
+          if (nextBtn) {
+            nextBtn.focus();
+            if (btn.classList.contains('active')) openMenuButton(nextBtn);
+          }
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const prevBtn = menuButtons[(idx - 1 + menuButtons.length) % menuButtons.length];
+          if (prevBtn) {
+            prevBtn.focus();
+            if (btn.classList.contains('active')) openMenuButton(prevBtn);
           }
         }
       });
     });
 
+    dropdowns.forEach(function (drop) {
+      drop.addEventListener('keydown', function (e) {
+        const items = Array.from(drop.querySelectorAll('.win-dropdown-item'));
+        const curIdx = items.indexOf(document.activeElement);
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          const nextIdx = (curIdx + 1) % items.length;
+          if (items[nextIdx]) items[nextIdx].focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          const prevIdx = (curIdx - 1 + items.length) % items.length;
+          if (items[prevIdx]) items[prevIdx].focus();
+        }
+      });
+    });
+
     document.addEventListener('click', function (e) {
-      if (!e.target.closest('.win-menubar')) {
+      if (!e.target || typeof e.target.closest !== 'function' || !e.target.closest('.win-menubar')) {
         closeAllMenus();
       }
     });
@@ -153,7 +210,7 @@
     if (helpBtn) {
       helpBtn.addEventListener('click', function () {
         closeAllMenus();
-        openModal('pet-help-modal');
+        openModal('pet-help-modal', helpBtn);
       });
     }
 
@@ -162,7 +219,7 @@
     if (aboutBtn) {
       aboutBtn.addEventListener('click', function () {
         closeAllMenus();
-        openModal('pet-about-modal');
+        openModal('pet-about-modal', aboutBtn);
       });
     }
 
@@ -174,9 +231,7 @@
         if (skinId && window.Pocket_Pet && typeof window.Pocket_Pet.setSkin === 'function') {
           window.Pocket_Pet.setSkin(skinId);
         } else if (skinId) {
-          try {
-            localStorage.setItem('lachlan_pet_skin', skinId);
-          } catch (e) {}
+          safeSetItem('lachlan_pet_skin', skinId);
           document.querySelectorAll('.pocket_pet-deck').forEach(function (deck) {
             deck.setAttribute('data-pet-skin', skinId);
           });
@@ -189,14 +244,12 @@
     function updateActiveSkinUI() {
       const activeSkin = (window.Pocket_Pet && typeof window.Pocket_Pet.getSkin === 'function')
         ? window.Pocket_Pet.getSkin()
-        : (localStorage.getItem('lachlan_pet_skin') || 'windows');
+        : (safeGetItem('lachlan_pet_skin') || 'windows');
 
       document.querySelectorAll('.menu-skin-btn').forEach(function (btn) {
-        if (btn.getAttribute('data-skin') === activeSkin) {
-          btn.classList.add('active-skin');
-        } else {
-          btn.classList.remove('active-skin');
-        }
+        const isCurrent = btn.getAttribute('data-skin') === activeSkin;
+        btn.classList.toggle('active-skin', isCurrent);
+        btn.setAttribute('aria-checked', isCurrent ? 'true' : 'false');
       });
     }
 
@@ -207,7 +260,7 @@
   // --- Export Save to JSON File ---
   function exportSave() {
     try {
-      const rawData = localStorage.getItem(STORAGE_KEY);
+      const rawData = safeGetItem(STORAGE_KEY);
       if (!rawData) {
         alert('No saved pet data found to export. Hatch an egg first!');
         return;
@@ -235,6 +288,9 @@
   // --- Import Save from JSON File ---
   function importSaveFile(file) {
     const reader = new FileReader();
+    reader.onerror = function () {
+      alert('Failed to read the selected save file.');
+    };
     reader.onload = function (e) {
       try {
         const text = e.target.result;
@@ -260,7 +316,7 @@
         const species = validated.species || validated.stage || 'egg';
         const confirmMsg = `Restore pet save for "${species}" (Stage: ${validated.stage})?\nThis will replace your current pet save.`;
         if (confirm(confirmMsg)) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(validated));
+          safeSetItem(STORAGE_KEY, JSON.stringify(validated));
           if (window.Pocket_Pet && typeof window.Pocket_Pet.init === 'function') {
             window.Pocket_Pet.init();
           } else {
@@ -279,7 +335,7 @@
   function updateSoundLabel() {
     const soundItem = document.getElementById('menu-opt-sound');
     if (!soundItem) return;
-    const isMuted = localStorage.getItem(SOUND_KEY) === 'muted';
+    const isMuted = safeGetItem(SOUND_KEY) === 'muted';
     soundItem.textContent = isMuted ? '🔇 Sound: OFF (Click to Unmute)' : '🔊 Sound: ON (Click to Mute)';
   }
 
@@ -294,26 +350,31 @@
       window.switchSiteTheme(nextTheme);
     } else {
       document.documentElement.setAttribute('data-theme', nextTheme);
-      try {
-        localStorage.setItem(THEME_KEY, nextTheme);
-      } catch (e) {}
+      safeSetItem(THEME_KEY, nextTheme);
     }
   }
 
   // --- Modal Helpers ---
-  function openModal(id) {
+  let lastModalTrigger = null;
+
+  function openModal(id, triggerEl) {
     const modal = document.getElementById(id);
     if (modal) {
+      lastModalTrigger = triggerEl || document.activeElement;
       modal.classList.add('visible');
-      const closeBtn = modal.querySelector('.modal-ok-btn') || modal.querySelector('.window-close-btn');
+      const closeBtn = modal.querySelector('.modal-ok-btn') || modal.querySelector('.window-btn');
       if (closeBtn) closeBtn.focus();
     }
   }
 
   function closeModal(id) {
     const modal = document.getElementById(id);
-    if (modal) {
+    if (modal && modal.classList.contains('visible')) {
       modal.classList.remove('visible');
+      if (lastModalTrigger && typeof lastModalTrigger.focus === 'function') {
+        lastModalTrigger.focus();
+        lastModalTrigger = null;
+      }
     }
   }
 
@@ -321,7 +382,7 @@
     document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
       overlay.addEventListener('click', function (e) {
         if (e.target === overlay) {
-          overlay.classList.remove('visible');
+          closeModal(overlay.id);
         }
       });
     });
@@ -333,7 +394,7 @@
           closeModal(modalId);
         } else {
           const parentModal = btn.closest('.modal-overlay');
-          if (parentModal) parentModal.classList.remove('visible');
+          if (parentModal) closeModal(parentModal.id);
         }
       });
     });
@@ -345,7 +406,11 @@
     initMenuBar();
     initModals();
 
-    // Listen to changes in mute toggle button from pocket_pet.js
+    const muteBtn = document.getElementById('pocket_pet-mute-toggle');
+    if (muteBtn) {
+      muteBtn.addEventListener('click', updateSoundLabel);
+    }
+
     // Deep-linking hash support (#help, #about)
     function checkUrlHash() {
       if (window.location.hash === '#help') {

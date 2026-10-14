@@ -20,16 +20,28 @@
   }
 
   function getVisitCount() {
-    const stored = parseInt(localStorage.getItem(STORAGE_KEY), 10);
-    return isNaN(stored) || stored < 1 ? 1 : stored;
+    try {
+      const stored = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+      return isNaN(stored) || stored < 1 ? 1 : stored;
+    } catch (e) {
+      return 1;
+    }
   }
 
   function updateVisitCount() {
-    let count;
-    const isSessionCounted = Boolean(sessionStorage.getItem(SESSION_KEY));
+    let count = 1;
+    let isSessionCounted = false;
+    try {
+      isSessionCounted = Boolean(sessionStorage.getItem(SESSION_KEY));
+    } catch (e) {
+      isSessionCounted = false;
+    }
 
     if (!isSessionCounted) {
-      const stored = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+      let stored = NaN;
+      try {
+        stored = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+      } catch (e) {}
       count = isNaN(stored) || stored < 1 ? 1 : stored + 1;
       try {
         localStorage.setItem(STORAGE_KEY, String(count));
@@ -45,25 +57,28 @@
   }
 
   function render(count) {
-    const formatted = String(count).padStart(7, '0');
+    const safeCount = (typeof count === 'number' && !isNaN(count) && count >= 1) ? Math.floor(count) : 1;
+    const formatted = String(safeCount).padStart(7, '0');
 
     // Update all counter boxes on the page (supports status panel and settings window)
     const boxes = document.querySelectorAll('.counter-box, #counter-box');
     boxes.forEach(function (box) {
-      box.innerHTML = '';
+      box.replaceChildren();
+      box.setAttribute('aria-label', 'Visit count: ' + safeCount);
       for (let i = 0; i < formatted.length; i++) {
         const span = document.createElement('span');
         span.className = 'counter-digit';
+        span.setAttribute('aria-hidden', 'true');
         span.textContent = formatted[i];
         box.appendChild(span);
       }
     });
 
     // Format personalized visit message
-    const suffix = getOrdinalSuffix(count);
-    const message = count === 1
+    const suffix = getOrdinalSuffix(safeCount);
+    const message = safeCount === 1
       ? 'Welcome! This is your 1st visit to this portal.'
-      : `Welcome back! This is your ${count}${suffix} visit to this portal.`;
+      : `Welcome back! This is your ${safeCount}${suffix} visit to this portal.`;
 
     const subtexts = document.querySelectorAll('.counter-subtext, #counter-subtext');
     subtexts.forEach(function (subtext) {

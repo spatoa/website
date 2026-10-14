@@ -3,14 +3,51 @@
  * Lachlan's World (Web 2.0 & Desktop OS)
  *
  * Supports drag-and-drop stickers, rotation, deletion, subtle CSS floating animations,
- * motion accessibility preference, and isolated localStorage persistence for both
- * standard Web Portal and Desktop OS environments.
+ * motion accessibility preference, keyboard navigation, hybrid pointer/touch input,
+ * and isolated localStorage persistence for both standard Web Portal and Desktop OS environments.
  */
 
 (function () {
   'use strict';
 
   const MOTION_KEY = 'lachlan_sticker_motion';
+  const LEGACY_GRID_KEY = 'lachlan_stickers';
+
+  function safeGetItem(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function safeSetItem(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {}
+  }
+
+  function sanitizeStickerSrc(rawSrc) {
+    if (!rawSrc || typeof rawSrc !== 'string') return null;
+    const trimmed = rawSrc.trim();
+    if (/^(javascript|data|vbscript):/i.test(trimmed)) return null;
+    try {
+      const parsed = new URL(trimmed, window.location.origin);
+      if (parsed.hostname === 'www.lachlans.world' || parsed.hostname === 'lachlans.world') {
+        return parsed.pathname;
+      }
+      if (parsed.origin === window.location.origin) {
+        return parsed.pathname;
+      }
+      if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && /\.(svg|png|gif|webp)$/i.test(parsed.pathname)) {
+        return parsed.href;
+      }
+    } catch (e) {}
+    if (trimmed.includes('stickers/') && /\.(svg|png|gif|webp)$/i.test(trimmed)) {
+      return trimmed.replace(/["'<>\\]/g, '');
+    }
+    return null;
+  }
 
   function resolveStickerAnimType(src) {
     if (!src) return 'anim-float';
@@ -21,7 +58,7 @@
   }
 
   function applyMotionPreference() {
-    const motionPref = localStorage.getItem(MOTION_KEY);
+    const motionPref = safeGetItem(MOTION_KEY);
     const disabled = motionPref === 'disabled';
     document.documentElement.classList.toggle('stickers-motion-disabled', disabled);
 
@@ -39,9 +76,7 @@
   function toggleMotionPreference() {
     const isCurrentlyDisabled = document.documentElement.classList.contains('stickers-motion-disabled');
     const newState = isCurrentlyDisabled ? 'enabled' : 'disabled';
-    try {
-      localStorage.setItem(MOTION_KEY, newState);
-    } catch (e) {}
+    safeSetItem(MOTION_KEY, newState);
     applyMotionPreference();
   }
 
@@ -59,19 +94,52 @@
     let stickers = [];
     let nextId = 1;
 
+    function sanitizeStickerRecord(raw) {
+      if (!raw || typeof raw !== 'object') return null;
+      const safeSrc = sanitizeStickerSrc(raw.src);
+      if (!safeSrc) return null;
+      const x = (typeof raw.x === 'number' && isFinite(raw.x)) ? Math.max(0, Math.min(4000, Math.round(raw.x))) : 100;
+      const y = (typeof raw.y === 'number' && isFinite(raw.y)) ? Math.max(0, Math.min(4000, Math.round(raw.y))) : 100;
+      const rotation = (typeof raw.rotation === 'number' && isFinite(raw.rotation)) ? (Math.round(raw.rotation) % 360) : 0;
+      const id = (typeof raw.id === 'string' && raw.id.length > 0 && raw.id.length < 64)
+        ? raw.id.replace(/[^a-zA-Z0-9_-]/g, '')
+        : (Date.now().toString(36) + '-' + nextId++);
+      return {
+        id: id,
+        src: safeSrc,
+        x: x,
+        y: y,
+        rotation: rotation,
+        animType: resolveStickerAnimType(safeSrc)
+      };
+    }
+
     function loadStickers() {
       try {
-        const data = localStorage.getItem(cfg.storageKey);
-        return data ? JSON.parse(data) : [];
+        let data = safeGetItem(cfg.storageKey);
+        if (!data && !cfg.isDesktop) {
+          data = safeGetItem(LEGACY_GRID_KEY);
+        }
+        if (!data) return [];
+        const parsed = JSON.parse(data);
+        if (!Array.isArray(parsed)) return [];
+        const valid = [];
+        for (let i = 0; i < parsed.length; i++) {
+          const clean = sanitizeStickerRecord(parsed[i]);
+          if (clean) valid.push(clean);
+        }
+        return valid;
       } catch (e) {
         return [];
       }
     }
 
     function saveStickers() {
-      try {
-        localStorage.setItem(cfg.storageKey, JSON.stringify(stickers));
-      } catch (e) {}
+      const serialized = JSON.stringify(stickers);
+      safeSetItem(cfg.storageKey, serialized);
+      if (!cfg.isDesktop) {
+        safeSetItem(LEGACY_GRID_KEY, serialized);
+      }
     }
 
     function removeSticker(id) {
@@ -89,6 +157,10 @@
       const animClass = stickerData.animType || resolveStickerAnimType(stickerData.src);
       el.className = 'desktop-sticker ' + animClass;
       el.setAttribute('data-sticker-id', stickerData.id);
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('role', 'group');
+      const stickerName = (stickerData.src.split('/').pop() || 'Sticker').replace('.svg', '');
+      el.setAttribute('aria-label', `Placed sticker: ${stickerName}`);
       el.style.left = stickerData.x + 'px';
       el.style.top = stickerData.y + 'px';
       if (stickerData.rotation) {
@@ -108,10 +180,11 @@
 
       const img = document.createElement('img');
       img.src = stickerData.src;
-      img.alt = 'Sticker';
+      img.alt = stickerName + ' sticker';
       img.draggable = false;
 
       const delBtn = document.createElement('button');
+      delBtn.type = 'button';
       delBtn.className = 'sticker-delete-btn';
       delBtn.textContent = '×';
       delBtn.title = 'Remove Sticker';
@@ -124,31 +197,33 @@
       el.appendChild(img);
       el.appendChild(delBtn);
 
-      // Dragging on canvas
+      // Dragging on canvas (Hybrid Pointer / Touch / Mouse support)
       let isDragging = false;
       let startX = 0;
       let startY = 0;
       let initialLeft = 0;
       let initialTop = 0;
 
-      el.addEventListener('pointerdown', function (e) {
-        if (e.target === delBtn) return;
+      function beginDrag(clientX, clientY, pointerId) {
         isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
+        startX = clientX;
+        startY = clientY;
         initialLeft = el.offsetLeft;
         initialTop = el.offsetTop;
-        el.setPointerCapture(e.pointerId);
-        el.classList.add('dragging');
-        e.preventDefault();
-      });
+        if (pointerId !== undefined && typeof el.setPointerCapture === 'function') {
+          try { el.setPointerCapture(pointerId); } catch (err) {}
+        }
+        el.classList.add('dragging', 'is-dragging', 'sticker-selected');
+      }
 
-      el.addEventListener('pointermove', function (e) {
+      function moveDrag(clientX, clientY) {
         if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        const newLeft = Math.max(0, Math.min(window.innerWidth - 60, initialLeft + dx));
-        const newTop = Math.max(0, Math.min(window.innerHeight - 60, initialTop + dy));
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+        const maxLeft = Math.max(0, window.innerWidth - 60);
+        const maxTop = Math.max(0, window.innerHeight - 60);
+        const newLeft = Math.max(0, Math.min(maxLeft, initialLeft + dx));
+        const newTop = Math.max(0, Math.min(maxTop, initialTop + dy));
 
         el.style.left = newLeft + 'px';
         el.style.top = newTop + 'px';
@@ -158,26 +233,105 @@
           item.x = newLeft;
           item.y = newTop;
         }
-      });
+      }
 
-      function stopDrag(e) {
+      function endDrag(pointerId) {
         if (!isDragging) return;
         isDragging = false;
-        try { el.releasePointerCapture(e.pointerId); } catch (err) {}
-        el.classList.remove('dragging');
+        if (pointerId !== undefined && typeof el.releasePointerCapture === 'function') {
+          try { el.releasePointerCapture(pointerId); } catch (err) {}
+        }
+        el.classList.remove('dragging', 'is-dragging');
         saveStickers();
       }
 
-      el.addEventListener('pointerup', stopDrag);
-      el.addEventListener('pointercancel', stopDrag);
+      if ('PointerEvent' in window) {
+        el.addEventListener('pointerdown', function (e) {
+          if (e.target === delBtn) return;
+          beginDrag(e.clientX, e.clientY, e.pointerId);
+          e.preventDefault();
+        });
+        el.addEventListener('pointermove', function (e) {
+          moveDrag(e.clientX, e.clientY);
+        });
+        el.addEventListener('pointerup', function (e) {
+          endDrag(e.pointerId);
+        });
+        el.addEventListener('pointercancel', function (e) {
+          endDrag(e.pointerId);
+        });
+      } else {
+        el.addEventListener('mousedown', function (e) {
+          if (e.target === delBtn) return;
+          beginDrag(e.clientX, e.clientY);
+          e.preventDefault();
+        });
+        window.addEventListener('mousemove', function (e) {
+          moveDrag(e.clientX, e.clientY);
+        });
+        window.addEventListener('mouseup', function () {
+          endDrag();
+        });
+        el.addEventListener('touchstart', function (e) {
+          if (e.target === delBtn || e.touches.length === 0) return;
+          beginDrag(e.touches[0].clientX, e.touches[0].clientY);
+          e.preventDefault();
+        }, { passive: false });
+        el.addEventListener('touchmove', function (e) {
+          if (!isDragging || e.touches.length === 0) return;
+          moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+          e.preventDefault();
+        }, { passive: false });
+        el.addEventListener('touchend', function () {
+          endDrag();
+        });
+      }
 
-      // Double click or right click rotates sticker 15 degrees
-      el.addEventListener('dblclick', function (e) {
-        e.stopPropagation();
+      function rotateSticker() {
         const item = stickers.find(function (s) { return s.id === stickerData.id; });
         if (item) {
           item.rotation = ((item.rotation || 0) + 15) % 360;
           el.style.transform = 'rotate(' + item.rotation + 'deg)';
+          saveStickers();
+        }
+      }
+
+      // Double click rotates sticker 15 degrees
+      el.addEventListener('dblclick', function (e) {
+        e.stopPropagation();
+        rotateSticker();
+      });
+
+      // Keyboard navigation on placed sticker
+      el.addEventListener('keydown', function (e) {
+        const item = stickers.find(function (s) { return s.id === stickerData.id; });
+        if (!item) return;
+        const step = e.shiftKey ? 20 : 8;
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+          e.preventDefault();
+          removeSticker(stickerData.id);
+        } else if (e.key === 'r' || e.key === 'R') {
+          e.preventDefault();
+          rotateSticker();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          item.x = Math.max(0, item.x - step);
+          el.style.left = item.x + 'px';
+          saveStickers();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          item.x = Math.min(Math.max(0, window.innerWidth - 60), item.x + step);
+          el.style.left = item.x + 'px';
+          saveStickers();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          item.y = Math.max(0, item.y - step);
+          el.style.top = item.y + 'px';
+          saveStickers();
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          item.y = Math.min(Math.max(0, window.innerHeight - 60), item.y + step);
+          el.style.top = item.y + 'px';
           saveStickers();
         }
       });
@@ -186,26 +340,42 @@
       return el;
     }
 
-    function addSticker(src, x, y, rotation) {
+    function addSticker(rawSrc, x, y, rotation) {
+      const safeSrc = sanitizeStickerSrc(rawSrc);
+      if (!safeSrc) return null;
       const id = Date.now().toString(36) + '-' + nextId++;
-      const rot = typeof rotation === 'number' ? rotation : (Math.floor(Math.random() * 24) - 12);
+      const rot = (typeof rotation === 'number' && isFinite(rotation)) ? rotation : (Math.floor(Math.random() * 24) - 12);
+      const maxX = Math.max(20, window.innerWidth - 80);
+      const maxY = Math.max(20, window.innerHeight - 80);
       const data = {
         id: id,
-        src: src,
-        x: Math.max(10, Math.min(window.innerWidth - 80, x)),
-        y: Math.max(10, Math.min(window.innerHeight - 80, y)),
+        src: safeSrc,
+        x: Math.max(10, Math.min(maxX, isFinite(x) ? x : 120)),
+        y: Math.max(10, Math.min(maxY, isFinite(y) ? y : 120)),
         rotation: rot,
-        animType: resolveStickerAnimType(src)
+        animType: resolveStickerAnimType(safeSrc)
       };
       stickers.push(data);
       saveStickers();
-      createStickerElement(data, true);
+      return createStickerElement(data, true);
     }
 
     function clearAll() {
       stickers = [];
       saveStickers();
-      layer.innerHTML = '';
+      layer.replaceChildren();
+    }
+
+    function spawnDefaultPosition(src) {
+      const availW = Math.max(160, window.innerWidth - 250);
+      const availH = Math.max(160, window.innerHeight - 300);
+      const targetX = cfg.isDesktop
+        ? Math.floor(Math.random() * availW + 100)
+        : Math.floor(Math.random() * Math.max(100, window.innerWidth - 200) + 60);
+      const targetY = cfg.isDesktop
+        ? Math.floor(Math.random() * availH + 80)
+        : Math.floor(Math.random() * 280 + 120);
+      addSticker(src, targetX, targetY);
     }
 
     // Init palette items
@@ -217,21 +387,25 @@
 
         // Native HTML5 Drag and Drop
         item.addEventListener('dragstart', function (e) {
-          e.dataTransfer.setData('text/plain', src);
-          e.dataTransfer.setData('application/x-sticker-src', src);
-          e.dataTransfer.effectAllowed = 'copy';
+          if (e.dataTransfer) {
+            e.dataTransfer.setData('text/plain', src);
+            e.dataTransfer.setData('application/x-sticker-src', src);
+            e.dataTransfer.effectAllowed = 'copy';
+          }
         });
 
-        // Click to spawn on screen
+        // Click / Tap to spawn on screen
         item.addEventListener('click', function (e) {
           e.preventDefault();
-          const targetX = cfg.isDesktop
-            ? Math.floor(Math.random() * (window.innerWidth - 250) + 120)
-            : Math.floor(Math.random() * (window.innerWidth - 200) + 80);
-          const targetY = cfg.isDesktop
-            ? Math.floor(Math.random() * (window.innerHeight - 300) + 100)
-            : Math.floor(Math.random() * 300 + 150);
-          addSticker(src, targetX, targetY);
+          spawnDefaultPosition(src);
+        });
+
+        // Keyboard Enter / Space to spawn on screen
+        item.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            spawnDefaultPosition(src);
+          }
         });
       });
     }
@@ -239,11 +413,14 @@
     // Window Drag Over & Drop target
     window.addEventListener('dragover', function (e) {
       e.preventDefault();
-      e.dataTransfer.dropEffect = 'copy';
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = 'copy';
+      }
     });
 
     window.addEventListener('drop', function (e) {
       e.preventDefault();
+      if (!e.dataTransfer) return;
       const src = e.dataTransfer.getData('application/x-sticker-src') || e.dataTransfer.getData('text/plain');
       if (src && (src.includes('.svg') || src.includes('stickers/'))) {
         addSticker(src, e.clientX - 35, e.clientY - 35);
@@ -282,15 +459,15 @@
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         const arrow = document.getElementById('sticker-tab-arrow');
         if (arrow) arrow.textContent = open ? '▼' : '▲';
-        try { localStorage.setItem(DRAWER_KEY, open ? 'true' : 'false'); } catch (e) {}
+        safeSetItem(DRAWER_KEY, open ? 'true' : 'false');
       }
 
-      if (toggle) {
+      if (toggle && drawer) {
         toggle.addEventListener('click', function () {
           const isCollapsed = drawer.classList.contains('collapsed');
           setDrawerOpen(isCollapsed);
         });
-        const savedOpen = localStorage.getItem(DRAWER_KEY) === 'true';
+        const savedOpen = safeGetItem(DRAWER_KEY) === 'true';
         setDrawerOpen(savedOpen);
       }
     }

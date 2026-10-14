@@ -1,12 +1,26 @@
 <!-- Immediate Theme & Font Scale Initialization (Prevents FOUC) -->
 <script>
   (function () {
-    var defaultTheme = "{{ config.extra.default_theme }}";
-    var savedTheme = localStorage.getItem('lachlan_site_theme') || defaultTheme;
+    var validThemes = ['paper', 'windows', 'midnight', 'cyber-y2k', 'candy-2000', 'scene-punk'];
+    var validFonts = ['default', 'medium', 'large'];
+    var defaultTheme = "{{ config.extra.default_theme | default(value='windows') }}";
+    var savedTheme = defaultTheme;
+    var savedFont = 'default';
+    var motionDisabled = false;
+    try {
+      var storedTheme = localStorage.getItem('lachlan_site_theme');
+      if (storedTheme && validThemes.indexOf(storedTheme) !== -1) {
+        savedTheme = storedTheme;
+      }
+      var storedFont = localStorage.getItem('lachlan_font_scale');
+      if (storedFont && validFonts.indexOf(storedFont) !== -1) {
+        savedFont = storedFont;
+      }
+      motionDisabled = localStorage.getItem('lachlan_sticker_motion') === 'disabled';
+    } catch (e) {}
     document.documentElement.setAttribute('data-theme', savedTheme);
-    var savedFont = localStorage.getItem('lachlan_font_scale') || 'default';
     document.documentElement.setAttribute('data-font-scale', savedFont);
-    if (localStorage.getItem('lachlan_sticker_motion') === 'disabled') {
+    if (motionDisabled) {
       document.documentElement.classList.add('stickers-motion-disabled');
     }
   })();

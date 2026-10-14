@@ -2,6 +2,7 @@
 base_url = "https://www.lachlans.world"
 title = "Lachlan's World"
 description = "My personal website!"
+default_language = "en"
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = false
@@ -59,6 +60,7 @@ nav_home = "[ HOME ]"
 nav_blog = "[ BLOG ]"
 nav_ctf = "[ CTF ↗ ]"
 nav_git = "[ GIT ↗ ]"
+nav_desktop = "[ 🖥 Desktop OS ]"
 # Site Search
 search_label = "SEARCH ALL:"
 search_placeholder = "Search... 🔍"
@@ -87,6 +89,8 @@ header_game = "★ Interactive Canvas ★"
 header_music = "★ Audio Deck★ "
 header_status = "★ Server Status ★"
 header_pocket_pet = "★ Pocket_Pet.exe ★"
+header_tags = "★ Tag Cloud / Index ★"
+header_tag_single = "★ Tagged Entries:"
 
 # About Panel Content & Labels
 about_bio = "Welcome to my contribution to the World Wide Web. I am a programmer and cybersecurity graduate into radiofrequency systems, CTF challenges, Linux, and most recently the Reticulum Network Stack. This site is my digital footprint, designed with charm of websites I grew up with."
@@ -111,9 +115,12 @@ counter_label = "YOUR VISIT COUNT:"
 # Blog Archive Strings
 blog_breadcrumb_home = "« Return to Home Portal"
 blog_breadcrumb_archive = "Blog Archive"
+tags_breadcrumb = "Tags"
+tag_prefix = "Tag:"
 blog_header = "★ Blog Archive & Personal Bulletins ★"
 blog_intro_text = "Welcome to the blog archive! All entries are presented in reverse chronological order below. Here you'll find reflections, reviews, and writeups regarding my dabbling with technology."
 blog_read_more = "[ Read Full Post » ]"
+blog_read_short = "[ Read Post » ]"
 blog_no_posts = "No blog posts found in this section yet."
 blog_prev_page = "« Newer Posts"
 blog_next_page = "Older Posts »"
@@ -127,6 +134,11 @@ post_permalink_label = "Entry URL:"
 post_return_blog = "[ Return to Blog Archive ]"
 post_prev = "« Prev:"
 post_next = "Next:"
+
+# Construction & Error Strings
+construction_notice = "⚠ UNDER CONSTRUCTION • WASM ARCADE IN PROGRESS ⚠"
+error_404_header = "★ 404 Not Found ★"
+error_404_message = "The requested page or bulletin could not be found on this server."
 
 # Footer
 footer_view_note = "Best viewed at 1024x768 • Made with Zola SSG"

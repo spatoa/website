@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang | default(value=config.default_language | default(value='en')) }}">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Pocket Pet - {{ config.title }}</title>
   <meta name="description" content="Dedicated 1997 Gen-1 Virtual Pet simulation appliance and installable mobile progressive web app (PWA).">
 
@@ -23,13 +23,13 @@
   <a href="#pet-appliance" class="skip-link">Skip to Pocket Pet controls</a>
 
   <!-- Wallpaper Canvas Centering Frame -->
-  <div class="pet-viewport" role="main">
-    <div class="pet-app-window" id="pet-appliance" role="region" aria-label="Pocket Pet Win32 Appliance">
+  <main class="pet-viewport" role="main">
+    <div class="pet-app-window" id="pet-appliance" role="region" aria-label="Pocket Pet Win32 Appliance" tabindex="-1">
       
       <!-- Classic Win32 Window Title Bar -->
       <div class="panel-header pet-window-header">
         <div class="panel-header-title">
-          <span class="win-icon">🥚</span> Pocket_Pet.exe [Virtual Pet Appliance]
+          <span class="win-icon" aria-hidden="true">🥚</span> Pocket_Pet.exe [Virtual Pet Appliance]
         </div>
         <div class="window-controls">
           <a href="{{ get_url(path='/') }}" class="window-btn" title="Exit to Lachlan's World Website" aria-label="Exit to Website">&#10005;</a>
@@ -37,10 +37,10 @@
       </div>
 
       <!-- Classic Win32 Menu Bar -->
-      <nav class="win-menubar" aria-label="Pocket Pet Menu Bar">
+      <nav class="win-menubar" aria-label="Pocket Pet Menu Bar" role="menubar">
         <!-- File Menu -->
         <div class="win-menu-group">
-          <button type="button" class="win-menu-btn" data-menu="dropdown-file" aria-haspopup="true" aria-expanded="false">
+          <button type="button" class="win-menu-btn" data-menu="dropdown-file" aria-haspopup="true" aria-expanded="false" aria-controls="dropdown-file">
             <span class="access-key">F</span>ile
           </button>
           <div class="win-dropdown-menu" id="dropdown-file" role="menu">
@@ -63,7 +63,7 @@
 
         <!-- Options Menu -->
         <div class="win-menu-group">
-          <button type="button" class="win-menu-btn" data-menu="dropdown-options" aria-haspopup="true" aria-expanded="false">
+          <button type="button" class="win-menu-btn" data-menu="dropdown-options" aria-haspopup="true" aria-expanded="false" aria-controls="dropdown-options">
             <span class="access-key">O</span>ptions
           </button>
           <div class="win-dropdown-menu" id="dropdown-options" role="menu">
@@ -95,12 +95,12 @@
 
         <!-- Help Menu -->
         <div class="win-menu-group">
-          <button type="button" class="win-menu-btn" data-menu="dropdown-help" aria-haspopup="true" aria-expanded="false">
+          <button type="button" class="win-menu-btn" data-menu="dropdown-help" aria-haspopup="true" aria-expanded="false" aria-controls="dropdown-help">
             <span class="access-key">H</span>elp
           </button>
           <div class="win-dropdown-menu" id="dropdown-help" role="menu">
             <button type="button" class="win-dropdown-item" id="menu-help-controls" role="menuitem">
-              📖 How to Play & Controls
+              📖 How to Play &amp; Controls
             </button>
             <button type="button" class="win-dropdown-item" id="menu-help-about" role="menuitem">
               ℹ️ About Pocket_Pet.exe
@@ -115,17 +115,17 @@
         {% include "partials/pocket_pet_deck.html" %}
       </div>
     </div>
-  </div>
+  </main>
 
   <!-- Hidden File Input for Pet Restore -->
-  <input type="file" id="pet-import-file" accept=".json,application/json" style="display:none;" aria-hidden="true">
+  <input type="file" id="pet-import-file" accept=".json,application/json" style="display:none;" aria-hidden="true" tabindex="-1">
 
   <!-- Win32 Help Modal Dialog -->
   <div class="modal-overlay" id="pet-help-modal" role="dialog" aria-modal="true" aria-labelledby="help-dialog-title">
     <div class="modal-window">
       <div class="panel-header modal-header">
         <div class="panel-header-title" id="help-dialog-title">
-          <span class="win-icon">📖</span> Pocket Pet Help &amp; Controls
+          <span class="win-icon" aria-hidden="true">📖</span> Pocket Pet Help &amp; Controls
         </div>
         <button type="button" class="window-btn modal-close-trigger" data-target="pet-help-modal" title="Close" aria-label="Close dialog">&#10005;</button>
       </div>
@@ -161,7 +161,7 @@
     <div class="modal-window">
       <div class="panel-header modal-header">
         <div class="panel-header-title" id="about-dialog-title">
-          <span class="win-icon">ℹ️</span> About Pocket_Pet.exe
+          <span class="win-icon" aria-hidden="true">ℹ️</span> About Pocket_Pet.exe
         </div>
         <button type="button" class="window-btn modal-close-trigger" data-target="pet-about-modal" title="Close" aria-label="Close dialog">&#10005;</button>
       </div>

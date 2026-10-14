@@ -7,11 +7,11 @@
          style="width: 580px; max-width: calc(100vw - 20px);">
   <div class="panel-header">
     <div class="panel-header-title">
-      <span class="win-icon">&#128221;</span> Blog_Reader.exe &bull; Bulletin Viewer
+      <span class="win-icon" aria-hidden="true">&#128221;</span> Blog_Reader.exe &bull; Bulletin Viewer
     </div>
     <div class="window-controls">
-      <button type="button" class="window-btn" id="reader-min-btn" title="Minimize">_</button>
-      <button type="button" class="window-btn" id="reader-close-btn" title="Close">&#10005;</button>
+      <button type="button" class="window-btn" id="reader-min-btn" title="Minimize" aria-label="Minimize Blog_Reader.exe">_</button>
+      <button type="button" class="window-btn" id="reader-close-btn" title="Close" aria-label="Close Blog_Reader.exe">&#10005;</button>
     </div>
   </div>
 
@@ -42,18 +42,18 @@
             <header class="single-post-header">
               <h2 class="single-post-title" style="font-size: 18px; margin: 4px 0;">{{ post.title }}</h2>
               <div class="single-post-meta">
-                <span>&#128197; <strong>Date:</strong> {{ post.date | date(format="%B %d, %Y") }}</span>
-                <span class="meta-sep">|</span>
-                <span>&#9201; <strong>Reading Time:</strong> {{ post.reading_time }} min</span>
+                <span><span aria-hidden="true">&#128197;</span> <strong>Date:</strong> <time datetime="{{ post.date | date(format='%Y-%m-%d') }}">{{ post.date | date(format="%B %d, %Y") }}</time></span>
+                <span class="meta-sep" aria-hidden="true">|</span>
+                <span><span aria-hidden="true">&#9201;</span> <strong>Reading Time:</strong> {{ post.reading_time }} min</span>
                 {% if post.taxonomies.tags %}
-                  <span class="meta-sep">|</span>
+                  <span class="meta-sep" aria-hidden="true">|</span>
                   {% for tag in post.taxonomies.tags %}
                     <span class="tag-pill">#{{ tag }}</span>
                   {% endfor %}
                 {% endif %}
               </div>
             </header>
-            <hr class="dotted-hr" style="margin: 8px 0;">
+            <hr class="dotted-hr" style="margin: 8px 0;" aria-hidden="true">
             <div class="markdown-content reader-markdown">
               {{ post.content | safe }}
             </div>
@@ -66,7 +66,7 @@
 
     <!-- Reader Status Bar -->
     <div class="reader-statusbar">
-      <span id="reader-status-info">DOCUMENT LOADED &bull; 100% READY</span>
+      <span id="reader-status-info" aria-live="polite">DOCUMENT LOADED &bull; 100% READY</span>
       <span>MODE: LOCAL CACHE</span>
     </div>
   </div>

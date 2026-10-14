@@ -3,11 +3,20 @@
  * Enables 100% offline gameplay, fast cached asset delivery, and standalone mobile app experience.
  */
 
-const CACHE_NAME = 'lachlan-pocket-pet-v1';
+const CACHE_NAME = 'lachlan-pocket-pet-v2';
 const PRECACHE_ASSETS = [
   '/pet/',
   '/pet',
   '/css/style.css',
+  '/css/tokens.css',
+  '/css/base.css',
+  '/css/layout.css',
+  '/css/components/panel.css',
+  '/css/components/pocket_pet_tokens.css',
+  '/css/components/pocket_pet.css',
+  '/css/components/pet_standalone.css',
+  '/css/components/cursor.css',
+  '/js/theme-switcher.js',
   '/js/pocket_pet.js',
   '/js/pet-standalone.js',
   '/stickers/pocket_pet-egg.svg',
@@ -64,8 +73,8 @@ self.addEventListener('fetch', function (event) {
           if (response && response.status === 200) {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then(function (cache) {
-              cache.put(event.request, responseClone);
-            });
+              return cache.put(event.request, responseClone);
+            }).catch(function () {});
           }
           return response;
         })
@@ -94,9 +103,10 @@ self.addEventListener('fetch', function (event) {
         // Fetch in background to update cache (stale-while-revalidate)
         fetch(event.request).then(function (networkResponse) {
           if (networkResponse && networkResponse.status === 200) {
+            const clone = networkResponse.clone();
             caches.open(CACHE_NAME).then(function (cache) {
-              cache.put(event.request, networkResponse);
-            });
+              return cache.put(event.request, clone);
+            }).catch(function () {});
           }
         }).catch(function () {});
         return cachedResponse;
@@ -108,9 +118,11 @@ self.addEventListener('fetch', function (event) {
         }
         const responseToCache = networkResponse.clone();
         caches.open(CACHE_NAME).then(function (cache) {
-          cache.put(event.request, responseToCache);
-        });
+          return cache.put(event.request, responseToCache);
+        }).catch(function () {});
         return networkResponse;
+      }).catch(function () {
+        return new Response('', { status: 503, statusText: 'Offline' });
       });
     })
   );

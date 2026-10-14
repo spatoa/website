@@ -3,16 +3,16 @@
     <a href="{{ get_url(path='/') }}" class="nav-btn">{{ config.extra.strings.nav_home | default(value="[ HOME ]") }}</a>
     <a href="{{ get_url(path='blog/') }}" class="nav-btn">{{ config.extra.strings.nav_blog | default(value="[ BLOG ]") }}</a>
     <a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener" class="nav-btn">{{ config.extra.strings.nav_ctf | default(value="[ CTF ↗ ]") }}</a>
-    <a href="{{ get_url(path='desktop/') }}" class="nav-btn" title="Launch Interactive Retro Web OS">[ &#128421; Desktop OS ]</a>
+    <a href="{{ get_url(path='desktop/') }}" class="nav-btn" title="Launch Interactive Retro Web OS">{{ config.extra.strings.nav_desktop | default(value="[ &#128421; Desktop OS ]") | safe }}</a>
   </div>
 
   <div class="nav-controls">
     <!-- Accessible Font Size Toggle -->
-    <div class="font-size-box">
+    <div class="font-size-box" role="group" aria-label="Font size controls">
       <span class="toolbar-label">{{ config.extra.strings.font_size_label | default(value="TEXT:") }}</span>
-      <button class="font-btn" id="font-btn-sm" data-font-scale="default" title="Default compact font (11px)">A-</button>
-      <button class="font-btn" id="font-btn-md" data-font-scale="medium" title="Medium readable font (13px)">A</button>
-      <button class="font-btn" id="font-btn-lg" data-font-scale="large" title="Large accessible font (15px)">A+</button>
+      <button type="button" class="font-btn" id="font-btn-sm" data-font-scale="default" title="Default compact font (11px)" aria-label="Small font size (11px)" aria-pressed="true">A-</button>
+      <button type="button" class="font-btn" id="font-btn-md" data-font-scale="medium" title="Medium readable font (13px)" aria-label="Medium font size (13px)" aria-pressed="false">A</button>
+      <button type="button" class="font-btn" id="font-btn-lg" data-font-scale="large" title="Large accessible font (15px)" aria-label="Large font size (15px)" aria-pressed="false">A+</button>
     </div>
 
     <!-- Theme Selector -->
@@ -52,7 +52,7 @@
           <button type="button" id="search-close-btn" class="search-close-btn" title="{{ config.extra.strings.search_close_title | default(value="Close search results") }}" aria-label="{{ config.extra.strings.search_close_title | default(value="Close search results") }}">[x]</button>
         </div>
         <div id="search-status-bar" class="search-status-bar" aria-live="polite"></div>
-        <ul id="search-results-list" class="search-results-list" role="listbox"></ul>
+        <ul id="search-results-list" class="search-results-list" role="listbox" aria-label="{{ config.extra.strings.search_results_title | default(value="SEARCH RESULTS") }}"></ul>
       </div>
     </div>
   </div>

@@ -7,44 +7,44 @@
          data-default-y="50">
   <div class="panel-header">
     <div class="panel-header-title">
-      <span class="win-icon">🎵</span> {{ config.extra.strings.header_music | default(value="★ Audio Deck ★") }}
+      <span class="win-icon" aria-hidden="true">🎵</span> {{ config.extra.strings.header_music | default(value="★ Audio Deck ★") }}
     </div>
   </div>
   <div class="panel-body winamp-panel-body">
     <!-- Green LCD Track Display -->
     <div class="winamp-display">
       <div class="winamp-time-box">
-        <span id="music-time">00:00</span>
+        <span id="music-time" aria-label="Elapsed playback time">00:00</span>
       </div>
       <div class="winamp-track-marquee-box">
-        <div id="music-track-title" class="winamp-marquee">1. SPATOA - TEST 1 [8-BIT CHIPTUNE]</div>
+        <div id="music-track-title" class="winamp-marquee" aria-live="polite">1. SPATOA - TEST 1 [8-BIT CHIPTUNE]</div>
       </div>
       <div class="winamp-bitrate">128 KBPS</div>
     </div>
 
     <!-- Mini Spectrum Visualizer Canvas -->
     <div class="winamp-vis-container">
-      <canvas id="winamp-visualizer" width="360" height="36"></canvas>
+      <canvas id="winamp-visualizer" width="360" height="36" role="img" aria-label="Audio spectrum equalizer visualizer"></canvas>
     </div>
 
     <!-- Player Controls -->
     <div class="winamp-controls">
-      <div class="winamp-btns">
-        <button class="retro-btn winamp-btn" id="music-prev" title="Previous Track">&#9664;&#9664;</button>
-        <button class="retro-btn winamp-btn" id="music-play" title="Play">&#9658;</button>
-        <button class="retro-btn winamp-btn" id="music-pause" title="Pause">&#10074;&#10074;</button>
-        <button class="retro-btn winamp-btn" id="music-stop" title="Stop">&#9632;</button>
-        <button class="retro-btn winamp-btn" id="music-next" title="Next Track">&#9654;&#9654;</button>
+      <div class="winamp-btns" role="group" aria-label="Audio playback controls">
+        <button type="button" class="retro-btn winamp-btn" id="music-prev" title="Previous Track" aria-label="Previous Track">&#9664;&#9664;</button>
+        <button type="button" class="retro-btn winamp-btn" id="music-play" title="Play" aria-label="Play">&#9658;</button>
+        <button type="button" class="retro-btn winamp-btn" id="music-pause" title="Pause" aria-label="Pause">&#10074;&#10074;</button>
+        <button type="button" class="retro-btn winamp-btn" id="music-stop" title="Stop" aria-label="Stop">&#9632;</button>
+        <button type="button" class="retro-btn winamp-btn" id="music-next" title="Next Track" aria-label="Next Track">&#9654;&#9654;</button>
       </div>
 
       <div class="winamp-volume-box">
         <label for="music-volume" class="vol-label">VOL:</label>
-        <input type="range" id="music-volume" min="0" max="100" value="65" class="retro-slider">
+        <input type="range" id="music-volume" min="0" max="100" value="65" class="retro-slider" aria-label="Volume">
       </div>
     </div>
 
     <div class="winamp-status-note">
-      <span id="music-status-txt">&#9658; READY TO PLAY &bull; CLICK PLAY FOR CHIPTUNE BGM</span>
+      <span id="music-status-txt" aria-live="polite">&#9658; READY TO PLAY &bull; CLICK PLAY FOR CHIPTUNE BGM</span>
     </div>
   </div>
 </section>

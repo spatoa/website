@@ -1,27 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="breadcrumbs-bar">
-  <a href="{{ get_url(path='/') }}">&laquo; Home</a> / 
-  <a href="{{ get_url(path='blog/') }}">Blog Archive</a> / 
-  <span>Tag: #{{ term.name }}</span>
-</div>
+<nav aria-label="Breadcrumbs" class="breadcrumbs-bar">
+  <a href="{{ get_url(path='/') }}">{{ config.extra.strings.blog_breadcrumb_home | default(value="&laquo; Home") | safe }}</a> / 
+  <a href="{{ get_url(path='blog/') }}">{{ config.extra.strings.blog_breadcrumb_archive | default(value="Blog Archive") }}</a> / 
+  <a href="{{ get_url(path='tags/') }}">{{ config.extra.strings.tags_breadcrumb | default(value="Tags") }}</a> / 
+  <span aria-current="page">{{ config.extra.strings.tag_prefix | default(value="Tag:") }} #{{ term.name }}</span>
+</nav>
 
-<section class="panel">
-  <div class="panel-header">&#9733; Tagged Entries: #{{ term.name }} &#9733;</div>
+<section class="panel" aria-labelledby="taxonomy-single-heading">
+  <div class="panel-header" id="taxonomy-single-heading">{{ config.extra.strings.header_tag_single | default(value="★ Tagged Entries:") }} #{{ term.name }} &#9733;</div>
   <div class="panel-body">
     <div class="recent-posts-list">
       {% for post in term.pages %}
         <article class="recent-post-item">
           <div class="post-item-header">
-            <span class="post-date-badge">{{ post.date | date(format="%Y-%m-%d") }}</span>
+            <time class="post-date-badge" datetime="{{ post.date | date(format='%Y-%m-%d') }}">{{ post.date | date(format="%Y-%m-%d") }}</time>
             <a href="{{ post.permalink }}" class="post-item-title">{{ post.title }}</a>
           </div>
           {% if post.description %}
             <p class="post-item-summary">{{ post.description }}</p>
+          {% elif post.summary %}
+            <p class="post-item-summary">{{ post.summary | striptags | truncate(length=120) }}</p>
           {% endif %}
           <div class="post-readmore">
-            <a href="{{ post.permalink }}">[ Read Post &raquo; ]</a>
+            <a href="{{ post.permalink }}">{{ config.extra.strings.blog_read_short | default(value="[ Read Post &raquo; ]") | safe }}</a>
           </div>
         </article>
       {% endfor %}

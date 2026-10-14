@@ -2,13 +2,13 @@
 
 {% block content %}
 <div class="blog-archive-container">
-  <div class="breadcrumbs-bar">
+  <nav aria-label="Breadcrumbs" class="breadcrumbs-bar">
     <a href="{{ get_url(path='/') }}">{{ config.extra.strings.blog_breadcrumb_home | default(value="&laquo; Return to Home Portal") | safe }}</a> / 
-    <span>{{ config.extra.strings.blog_breadcrumb_archive | default(value="Blog Archive") }}</span>
-  </div>
+    <span aria-current="page">{{ config.extra.strings.blog_breadcrumb_archive | default(value="Blog Archive") }}</span>
+  </nav>
 
-  <section class="panel blog-main-panel">
-    <div class="panel-header">{{ config.extra.strings.blog_header | default(value="★ Blog Archive & Personal Bulletins ★") }}</div>
+  <section class="panel blog-main-panel" aria-labelledby="blog-archive-heading">
+    <div class="panel-header" id="blog-archive-heading">{{ config.extra.strings.blog_header | default(value="★ Blog Archive & Personal Bulletins ★") }}</div>
     <div class="panel-body">
       <div class="blog-intro-box">
         <p>
@@ -27,7 +27,7 @@
           {% for post in posts %}
             <article class="blog-entry-card">
               <div class="blog-entry-header">
-                <span class="blog-date-badge">{{ post.date | date(format="%b %d, %Y") }}</span>
+                <time class="blog-date-badge" datetime="{{ post.date | date(format='%Y-%m-%d') }}">{{ post.date | date(format="%b %d, %Y") }}</time>
                 <h2 class="blog-entry-title">
                   <a href="{{ post.permalink }}">{{ post.title }}</a>
                 </h2>
@@ -37,7 +37,7 @@
                 <div class="blog-tags-bar">
                   <span class="tags-label">Tags:</span>
                   {% for tag in post.taxonomies.tags %}
-                    <span class="tag-pill">#{{ tag }}</span>
+                    <a href="{{ get_taxonomy_url(kind='tags', name=tag) | safe }}" class="tag-pill">#{{ tag }}</a>
                   {% endfor %}
                 </div>
               {% endif %}
@@ -60,19 +60,19 @@
         </div>
 
         {% if paginator %}
-          <nav class="pagination-bar">
+          <nav class="pagination-bar" aria-label="Blog Pagination">
             {% if paginator.previous %}
-              <a href="{{ paginator.previous }}" class="retro-btn">{{ config.extra.strings.blog_prev_page | default(value="&laquo; Newer Posts") | safe }}</a>
+              <a href="{{ paginator.previous }}" class="retro-btn" rel="prev">{{ config.extra.strings.blog_prev_page | default(value="&laquo; Newer Posts") | safe }}</a>
             {% else %}
-              <span class="retro-btn disabled">{{ config.extra.strings.blog_prev_page | default(value="&laquo; Newer Posts") | safe }}</span>
+              <span class="retro-btn disabled" aria-disabled="true">{{ config.extra.strings.blog_prev_page | default(value="&laquo; Newer Posts") | safe }}</span>
             {% endif %}
 
             <span class="page-counter">Page {{ paginator.current_index }} of {{ paginator.number_pagers }}</span>
 
             {% if paginator.next %}
-              <a href="{{ paginator.next }}" class="retro-btn">{{ config.extra.strings.blog_next_page | default(value="Older Posts &raquo;") | safe }}</a>
+              <a href="{{ paginator.next }}" class="retro-btn" rel="next">{{ config.extra.strings.blog_next_page | default(value="Older Posts &raquo;") | safe }}</a>
             {% else %}
-              <span class="retro-btn disabled">{{ config.extra.strings.blog_next_page | default(value="Older Posts &raquo;") | safe }}</span>
+              <span class="retro-btn disabled" aria-disabled="true">{{ config.extra.strings.blog_next_page | default(value="Older Posts &raquo;") | safe }}</span>
             {% endif %}
           </nav>
         {% endif %}

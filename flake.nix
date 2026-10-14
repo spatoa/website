@@ -25,6 +25,9 @@
             shellHook = ''
               export PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}"
               export PLAYWRIGHT_NODEJS_PATH="${pkgs.nodejs}/bin/node"
+              export CHROME_BIN="/run/current-system/sw/bin/chromium"
+              export CHROME_PATH="/run/current-system/sw/bin/chromium"
+              export BROWSER="/run/current-system/sw/bin/chromium"
             '';
           };
         });
@@ -39,8 +42,23 @@
             version = "0.1.0";
             src = ./.;
             nativeBuildInputs = [ pkgs.zola ];
-            buildPhase = "zola build";
-            installPhase = "cp -r public $out";
+            doCheck = true;
+            checkPhase = ''
+              runHook preCheck
+              zola check
+              runHook postCheck
+            '';
+            buildPhase = ''
+              runHook preBuild
+              zola build
+              runHook postBuild
+            '';
+            installPhase = ''
+              runHook preInstall
+              mkdir -p "$out"
+              cp -r public/. "$out/"
+              runHook postInstall
+            '';
           };
         });
     };

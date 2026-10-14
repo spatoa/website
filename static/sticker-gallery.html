@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="cyber-y2k">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lachlan's World - Complete Sticker Collection Gallery</title>
   <link rel="stylesheet" href="/css/style.css">
   <style>
     body {
       padding: 20px;
       font-family: Tahoma, Verdana, sans-serif;
-      background: var(--page-bg, #f4f1ea);
+      background-color: var(--bg-page, #f4f1ea);
       color: var(--text-primary, #1e293b);
     }
     .gallery-container {
@@ -22,7 +23,7 @@
       margin-top: 20px;
       padding: 16px;
       background: var(--panel-bg, #ffffff);
-      border: 2px outset #ffffff;
+      border: 2px outset var(--bevel-light, #ffffff);
       box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
     }
     .gallery-card {
@@ -32,7 +33,7 @@
       justify-content: center;
       padding: 12px;
       background: var(--panel-inner-bg, #f8fafc);
-      border: 1px inset #cbd5e1;
+      border: 1px inset var(--panel-border, #cbd5e1);
       min-height: 110px;
       text-align: center;
     }
@@ -71,23 +72,23 @@
   </style>
 </head>
 <body data-theme="cyber-y2k">
-  <div class="gallery-container">
-    <div class="panel">
+  <main class="gallery-container" role="main">
+    <section class="panel" aria-labelledby="gallery-heading">
       <div class="panel-header">
-        <div class="panel-header-title">★ LACHLAN'S WORLD // COMPLETE STICKER ARCHIVE (27 TOTAL) ★</div>
+        <h1 class="panel-header-title" id="gallery-heading" style="margin: 0; font-size: 11px;">★ LACHLAN'S WORLD // COMPLETE STICKER ARCHIVE (27 TOTAL) ★</h1>
       </div>
       <div class="panel-body" style="padding: 14px;">
         <p style="margin: 0 0 10px 0; font-size: 12px;">
           Showcasing all 18 original stickers alongside the 9 brand new authentic early-2000s stickers (Floppy Disk, CTF Terminal Flag, W3C CSS Valid, RSS 2.0 Feed, Burned CD-R, Y2K Flip Phone, Reticulum RF Tower, Hatched Pocket Pet, and 1024x768 Resolution Badge).
         </p>
-        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-          <button type="button" class="retro-btn" onclick="document.body.setAttribute('data-theme', 'windows')">Windows Classic</button>
-          <button type="button" class="retro-btn" onclick="document.body.setAttribute('data-theme', 'midnight')">Midnight (Dark)</button>
-          <button type="button" class="retro-btn" onclick="document.body.setAttribute('data-theme', 'cyber-y2k')">Cyber-Y2K</button>
-          <button type="button" class="retro-btn" onclick="document.body.setAttribute('data-theme', 'scene-punk')">Scene Punk</button>
+        <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;" role="group" aria-label="Gallery theme switcher">
+          <button type="button" class="retro-btn" data-gallery-theme="windows">Windows Classic</button>
+          <button type="button" class="retro-btn" data-gallery-theme="midnight">Midnight (Dark)</button>
+          <button type="button" class="retro-btn" data-gallery-theme="cyber-y2k">Cyber-Y2K</button>
+          <button type="button" class="retro-btn" data-gallery-theme="scene-punk">Scene Punk</button>
         </div>
 
-        <h3 style="font-size: 13px; margin: 12px 0 6px 0; color: #b45309;">✦ NEW STICKERS (9 ADDITIONS)</h3>
+        <h2 style="font-size: 13px; margin: 12px 0 6px 0; color: var(--accent-gold, #b45309);">✦ NEW STICKERS (9 ADDITIONS)</h2>
         <div class="gallery-grid" id="new-stickers">
           <div class="gallery-card">
             <img src="/stickers/floppy-disk.svg" alt="Floppy Disk">
@@ -136,7 +137,7 @@
           </div>
         </div>
 
-        <h3 style="font-size: 13px; margin: 20px 0 6px 0; color: #475569;">✦ ORIGINAL STICKERS (18 CLASSICS)</h3>
+        <h2 style="font-size: 13px; margin: 20px 0 6px 0; color: var(--text-muted, #475569);">✦ ORIGINAL STICKERS (18 CLASSICS)</h2>
         <div class="gallery-grid" id="og-stickers">
           <div class="gallery-card"><img src="/stickers/notepad-made.svg" alt="Notepad"><div class="card-label">notepad-made</div><span class="badge-tag tag-og">SWAY</span></div>
           <div class="gallery-card"><img src="/stickers/xhtml-valid.svg" alt="XHTML"><div class="card-label">xhtml-valid</div><span class="badge-tag tag-og">SWAY</span></div>
@@ -158,7 +159,16 @@
           <div class="gallery-card"><img src="/stickers/under-construction.svg" alt="Under Construction"><div class="card-label">under-construction</div><span class="badge-tag tag-og">FLOAT</span></div>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
+  <script>
+    document.querySelectorAll('[data-gallery-theme]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var theme = btn.getAttribute('data-gallery-theme');
+        document.documentElement.setAttribute('data-theme', theme);
+        document.body.setAttribute('data-theme', theme);
+      });
+    });
+  </script>
 </body>
 </html>

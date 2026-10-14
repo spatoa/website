@@ -3,7 +3,7 @@
  * Lachlan's World (Web 2.0)
  *
  * Provides an interactive 3D warp screensaver running on HTML5 Canvas,
- * with mouse/touch steering, burst clicks, and control buttons.
+ * with hybrid pointer/mouse/touch steering, burst clicks, and control buttons.
  * Primed for hot-swapping with a custom WebAssembly binary via window.GamePlayerWasm.
  */
 
@@ -32,12 +32,14 @@
 
   // Simulation Parameters
   const NUM_STARS = 450;
-  let width = canvas.width;
-  let height = canvas.height;
+  let width = canvas.width || 380;
+  let height = canvas.height || 200;
   let cx = width / 2;
   let cy = height / 2;
 
   let isPaused = false;
+  let animFrameId = null;
+  let burstTimer = null;
   let currentSpeed = 3.5;
   let targetSpeed = 3.5;
   let warpModeIndex = 0;
@@ -62,7 +64,6 @@
   let currentOffsetY = 0;
 
   // FPS Tracking
-  let lastTime = performance.now();
   let frameCount = 0;
   let fps = 60;
   let lastFpsUpdate = performance.now();
@@ -87,7 +88,6 @@
   function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
-      // Keep internal coordinate resolution crisp for pixel-style retro canvas
       canvas.width = Math.floor(rect.width);
       canvas.height = Math.floor(rect.height);
       width = canvas.width;
@@ -100,36 +100,24 @@
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
-  // Mouse & Touch Interaction
+  // Hybrid Pointer / Mouse / Touch Interaction (prevents duplicate touch+mouse event conflicts)
   function handlePointerMove(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
     const px = clientX - rect.left;
     const py = clientY - rect.top;
     targetOffsetX = (px - rect.width / 2) * 0.65;
     targetOffsetY = (py - rect.height / 2) * 0.65;
   }
 
-  canvas.addEventListener('mousemove', function (e) {
-    handlePointerMove(e.clientX, e.clientY);
-  });
-
-  canvas.addEventListener('mouseleave', function () {
-    targetOffsetX = 0;
-    targetOffsetY = 0;
-  });
-
-  canvas.addEventListener('touchmove', function (e) {
-    if (e.touches.length > 0) {
-      handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
-      e.preventDefault();
-    }
-  }, { passive: false });
-
-  // Burst on click/touch
   function triggerBurst() {
     targetSpeed = 22.0;
-    setTimeout(function () {
+    if (burstTimer) {
+      clearTimeout(burstTimer);
+    }
+    burstTimer = setTimeout(function () {
       targetSpeed = warpSpeeds[warpModeIndex].speed;
+      burstTimer = null;
     }, 400);
 
     for (let i = 0; i < 60; i++) {
@@ -138,10 +126,58 @@
     }
   }
 
-  canvas.addEventListener('click', triggerBurst);
-  canvas.addEventListener('touchstart', function (e) {
-    triggerBurst();
-  }, { passive: true });
+  let lastTouchTime = 0;
+  if ('PointerEvent' in window) {
+    canvas.addEventListener('pointermove', function (e) {
+      handlePointerMove(e.clientX, e.clientY);
+    });
+    canvas.addEventListener('pointerleave', function () {
+      targetOffsetX = 0;
+      targetOffsetY = 0;
+    });
+    canvas.addEventListener('pointerdown', function () {
+      triggerBurst();
+    });
+  } else {
+    canvas.addEventListener('mousemove', function (e) {
+      if (Date.now() - lastTouchTime < 500) return;
+      handlePointerMove(e.clientX, e.clientY);
+    });
+    canvas.addEventListener('mouseleave', function () {
+      targetOffsetX = 0;
+      targetOffsetY = 0;
+    });
+    canvas.addEventListener('touchmove', function (e) {
+      lastTouchTime = Date.now();
+      if (e.touches.length > 0) {
+        handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+    canvas.addEventListener('touchstart', function () {
+      lastTouchTime = Date.now();
+      triggerBurst();
+    }, { passive: true });
+    canvas.addEventListener('click', function () {
+      if (Date.now() - lastTouchTime < 500) return;
+      triggerBurst();
+    });
+  }
+
+  function startLoop() {
+    if (isPaused) return;
+    if (animFrameId === null) {
+      lastFpsUpdate = performance.now();
+      frameCount = 0;
+      animFrameId = requestAnimationFrame(render);
+    }
+  }
+
+  function stopLoop() {
+    if (animFrameId !== null) {
+      cancelAnimationFrame(animFrameId);
+      animFrameId = null;
+    }
+  }
 
   // Control Buttons
   if (btnWarp) {
@@ -157,8 +193,14 @@
     btnToggle.addEventListener('click', function () {
       isPaused = !isPaused;
       btnToggle.textContent = isPaused ? 'Resume Simulation' : 'Pause / Play';
+      btnToggle.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
       if (statusEl) {
         statusEl.textContent = isPaused ? 'STATUS: PAUSED' : `STATUS: RUNNING (${fps} FPS)`;
+      }
+      if (isPaused) {
+        stopLoop();
+      } else {
+        startLoop();
       }
     });
   }
@@ -175,8 +217,6 @@
     if (e.detail && e.detail.theme) {
       if (e.detail.theme === 'paper') {
         themeIndex = 2; // STARS: AMBER RETRO
-      } else if (e.detail.theme === 'windows') {
-        themeIndex = 0; // STARS: MONOCHROME
       } else {
         themeIndex = 0; // STARS: MONOCHROME
       }
@@ -186,21 +226,47 @@
     }
   });
 
-  // Screensaver lifecycle controls (called by Desktop Window Manager on close/open)
+  // Screensaver lifecycle controls (called by Desktop Window Manager on close/open/teardown)
   window.stopScreensaver = function () {
     isPaused = true;
+    stopLoop();
+    if (btnToggle) {
+      btnToggle.textContent = 'Resume Simulation';
+      btnToggle.setAttribute('aria-pressed', 'true');
+    }
+    if (statusEl) {
+      statusEl.textContent = 'STATUS: PAUSED';
+    }
   };
 
   window.startScreensaver = function () {
     isPaused = false;
+    if (btnToggle) {
+      btnToggle.textContent = 'Pause / Play';
+      btnToggle.setAttribute('aria-pressed', 'false');
+    }
+    if (statusEl) {
+      statusEl.textContent = `STATUS: RUNNING (${fps} FPS)`;
+    }
     resizeCanvas();
+    startLoop();
   };
 
   // Animation Loop
   function render(time) {
-    requestAnimationFrame(render);
+    if (isPaused) {
+      animFrameId = null;
+      return;
+    }
 
-    if (isPaused) return;
+    // If inside a closed or minimized desktop window, pause loop to save CPU/GPU
+    const parentWin = canvas.closest('.desktop-window');
+    if (parentWin && (parentWin.classList.contains('window-closed') || parentWin.classList.contains('window-minimized'))) {
+      animFrameId = null;
+      return;
+    }
+
+    animFrameId = requestAnimationFrame(render);
 
     // Smooth speed interpolation
     currentSpeed += (targetSpeed - currentSpeed) * 0.1;
@@ -271,5 +337,5 @@
     }
   }
 
-  requestAnimationFrame(render);
+  startLoop();
 })();

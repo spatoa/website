@@ -12,14 +12,14 @@
     <div class="status-divider"></div>
     <div class="status-counter-section text-center">
       <div class="counter-label">{{ config.extra.strings.counter_label | default(value="YOUR VISIT COUNT:") }}</div>
-      <div class="counter-box" id="counter-box">
-        <span class="counter-digit">0</span>
-        <span class="counter-digit">0</span>
-        <span class="counter-digit">0</span>
-        <span class="counter-digit">0</span>
-        <span class="counter-digit">0</span>
-        <span class="counter-digit">0</span>
-        <span class="counter-digit">1</span>
+      <div class="counter-box" id="counter-box" role="status" aria-label="Visit count: 1">
+        <span class="counter-digit" aria-hidden="true">0</span>
+        <span class="counter-digit" aria-hidden="true">0</span>
+        <span class="counter-digit" aria-hidden="true">0</span>
+        <span class="counter-digit" aria-hidden="true">0</span>
+        <span class="counter-digit" aria-hidden="true">0</span>
+        <span class="counter-digit" aria-hidden="true">0</span>
+        <span class="counter-digit" aria-hidden="true">1</span>
       </div>
       <div class="counter-subtext" id="counter-subtext">Logging user session...</div>
     </div>

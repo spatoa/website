@@ -16,23 +16,23 @@
         <h1 class="single-post-title p-name" itemprop="headline">{{ page.title }}</h1>
         
         <div class="single-post-meta">
-          <span>&#128197; <strong>{{ config.extra.strings.post_date_prefix | default(value="Published:") }}</strong> 
+          <span><span aria-hidden="true">&#128197;</span> <strong>{{ config.extra.strings.post_date_prefix | default(value="Published:") }}</strong> 
             <time itemprop="datePublished" datetime="{{ page.date | date(format='%Y-%m-%d') }}" class="dt-published">{{ page.date | date(format="%B %d, %Y") }}</time>
           </span>
           <span class="meta-sep" aria-hidden="true">|</span>
           <span itemprop="author" itemscope itemtype="http://schema.org/Person" class="p-author">
-            &#128100; <strong>{{ config.extra.strings.post_author_prefix | default(value="Author:") }}</strong> 
+            <span aria-hidden="true">&#128100;</span> <strong>{{ config.extra.strings.post_author_prefix | default(value="Author:") }}</strong> 
             <span itemprop="name" rel="author">{{ page.extra.author | default(value=config.extra.author_name) }}</span>
           </span>
           <span class="meta-sep" aria-hidden="true">|</span>
-          <span>&#9201; <strong>{{ config.extra.strings.post_reading_time_prefix | default(value="Reading Time:") }}</strong> {{ page.reading_time }} min read</span>
+          <span><span aria-hidden="true">&#9201;</span> <strong>{{ config.extra.strings.post_reading_time_prefix | default(value="Reading Time:") }}</strong> {{ page.reading_time }} min read</span>
         </div>
 
         {% if page.taxonomies.tags %}
           <div class="post-tags-row">
             <span class="tags-label">{{ config.extra.strings.post_tags_prefix | default(value="Categorized as:") }}</span>
             {% for tag in page.taxonomies.tags %}
-              <span class="tag-pill p-category">#{{ tag }}</span>
+              <a href="{{ get_taxonomy_url(kind='tags', name=tag) | safe }}" class="tag-pill p-category">#{{ tag }}</a>
             {% endfor %}
           </div>
         {% endif %}

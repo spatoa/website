@@ -7,26 +7,26 @@
          data-default-y="350">
   <div class="panel-header">
     <div class="panel-header-title">
-      <span class="win-icon">🎮</span> {{ config.extra.strings.header_game | default(value="★ Interactive Canvas ★") }}
+      <span class="win-icon" aria-hidden="true">🎮</span> {{ config.extra.strings.header_game | default(value="★ Interactive Canvas ★") }}
     </div>
   </div>
   <div class="panel-body">
     <div class="game-viewport-wrap">
-      <canvas id="wasm-canvas" width="380" height="200"></canvas>
+      <canvas id="wasm-canvas" width="380" height="200" role="img" aria-label="Interactive 3D Starfield Simulation"></canvas>
       <div class="canvas-overlay-notice">Move cursor / touch to steer warp &bull; Click to burst stars</div>
     </div>
     <div class="win-statusbar">
-      <span id="canvas-status">STATUS: RUNNING (60 FPS)</span>
+      <span id="canvas-status" aria-live="off">STATUS: RUNNING (60 FPS)</span>
       <span id="canvas-mode">MODE: 3D STARFIELD</span>
     </div>
 
-    <div class="arcade-controls">
-      <button class="retro-btn" id="btn-warp">Hyperdrive Speed</button>
-      <button class="retro-btn" id="btn-toggle">Pause / Play</button>
-      <button class="retro-btn" id="btn-theme">Toggle Color</button>
+    <div class="arcade-controls" role="group" aria-label="Starfield simulation controls">
+      <button type="button" class="retro-btn" id="btn-warp" aria-label="Cycle warp speed">Hyperdrive Speed</button>
+      <button type="button" class="retro-btn" id="btn-toggle" aria-pressed="false" aria-label="Pause or play simulation">Pause / Play</button>
+      <button type="button" class="retro-btn" id="btn-theme" aria-label="Cycle starfield color palette">Toggle Color</button>
     </div>
     <div class="wasm-notice">
-      &#9881; <em>Placeholder for upcoming WASM game binary / retro desktop env.</em>
+      <span aria-hidden="true">&#9881;</span> <em>Placeholder for upcoming WASM game binary / retro desktop env.</em>
     </div>
   </div>
 </section>

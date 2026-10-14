@@ -39,6 +39,22 @@
     border: 0;
 }
 
+/* Accessible Keyboard Focus Indicator */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[role="menuitem"]:focus-visible,
+[role="tab"]:focus-visible,
+[role="treeitem"]:focus-visible,
+[role="option"]:focus-visible,
+[tabindex="0"]:focus-visible {
+    outline: 2px dashed var(--accent-gold, #b45309) !important;
+    outline-offset: 2px !important;
+}
+
 /* Cursor */
 * {
     box-sizing: border-box;

@@ -26,7 +26,8 @@
 }
 
 .desktop-sticker:active,
-.desktop-sticker.is-dragging {
+.desktop-sticker.is-dragging,
+.desktop-sticker.dragging {
     cursor: grabbing;
     z-index: 1000;
     filter: drop-shadow(4px 8px 12px rgba(0, 0, 0, 0.65));
@@ -34,8 +35,10 @@
 
 .desktop-sticker:active img,
 .desktop-sticker.is-dragging img,
+.desktop-sticker.dragging img,
 .desktop-sticker:active svg,
-.desktop-sticker.is-dragging svg {
+.desktop-sticker.is-dragging svg,
+.desktop-sticker.dragging svg {
     animation-play-state: paused !important;
     transform: scale(1.08);
 }
@@ -110,8 +113,17 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
-.desktop-sticker:hover .sticker-delete-btn {
+.desktop-sticker:hover .sticker-delete-btn,
+.desktop-sticker:focus-within .sticker-delete-btn,
+.desktop-sticker:focus-visible .sticker-delete-btn,
+.desktop-sticker.sticker-selected .sticker-delete-btn {
     display: block;
+}
+
+@media (pointer: coarse) {
+    .desktop-sticker .sticker-delete-btn {
+        display: block;
+    }
 }
 
 /* Animations */
@@ -175,6 +187,7 @@ html.stickers-motion-disabled .desktop-sticker.is-spawned svg {
     position: fixed;
     bottom: 0;
     right: 24px;
+    max-width: calc(100vw - 16px);
     z-index: 9500;
     font-family: Tahoma, sans-serif;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -219,6 +232,7 @@ html.stickers-motion-disabled .desktop-sticker.is-spawned svg {
 
 .sticker-drawer-body {
     width: 330px;
+    max-width: calc(100vw - 16px);
     background: var(--shell-bg);
     border: 2px outset var(--bevel-light);
     padding: 8px;
@@ -258,6 +272,7 @@ html.stickers-motion-disabled .desktop-sticker.is-spawned svg {
     background: var(--panel-bg);
     border-radius: 3px;
     user-select: none;
+    touch-action: manipulation;
     min-height: 48px;
     transition: transform 0.15s ease, border-color 0.15s ease;
 }
@@ -292,4 +307,10 @@ html.stickers-motion-disabled .desktop-sticker.is-spawned svg {
     font-size: 9px;
     color: var(--text-muted);
     font-style: italic;
+}
+
+@media (max-width: 767px) {
+    .sticker-book-drawer {
+        right: 8px;
+    }
 }
