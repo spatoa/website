@@ -3,6 +3,7 @@
 Guidelines for running browser tests, headless checks, and capturing screenshots in **Lachlan's World**:
 
 ## 1. Browser Executable Specification
+- Adhere strictly to the project browser policy in [.agents/rules/browser.md](file:///home/spatoa/Documents/website/.agents/rules/browser.md).
 - **Strict Chromium Binary**:
   - **ONLY** use `/run/current-system/sw/bin/chromium` instead of `google-chrome` or `chrome` when running tests, headless sessions, or capturing screenshots.
   - Do NOT invoke `google-chrome` or `chrome`.

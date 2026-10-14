@@ -1,0 +1,108 @@
+/**
+ * pet-sw.js - Dedicated Service Worker for Pocket Pet Standalone PWA
+ * Enables 100% offline gameplay, fast cached asset delivery, and standalone mobile app experience.
+ */
+
+const CACHE_NAME = 'lachlan-pocket-pet-v1';
+const PRECACHE_ASSETS = [
+  '/pet/',
+  '/pet',
+  '/css/style.css',
+  '/js/pocket_pet.js',
+  '/js/pet-standalone.js',
+  '/stickers/pocket_pet-egg.svg',
+  '/favicon.ico',
+  '/pet-manifest.json'
+];
+
+self.addEventListener('install', function (event) {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(function (cache) {
+      return cache.addAll(PRECACHE_ASSETS).catch(function (err) {
+        console.warn('[Pet SW] Pre-cache partial failure:', err);
+      });
+    }).then(function () {
+      return self.skipWaiting();
+    })
+  );
+});
+
+self.addEventListener('activate', function (event) {
+  event.waitUntil(
+    caches.keys().then(function (cacheNames) {
+      return Promise.all(
+        cacheNames.map(function (cache) {
+          if (cache !== CACHE_NAME) {
+            console.log('[Pet SW] Removing legacy cache:', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    }).then(function () {
+      return self.clients.claim();
+    })
+  );
+});
+
+self.addEventListener('fetch', function (event) {
+  const url = new URL(event.request.url);
+
+  // Only handle same-origin GET requests
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin) {
+    return;
+  }
+
+  // Handle navigation requests (e.g. user opening /pet/)
+  if (event.request.mode === 'navigate') {
+    if (!url.pathname.startsWith('/pet')) {
+      return;
+    }
+    event.respondWith(
+      fetch(event.request)
+        .then(function (response) {
+          if (response && response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then(function (cache) {
+              cache.put(event.request, responseClone);
+            });
+          }
+          return response;
+        })
+        .catch(function () {
+          // If offline, serve cached /pet/
+          return caches.match('/pet/').then(function (cached) {
+            return cached || caches.match('/pet') || caches.match(event.request);
+          });
+        })
+    );
+    return;
+  }
+
+  // Cache-first strategy with network fallback for assets
+  event.respondWith(
+    caches.match(event.request).then(function (cachedResponse) {
+      if (cachedResponse) {
+        // Fetch in background to update cache (stale-while-revalidate)
+        fetch(event.request).then(function (networkResponse) {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then(function (cache) {
+              cache.put(event.request, networkResponse);
+            });
+          }
+        }).catch(function () {});
+        return cachedResponse;
+      }
+
+      return fetch(event.request).then(function (networkResponse) {
+        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+          return networkResponse;
+        }
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then(function (cache) {
+          cache.put(event.request, responseToCache);
+        });
+        return networkResponse;
+      });
+    })
+  );
+});
