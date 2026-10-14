@@ -66,6 +66,8 @@ a, button, select, input, [role="button"], canvas {
 }
 
 body {
+    position: relative;
+    min-height: 100vh;
     margin: 0;
     padding: 14px 8px;
     background-color: var(--bg-page);
@@ -76,3 +78,45 @@ body {
     color: var(--text-primary);
     transition: background-color 0.15s ease;
 }
+
+/* ==============================================
+   BASE HYPERLINKS & ACCESSIBLE RETRO NAVIGATION
+   ============================================== */
+a {
+    color: var(--link-color);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.1s ease;
+}
+
+a:visited {
+    color: var(--link-visited);
+}
+
+a:hover {
+    color: var(--link-hover);
+}
+
+a:active {
+    color: var(--link-active);
+}
+
+/* Prevent button chrome, icons, and menu widgets from inheriting text link visited styling */
+.nav-btn:visited,
+.retro-btn:visited,
+.retro-btn-link:visited,
+.desktop-icon:visited,
+.desktop-exit-btn:visited,
+.desktop-top-btn:visited,
+.start-menu-item:visited,
+.tree-link:visited,
+.window-btn:visited,
+.win-dropdown-item:visited,
+.search-result-link:visited {
+    color: inherit;
+}
+
+.tag-pill:visited {
+    color: var(--link-color);
+}
+

@@ -36,4 +36,6 @@ As for the site itself, the arcade window on the home page is just running a cla
 
 Thanks for reading, don't forget to bookmark, I'll be coming back to this as often as I can!
 
+![Image of me using the family computer](/images/mr_network.jpg)
+
 *— Lachlan (`spatoa`)*

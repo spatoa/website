@@ -23,6 +23,9 @@
     --accent-gold: #b45309;
     --accent-red: #b91c1c;
     --link-color: #0369a1;
+    --link-visited: #6b21a8;
+    --link-hover: #b91c1c;
+    --link-active: #dc2626;
     --meta-label-color: #1b3a4b;
     --shell-border: 3px outset #9e978b;
     --body-bg-pattern: linear-gradient(var(--grid-line) 1px, transparent 1px),
@@ -75,6 +78,9 @@ html[data-theme="windows"], :root[data-theme="windows"], [data-theme="windows"] 
     --accent-gold: #cc8800;
     --accent-red: #cc0000;
     --link-color: #0000ee;
+    --link-visited: #551a8b;
+    --link-hover: #cc0000;
+    --link-active: #ff0000;
     --meta-label-color: #0a246a;
     --shell-border: 3px outset #ffffff;
     --body-bg-pattern: repeating-linear-gradient(0deg, #d4d0c8, #d4d0c8 2px, #cfcac1 2px, #cfcac1 4px);
@@ -126,6 +132,9 @@ html[data-theme="midnight"], :root[data-theme="midnight"], [data-theme="midnight
     --accent-gold: #f59e0b;
     --accent-red: #ef4444;
     --link-color: #38bdf8;
+    --link-visited: #c084fc;
+    --link-hover: #93c5fd;
+    --link-active: #f59e0b;
     --meta-label-color: #93c5fd;
     --shell-border: 3px outset #3b82f6;
     --body-bg-pattern: linear-gradient(var(--grid-line) 1px, transparent 1px),
@@ -178,6 +187,9 @@ html[data-theme="cyber-y2k"], :root[data-theme="cyber-y2k"], [data-theme="cyber-
     --accent-gold: #ff007f;
     --accent-red: #ff3366;
     --link-color: #00e5ff;
+    --link-visited: #e879f9;
+    --link-hover: #00ff80;
+    --link-active: #ff007f;
     --meta-label-color: #00ff80;
     --shell-border: 3px outset #00ff80;
     --body-bg-pattern: linear-gradient(var(--grid-line) 1px, transparent 1px),
@@ -230,6 +242,9 @@ html[data-theme="candy-2000"], :root[data-theme="candy-2000"], [data-theme="cand
     --accent-gold: #ea580c;
     --accent-red: #e11d48;
     --link-color: #0284c7;
+    --link-visited: #7c3aed;
+    --link-hover: #ea580c;
+    --link-active: #c2410c;
     --meta-label-color: #0369a1;
     --shell-border: 3px outset #38bdf8;
     --body-bg-pattern: radial-gradient(circle, #38bdf8 10%, transparent 11%);
@@ -281,6 +296,9 @@ html[data-theme="scene-punk"], :root[data-theme="scene-punk"], [data-theme="scen
     --accent-gold: #ffff00;
     --accent-red: #ff0055;
     --link-color: #ff69b4;
+    --link-visited: #d8b4fe;
+    --link-hover: #39ff14;
+    --link-active: #ffff00;
     --meta-label-color: #ff1493;
     --shell-border: 3px outset #ff1493;
     --body-bg-pattern: repeating-linear-gradient(45deg, #141414, #141414 10px, #1a1a1a 10px, #1a1a1a 20px);

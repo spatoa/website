@@ -44,7 +44,11 @@
 
 .post-item-title:hover {
     text-decoration: underline;
-    color: var(--accent-red);
+    color: var(--link-hover);
+}
+
+.post-item-title:visited {
+    color: var(--link-visited);
 }
 
 .post-item-summary {
@@ -66,6 +70,11 @@
 
 .post-readmore a:hover {
     text-decoration: underline;
+    color: var(--link-hover);
+}
+
+.post-readmore a:visited {
+    color: var(--link-visited);
 }
 
 .view-all-box {
@@ -163,6 +172,7 @@
 
 .breadcrumbs-bar a:hover {
     text-decoration: underline;
+    color: var(--link-hover);
 }
 
 /* Blog Archive & Post Feed */
@@ -237,7 +247,11 @@
 
 .blog-entry-title a:hover {
     text-decoration: underline;
-    color: var(--accent-red);
+    color: var(--link-hover);
+}
+
+.blog-entry-title a:visited {
+    color: var(--link-visited);
 }
 
 .blog-date-badge {
@@ -387,6 +401,27 @@
     color: var(--text-primary);
 }
 
+/* Markdown Content URLs & Hyperlinks */
+.markdown-content a {
+    color: var(--link-color);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.1s ease;
+}
+
+.markdown-content a:visited {
+    color: var(--link-visited);
+}
+
+.markdown-content a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+.markdown-content a:active {
+    color: var(--link-active);
+}
+
 .markdown-content h1,
 .markdown-content h2,
 .markdown-content h3,
@@ -516,6 +551,56 @@
     padding: 0;
     border: none;
     color: inherit;
+}
+
+/* Centered Blog Images with Mid-2000s Retro Framing */
+.markdown-content img {
+    display: block;
+    margin: 16px auto;
+    max-width: 100%;
+    height: auto;
+    border: 2px inset var(--bevel-dark);
+    padding: 3px;
+    background: var(--panel-inner-bg);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+/* Ensure paragraph containers and link wrappers containing images center properly */
+.markdown-content p:has(> img),
+.markdown-content p:has(> a > img) {
+    text-align: center;
+}
+
+.markdown-content a:has(> img) {
+    display: inline-block;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    text-decoration: none;
+}
+
+.markdown-content a:has(> img):hover img {
+    border-color: var(--link-hover);
+}
+
+/* Center figure elements and format retro captions if used */
+.markdown-content figure {
+    display: block;
+    margin: 16px auto;
+    text-align: center;
+}
+
+.markdown-content figure img {
+    margin: 0 auto;
+}
+
+.markdown-content figcaption {
+    text-align: center;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--text-muted, #71717a);
+    margin-top: 6px;
 }
 
 .single-post-footer {

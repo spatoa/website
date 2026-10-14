@@ -98,8 +98,8 @@
       if (!raw || typeof raw !== 'object') return null;
       const safeSrc = sanitizeStickerSrc(raw.src);
       if (!safeSrc) return null;
-      const x = (typeof raw.x === 'number' && isFinite(raw.x)) ? Math.max(0, Math.min(4000, Math.round(raw.x))) : 100;
-      const y = (typeof raw.y === 'number' && isFinite(raw.y)) ? Math.max(0, Math.min(4000, Math.round(raw.y))) : 100;
+      const x = (typeof raw.x === 'number' && isFinite(raw.x)) ? Math.max(0, Math.min(10000, Math.round(raw.x))) : 100;
+      const y = (typeof raw.y === 'number' && isFinite(raw.y)) ? Math.max(0, Math.min(50000, Math.round(raw.y))) : 100;
       const rotation = (typeof raw.rotation === 'number' && isFinite(raw.rotation)) ? (Math.round(raw.rotation) % 360) : 0;
       const id = (typeof raw.id === 'string' && raw.id.length > 0 && raw.id.length < 64)
         ? raw.id.replace(/[^a-zA-Z0-9_-]/g, '')
@@ -204,10 +204,14 @@
       let initialLeft = 0;
       let initialTop = 0;
 
-      function beginDrag(clientX, clientY, pointerId) {
+      function getPageCoord(clientVal, scrollVal, pageVal) {
+        return (typeof pageVal === 'number' && isFinite(pageVal)) ? pageVal : (clientVal + (scrollVal || 0));
+      }
+
+      function beginDrag(clientX, clientY, pointerId, pageX, pageY) {
         isDragging = true;
-        startX = clientX;
-        startY = clientY;
+        startX = getPageCoord(clientX, window.scrollX, pageX);
+        startY = getPageCoord(clientY, window.scrollY, pageY);
         initialLeft = el.offsetLeft;
         initialTop = el.offsetTop;
         if (pointerId !== undefined && typeof el.setPointerCapture === 'function') {
@@ -216,12 +220,14 @@
         el.classList.add('dragging', 'is-dragging', 'sticker-selected');
       }
 
-      function moveDrag(clientX, clientY) {
+      function moveDrag(clientX, clientY, pageX, pageY) {
         if (!isDragging) return;
-        const dx = clientX - startX;
-        const dy = clientY - startY;
-        const maxLeft = Math.max(0, window.innerWidth - 60);
-        const maxTop = Math.max(0, window.innerHeight - 60);
+        const curX = getPageCoord(clientX, window.scrollX, pageX);
+        const curY = getPageCoord(clientY, window.scrollY, pageY);
+        const dx = curX - startX;
+        const dy = curY - startY;
+        const maxLeft = Math.max(0, (layer.clientWidth || window.innerWidth) - 60);
+        const maxTop = Math.max(0, (layer.offsetHeight || document.documentElement.scrollHeight || window.innerHeight) - 60);
         const newLeft = Math.max(0, Math.min(maxLeft, initialLeft + dx));
         const newTop = Math.max(0, Math.min(maxTop, initialTop + dy));
 
@@ -248,11 +254,11 @@
       if ('PointerEvent' in window) {
         el.addEventListener('pointerdown', function (e) {
           if (e.target === delBtn) return;
-          beginDrag(e.clientX, e.clientY, e.pointerId);
+          beginDrag(e.clientX, e.clientY, e.pointerId, e.pageX, e.pageY);
           e.preventDefault();
         });
         el.addEventListener('pointermove', function (e) {
-          moveDrag(e.clientX, e.clientY);
+          moveDrag(e.clientX, e.clientY, e.pageX, e.pageY);
         });
         el.addEventListener('pointerup', function (e) {
           endDrag(e.pointerId);
@@ -263,23 +269,23 @@
       } else {
         el.addEventListener('mousedown', function (e) {
           if (e.target === delBtn) return;
-          beginDrag(e.clientX, e.clientY);
+          beginDrag(e.clientX, e.clientY, undefined, e.pageX, e.pageY);
           e.preventDefault();
         });
         window.addEventListener('mousemove', function (e) {
-          moveDrag(e.clientX, e.clientY);
+          moveDrag(e.clientX, e.clientY, e.pageX, e.pageY);
         });
         window.addEventListener('mouseup', function () {
           endDrag();
         });
         el.addEventListener('touchstart', function (e) {
           if (e.target === delBtn || e.touches.length === 0) return;
-          beginDrag(e.touches[0].clientX, e.touches[0].clientY);
+          beginDrag(e.touches[0].clientX, e.touches[0].clientY, undefined, e.touches[0].pageX, e.touches[0].pageY);
           e.preventDefault();
         }, { passive: false });
         el.addEventListener('touchmove', function (e) {
           if (!isDragging || e.touches.length === 0) return;
-          moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+          moveDrag(e.touches[0].clientX, e.touches[0].clientY, e.touches[0].pageX, e.touches[0].pageY);
           e.preventDefault();
         }, { passive: false });
         el.addEventListener('touchend', function () {
@@ -320,7 +326,8 @@
           saveStickers();
         } else if (e.key === 'ArrowRight') {
           e.preventDefault();
-          item.x = Math.min(Math.max(0, window.innerWidth - 60), item.x + step);
+          const maxLeft = Math.max(0, (layer.clientWidth || window.innerWidth) - 60);
+          item.x = Math.min(maxLeft, item.x + step);
           el.style.left = item.x + 'px';
           saveStickers();
         } else if (e.key === 'ArrowUp') {
@@ -330,7 +337,8 @@
           saveStickers();
         } else if (e.key === 'ArrowDown') {
           e.preventDefault();
-          item.y = Math.min(Math.max(0, window.innerHeight - 60), item.y + step);
+          const maxTop = Math.max(0, (layer.offsetHeight || document.documentElement.scrollHeight || window.innerHeight) - 60);
+          item.y = Math.min(maxTop, item.y + step);
           el.style.top = item.y + 'px';
           saveStickers();
         }
@@ -345,8 +353,8 @@
       if (!safeSrc) return null;
       const id = Date.now().toString(36) + '-' + nextId++;
       const rot = (typeof rotation === 'number' && isFinite(rotation)) ? rotation : (Math.floor(Math.random() * 24) - 12);
-      const maxX = Math.max(20, window.innerWidth - 80);
-      const maxY = Math.max(20, window.innerHeight - 80);
+      const maxX = Math.max(20, (layer.clientWidth || window.innerWidth) - 80);
+      const maxY = Math.max(20, (layer.offsetHeight || document.documentElement.scrollHeight || window.innerHeight) - 80);
       const data = {
         id: id,
         src: safeSrc,
@@ -367,14 +375,15 @@
     }
 
     function spawnDefaultPosition(src) {
-      const availW = Math.max(160, window.innerWidth - 250);
+      const availW = Math.max(160, (layer.clientWidth || window.innerWidth) - 250);
       const availH = Math.max(160, window.innerHeight - 300);
+      const scrollY = window.scrollY || window.pageYOffset || 0;
       const targetX = cfg.isDesktop
         ? Math.floor(Math.random() * availW + 100)
-        : Math.floor(Math.random() * Math.max(100, window.innerWidth - 200) + 60);
+        : Math.floor(Math.random() * Math.max(100, (layer.clientWidth || window.innerWidth) - 200) + 60);
       const targetY = cfg.isDesktop
         ? Math.floor(Math.random() * availH + 80)
-        : Math.floor(Math.random() * 280 + 120);
+        : Math.floor(scrollY + Math.random() * 260 + 100);
       addSticker(src, targetX, targetY);
     }
 
@@ -423,7 +432,10 @@
       if (!e.dataTransfer) return;
       const src = e.dataTransfer.getData('application/x-sticker-src') || e.dataTransfer.getData('text/plain');
       if (src && (src.includes('.svg') || src.includes('stickers/'))) {
-        addSticker(src, e.clientX - 35, e.clientY - 35);
+        const rect = layer.getBoundingClientRect();
+        const dropX = e.clientX - rect.left - 35;
+        const dropY = e.clientY - rect.top - 35;
+        addSticker(src, dropX, dropY);
       }
     });
 

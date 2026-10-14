@@ -231,7 +231,21 @@
 .meta-val a {
     color: var(--link-color);
     text-decoration: underline;
+    text-underline-offset: 2px;
     font-weight: bold;
+    transition: color 0.1s ease;
+}
+
+.meta-val a:visited {
+    color: var(--link-visited);
+}
+
+.meta-val a:hover {
+    color: var(--link-hover);
+}
+
+.meta-val a:active {
+    color: var(--link-active);
 }
 
 /* Bullet Lists & Trivia */
