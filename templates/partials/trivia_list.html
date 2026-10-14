@@ -1,0 +1,12 @@
+<ul class="retro-bullet-list">
+  {% set facts = config.extra.strings.trivia_facts | default(value=config.extra.trivia_facts) %}
+  {% if facts %}
+    {% for fact in facts %}
+      <li>{{ fact }}</li>
+    {% endfor %}
+  {% else %}
+    <li><strong>Static Site Generation:</strong> This site compiles in under 50ms with Zola!</li>
+    <li><strong>Web 2.0 Relaunch:</strong> Version 2.0 sheds the extreme minimalism to bring back the fun!!</li>
+    <li><strong>WASM Ready:</strong> The interactive viewport on the right is wired for upcoming WebAssembly experiments...</li>
+  {% endif %}
+</ul>

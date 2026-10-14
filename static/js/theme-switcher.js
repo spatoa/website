@@ -23,11 +23,12 @@
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem(THEME_KEY, theme);
 
-    // Sync dropdown element if present
-    const select = document.getElementById('theme-selector');
-    if (select && select.value !== theme) {
-      select.value = theme;
-    }
+    // Sync all theme dropdown elements across navigation and settings windows
+    document.querySelectorAll('select[data-theme-select], #theme-selector, #settings-theme-select').forEach(function (select) {
+      if (select.value !== theme) {
+        select.value = theme;
+      }
+    });
 
     // Notify listeners (e.g. screensaver canvas)
     window.dispatchEvent(new CustomEvent('site:themechange', { detail: { theme: theme } }));
@@ -45,14 +46,18 @@
     document.documentElement.setAttribute('data-font-scale', scale);
     localStorage.setItem(FONT_KEY, scale);
 
-    // Update active state on font scale buttons
+    // Update active state on all font scale buttons across portal and desktop windows
+    document.querySelectorAll('.font-btn[data-font-scale]').forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-font-scale') === scale);
+    });
+
+    // Backward compatibility for non-annotated elements if any exist
     const btnSm = document.getElementById('font-btn-sm');
     const btnMd = document.getElementById('font-btn-md');
     const btnLg = document.getElementById('font-btn-lg');
-
-    if (btnSm) btnSm.classList.toggle('active', scale === 'default');
-    if (btnMd) btnMd.classList.toggle('active', scale === 'medium');
-    if (btnLg) btnLg.classList.toggle('active', scale === 'large');
+    if (btnSm && !btnSm.hasAttribute('data-font-scale')) btnSm.classList.toggle('active', scale === 'default');
+    if (btnMd && !btnMd.hasAttribute('data-font-scale')) btnMd.classList.toggle('active', scale === 'medium');
+    if (btnLg && !btnLg.hasAttribute('data-font-scale')) btnLg.classList.toggle('active', scale === 'large');
   }
 
   window.setFontScale = function (scale) {
@@ -66,5 +71,19 @@
 
     const savedFont = localStorage.getItem(FONT_KEY) || 'default';
     applyFontScale(savedFont);
+
+    // Declarative event listeners (replaces inline onclick and onchange handlers)
+    document.addEventListener('change', function (e) {
+      if (e.target && (e.target.matches('select[data-theme-select], #theme-selector, #settings-theme-select'))) {
+        applyTheme(e.target.value);
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      const fontBtn = e.target && e.target.closest('.font-btn[data-font-scale]');
+      if (fontBtn) {
+        applyFontScale(fontBtn.getAttribute('data-font-scale'));
+      }
+    });
   });
 })();

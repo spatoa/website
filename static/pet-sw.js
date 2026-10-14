@@ -79,6 +79,14 @@ self.addEventListener('fetch', function (event) {
     return;
   }
 
+  // Only intercept asset requests directly under /pet or matching precached assets
+  const isPrecache = PRECACHE_ASSETS.some(function (p) {
+    return url.pathname === p || url.pathname.endsWith(p);
+  });
+  if (!url.pathname.startsWith('/pet') && !isPrecache) {
+    return;
+  }
+
   // Cache-first strategy with network fallback for assets
   event.respondWith(
     caches.match(event.request).then(function (cachedResponse) {

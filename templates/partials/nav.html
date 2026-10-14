@@ -10,15 +10,15 @@
     <!-- Accessible Font Size Toggle -->
     <div class="font-size-box">
       <span class="toolbar-label">{{ config.extra.strings.font_size_label | default(value="TEXT:") }}</span>
-      <button class="font-btn" id="font-btn-sm" onclick="window.setFontScale('default')" title="Default compact font (11px)">A-</button>
-      <button class="font-btn" id="font-btn-md" onclick="window.setFontScale('medium')" title="Medium readable font (13px)">A</button>
-      <button class="font-btn" id="font-btn-lg" onclick="window.setFontScale('large')" title="Large accessible font (15px)">A+</button>
+      <button class="font-btn" id="font-btn-sm" data-font-scale="default" title="Default compact font (11px)">A-</button>
+      <button class="font-btn" id="font-btn-md" data-font-scale="medium" title="Medium readable font (13px)">A</button>
+      <button class="font-btn" id="font-btn-lg" data-font-scale="large" title="Large accessible font (15px)">A+</button>
     </div>
 
     <!-- Theme Selector -->
     <div class="theme-selector-box">
       <label for="theme-selector" class="theme-label">{{ config.extra.strings.theme_label | default(value="THEME:") }}</label>
-      <select id="theme-selector" onchange="window.switchSiteTheme(this.value)">
+      <select id="theme-selector" data-theme-select>
         <option value="paper">{{ config.extra.strings.theme_paper | default(value="Tech Paper (Light)") }}</option>
         <option value="windows">{{ config.extra.strings.theme_windows | default(value="Windows Classic (Light)") }}</option>
         <option value="midnight">{{ config.extra.strings.theme_midnight | default(value="Midnight (Dark)") }}</option>

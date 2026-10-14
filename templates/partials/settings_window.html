@@ -36,7 +36,7 @@
         <legend class="settings-legend">&#127912; Theme Color Scheme</legend>
         <div class="settings-row">
           <label for="settings-theme-select" class="settings-label">Active Palette:</label>
-          <select id="settings-theme-select" class="retro-select settings-select" onchange="window.switchSiteTheme(this.value)">
+          <select id="settings-theme-select" class="retro-select settings-select" data-theme-select>
             <option value="candy-2000">{{ config.extra.strings.theme_candy_2000 | default(value="Web 2.0 Candy (Aqua Gloss)") }}</option>
             <option value="paper">{{ config.extra.strings.theme_paper | default(value="Tech Paper (Light)") }}</option>
             <option value="windows">{{ config.extra.strings.theme_windows | default(value="Windows Classic (Light)") }}</option>
@@ -94,9 +94,9 @@
         <div class="settings-font-row">
           <span class="settings-label">System Font Size:</span>
           <div class="settings-font-btns">
-            <button type="button" class="font-btn retro-btn" id="settings-font-sm" onclick="window.setFontScale('default')" title="Default compact font (11px)">A- (11px)</button>
-            <button type="button" class="font-btn retro-btn" id="settings-font-md" onclick="window.setFontScale('medium')" title="Medium readable font (13px)">A (13px)</button>
-            <button type="button" class="font-btn retro-btn" id="settings-font-lg" onclick="window.setFontScale('large')" title="Large accessible font (15px)">A+ (15px)</button>
+            <button type="button" class="font-btn retro-btn" id="settings-font-sm" data-font-scale="default" title="Default compact font (11px)">A- (11px)</button>
+            <button type="button" class="font-btn retro-btn" id="settings-font-md" data-font-scale="medium" title="Medium readable font (13px)">A (13px)</button>
+            <button type="button" class="font-btn retro-btn" id="settings-font-lg" data-font-scale="large" title="Large accessible font (15px)">A+ (15px)</button>
           </div>
         </div>
       </fieldset>
@@ -119,49 +119,12 @@
 
     <!-- TAB 2: ABOUT THIS SYSTEM -->
     <div class="settings-tab-pane" id="settings-tab-about" role="tabpanel">
-      <div class="about-flex" style="margin-bottom: 8px;">
-        <div class="avatar-box">
-          <div class="avatar-pixel">{{ config.extra.avatar_icon | default(value="&#128421;") | safe }}</div>
-          <div class="avatar-caption">{{ config.extra.strings.about_avatar_caption | default(value="OPERATOR") }}</div>
-        </div>
-        <div class="about-text">
-          <p class="about-bio" style="margin-top: 0;">{{ config.extra.strings.about_bio | default(value=config.extra.author_bio | default(value="")) }}</p>
-          <table class="retro-meta-table">
-            <tr>
-              <td class="meta-label">{{ config.extra.strings.about_label_handle | default(value="Handle:") }}</td>
-              <td class="meta-val"><code>{{ config.extra.author }}</code></td>
-            </tr>
-            <tr>
-              <td class="meta-label">{{ config.extra.strings.about_label_interests | default(value="Interests:") }}</td>
-              <td class="meta-val">{{ config.extra.strings.about_interests | default(value="Low-level, CTFs, Retro Web, Linux, WASM") }}</td>
-            </tr>
-            <tr>
-              <td class="meta-label">{{ config.extra.strings.about_label_repos | default(value="Repositories:") }}</td>
-              <td class="meta-val"><a href="{{ config.extra.git_url }}" target="_blank" rel="noopener">git.lachlans.world &#8599;</a></td>
-            </tr>
-            <tr>
-              <td class="meta-label">{{ config.extra.strings.about_label_security | default(value="Security:") }}</td>
-              <td class="meta-val"><a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener">ctf.lachlans.world &#8599;</a></td>
-            </tr>
-          </table>
-        </div>
-      </div>
+      {% include "partials/about_profile_card.html" %}
 
       <!-- Bulletin Facts / Trivia -->
       <fieldset class="settings-fieldset" style="margin-top: 8px;">
         <legend class="settings-legend">&#128161; Bulletin Facts &amp; Architecture</legend>
-        <ul class="retro-bullet-list" style="margin: 4px 0 0 16px; padding: 0; font-size: 11px;">
-          {% set facts = config.extra.strings.trivia_facts | default(value=config.extra.trivia_facts) %}
-          {% if facts %}
-            {% for fact in facts %}
-              <li style="margin-bottom: 4px;">{{ fact }}</li>
-            {% endfor %}
-          {% else %}
-            <li style="margin-bottom: 4px;"><strong>Static Site Generation:</strong> This site compiles in under 50ms with Zola!</li>
-            <li style="margin-bottom: 4px;"><strong>Web 2.0 Relaunch:</strong> Version 2.0 sheds the extreme minimalism to bring back the fun!!</li>
-            <li style="margin-bottom: 4px;"><strong>WASM Ready:</strong> The interactive viewport on the right is wired for upcoming WebAssembly experiments...</li>
-          {% endif %}
-        </ul>
+        {% include "partials/trivia_list.html" %}
       </fieldset>
     </div>
 
@@ -209,12 +172,7 @@
     <div class="settings-tab-pane" id="settings-tab-status" role="tabpanel">
       <fieldset class="settings-fieldset">
         <legend class="settings-legend">&#128187; Operator Status &amp; Diagnostics</legend>
-        <div class="status-indicator" style="margin-bottom: 6px;">
-          <span class="status-dot"></span> <strong>{{ config.extra.strings.status_label_state | default(value="STATUS:") }}</strong> {{ config.extra.strings.status_state | default(value="ONLINE & READY") }}
-        </div>
-        <div class="status-line" style="margin-bottom: 4px;"><strong>{{ config.extra.strings.status_label_mood | default(value="Mood:") }}</strong> {{ config.extra.strings.status_mood | default(value="Busy Hacking") }}</div>
-        <div class="status-line" style="margin-bottom: 4px;"><strong>{{ config.extra.strings.status_label_project | default(value="Current Project:") }}</strong> {{ config.extra.strings.status_current_project | default(value="Personal Site v2") }}</div>
-        <div class="status-line" style="margin-bottom: 4px;"><strong>{{ config.extra.strings.status_label_arch | default(value="Server Architecture:") }}</strong> {{ config.extra.strings.status_server_arch | default(value="Linux x86_64 / NixOS") }}</div>
+        {% include "partials/status_diagnostics.html" %}
       </fieldset>
 
       <fieldset class="settings-fieldset" style="margin-top: 8px;">
@@ -242,8 +200,8 @@
 
     <!-- Dialog Action Footer -->
     <div class="settings-dialog-footer" style="display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; padding-top: 6px; border-top: 1px dotted var(--panel-border);">
-      <button type="button" class="retro-btn settings-ok-btn" onclick="window.DesktopOS && window.DesktopOS.closeApp('settings-window')" style="padding: 3px 12px; font-weight: bold;">OK</button>
-      <button type="button" class="retro-btn" onclick="window.DesktopOS && window.DesktopOS.closeApp('settings-window')" style="padding: 3px 12px;">Close</button>
+      <button type="button" class="retro-btn settings-ok-btn" data-window-close="settings-window" style="padding: 3px 12px; font-weight: bold;">OK</button>
+      <button type="button" class="retro-btn" data-window-close="settings-window" style="padding: 3px 12px;">Close</button>
     </div>
   </div>
 </section>

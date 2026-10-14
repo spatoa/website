@@ -272,10 +272,16 @@
       let titleContainer = header.querySelector('.panel-header-title');
       if (!titleContainer) {
         const rawText = header.textContent.trim();
-        header.innerHTML = '';
+        header.textContent = '';
         titleContainer = document.createElement('div');
         titleContainer.className = 'panel-header-title';
-        titleContainer.innerHTML = `<span class="win-icon">${app.icon}</span> ${rawText || app.title}`;
+
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'win-icon';
+        iconSpan.textContent = app.icon;
+
+        titleContainer.appendChild(iconSpan);
+        titleContainer.appendChild(document.createTextNode(' ' + (rawText || app.title)));
         header.appendChild(titleContainer);
       }
 
@@ -288,7 +294,7 @@
         const minBtn = document.createElement('button');
         minBtn.type = 'button';
         minBtn.className = 'window-btn';
-        minBtn.innerHTML = '_';
+        minBtn.textContent = '_';
         minBtn.title = 'Minimize';
         minBtn.setAttribute('aria-label', `Minimize ${app.title}`);
         minBtn.addEventListener('click', function (e) {
@@ -299,7 +305,7 @@
         const closeBtn = document.createElement('button');
         closeBtn.type = 'button';
         closeBtn.className = 'window-btn';
-        closeBtn.innerHTML = '&#10005;';
+        closeBtn.textContent = '✕';
         closeBtn.title = 'Close';
         closeBtn.setAttribute('aria-label', `Close ${app.title}`);
         closeBtn.addEventListener('click', function (e) {
@@ -473,10 +479,16 @@
         iconEl.setAttribute('role', 'button');
         iconEl.setAttribute('aria-label', `Open ${app.title}`);
 
-        iconEl.innerHTML = `
-          <div class="desktop-icon-img">${app.icon}</div>
-          <div class="desktop-icon-label">${app.title}</div>
-        `;
+        const iconImg = document.createElement('div');
+        iconImg.className = 'desktop-icon-img';
+        iconImg.textContent = app.icon;
+
+        const iconLabel = document.createElement('div');
+        iconLabel.className = 'desktop-icon-label';
+        iconLabel.textContent = app.title;
+
+        iconEl.appendChild(iconImg);
+        iconEl.appendChild(iconLabel);
 
         function openIt() {
           DesktopOS.openApp(app.id);
@@ -526,10 +538,16 @@
         btn.setAttribute('data-action', 'open-window');
         btn.setAttribute('data-target', app.id);
 
-        btn.innerHTML = `
-          <span class="start-item-icon">${app.icon}</span>
-          <span class="start-item-label">${app.title}</span>
-        `;
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'start-item-icon';
+        iconSpan.textContent = app.icon;
+
+        const labelSpan = document.createElement('span');
+        labelSpan.className = 'start-item-label';
+        labelSpan.textContent = app.title;
+
+        btn.appendChild(iconSpan);
+        btn.appendChild(labelSpan);
 
         group.appendChild(btn);
       });
@@ -979,14 +997,32 @@
             li.className = 'explorer-search-result-item';
             li.setAttribute('tabindex', '0');
             li.setAttribute('role', 'option');
-            li.innerHTML = `
-              <div class="explorer-result-title">
-                <span>${res.type === 'app' ? '⚙️' : '📄'}</span>
-                <strong>${res.title}</strong>
-              </div>
-              <div class="explorer-result-meta">${res.meta}</div>
-              ${res.snippet ? `<div style="font-size: 9px; color: var(--text-muted); margin-top: 2px;">${res.snippet}</div>` : ''}
-            `;
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'explorer-result-title';
+
+            const iconSpan = document.createElement('span');
+            iconSpan.textContent = res.type === 'app' ? '⚙️' : '📄';
+
+            const strongTitle = document.createElement('strong');
+            strongTitle.textContent = res.title;
+
+            titleDiv.appendChild(iconSpan);
+            titleDiv.appendChild(document.createTextNode(' '));
+            titleDiv.appendChild(strongTitle);
+
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'explorer-result-meta';
+            metaDiv.textContent = res.meta;
+
+            li.appendChild(titleDiv);
+            li.appendChild(metaDiv);
+
+            if (res.snippet) {
+              const snippetDiv = document.createElement('div');
+              snippetDiv.style.cssText = 'font-size: 9px; color: var(--text-muted); margin-top: 2px;';
+              snippetDiv.textContent = res.snippet;
+              li.appendChild(snippetDiv);
+            }
 
             function openResult() {
               if (res.type === 'app') {
@@ -1216,6 +1252,22 @@
     const resetPosBtn = document.getElementById('settings-reset-pos-btn');
     const clearStickersBtn = document.getElementById('settings-clear-stickers-btn');
 
+    // Settings Window Close / OK Buttons
+    document.querySelectorAll('#settings-window [data-window-close], #settings-window .settings-ok-btn').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        DesktopOS.closeApp('settings-window');
+      });
+    });
+
+    if (themeSelect) {
+      themeSelect.addEventListener('change', function () {
+        if (typeof window.switchSiteTheme === 'function') {
+          window.switchSiteTheme(themeSelect.value);
+        }
+      });
+    }
+
     // Update screen resolution display
     if (resSpan) {
       resSpan.textContent = `${window.innerWidth}x${window.innerHeight}`;
@@ -1311,8 +1363,20 @@
     const previewScreen = document.getElementById('wallpaper-preview-screen');
     const previewLabel = document.getElementById('wallpaper-preview-label');
 
+    function sanitizeWallpaperUrl(rawUrl) {
+      if (!rawUrl || typeof rawUrl !== 'string') return null;
+      const trimmed = rawUrl.trim();
+      const urlPattern = /^https?:\/\/[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]+$/i;
+      const dataUriPattern = /^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/i;
+      if (urlPattern.test(trimmed) || dataUriPattern.test(trimmed)) {
+        return trimmed.replace(/["'\\()]/g, '');
+      }
+      return null;
+    }
+
     function applyCustomWallpaper() {
-      const customWall = localStorage.getItem(WALLPAPER_KEY);
+      const rawWall = localStorage.getItem(WALLPAPER_KEY);
+      const customWall = sanitizeWallpaperUrl(rawWall);
       const fitMode = localStorage.getItem(WALLPAPER_FIT_KEY) || 'cover';
       const body = document.body;
       if (!body) return;
@@ -1376,10 +1440,14 @@
     // Apply URL
     if (wallUrlApply && wallUrlInput) {
       wallUrlApply.addEventListener('click', function () {
-        const url = wallUrlInput.value.trim();
-        if (!url) return;
+        const rawUrl = wallUrlInput.value.trim();
+        const validUrl = sanitizeWallpaperUrl(rawUrl);
+        if (!validUrl) {
+          alert('Invalid Image URL! Please provide a valid HTTP/HTTPS image URL (e.g. https://example.com/wallpaper.jpg) or upload a local file.');
+          return;
+        }
         try {
-          localStorage.setItem(WALLPAPER_KEY, url);
+          localStorage.setItem(WALLPAPER_KEY, validUrl);
           applyCustomWallpaper();
           if (wallUrlRow) wallUrlRow.style.display = 'none';
         } catch (e) {
@@ -1473,6 +1541,15 @@
     initShowDesktopBtn();
     initStartMenu();
     initSettingsApp();
+
+    // Delegated window close handler for dialog buttons
+    document.addEventListener('click', function (e) {
+      const closeBtn = e.target && e.target.closest('[data-window-close]');
+      if (closeBtn) {
+        const appId = closeBtn.getAttribute('data-window-close');
+        if (appId) DesktopOS.closeApp(appId);
+      }
+    });
   }
 
   document.addEventListener('DOMContentLoaded', init);

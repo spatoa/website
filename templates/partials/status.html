@@ -6,12 +6,7 @@
          data-default-y="50">
   <div class="panel-header">{{ config.extra.strings.header_status | default(value="★ Operator Status & Log ★") }}</div>
   <div class="panel-body">
-    <div class="status-indicator">
-      <span class="status-dot"></span> <strong>{{ config.extra.strings.status_label_state | default(value="STATUS:") }}</strong> {{ config.extra.strings.status_state | default(value="ONLINE & READY") }}
-    </div>
-    <div class="status-line"><strong>{{ config.extra.strings.status_label_mood | default(value="Mood:") }}</strong> {{ config.extra.strings.status_mood | default(value="Busy Hacking") }}</div>
-    <div class="status-line"><strong>{{ config.extra.strings.status_label_project | default(value="Current Project:") }}</strong> {{ config.extra.strings.status_current_project | default(value="Personal Site v2") }}</div>
-    <div class="status-line"><strong>{{ config.extra.strings.status_label_arch | default(value="Server Architecture:") }}</strong> {{ config.extra.strings.status_server_arch | default(value="Linux x86_64 / NixOS") }}</div>
+    {% include "partials/status_diagnostics.html" %}
 
     <!-- Integrated Personal Visit Counter -->
     <div class="status-divider"></div>

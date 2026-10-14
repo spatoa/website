@@ -15,7 +15,7 @@
   function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/pet-sw.js', { scope: '/' })
+        navigator.serviceWorker.register('/pet-sw.js', { scope: '/pet/' })
           .then(function (reg) {
             console.log('[PocketPet PWA] Service Worker registered with scope:', reg.scope);
           })
@@ -215,7 +215,8 @@
       const dataObj = JSON.parse(rawData);
       const now = new Date();
       const dateStr = now.toISOString().slice(0, 10);
-      const filename = `pocket_pet_save_${dataObj.species || 'egg'}_${dateStr}.json`;
+      const safeSpecies = String(dataObj.species || dataObj.stage || 'egg').replace(/[^a-zA-Z0-9_-]/g, '');
+      const filename = `pocket_pet_save_${safeSpecies}_${dateStr}.json`;
 
       const blob = new Blob([JSON.stringify(dataObj, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -239,16 +240,27 @@
         const text = e.target.result;
         const parsed = JSON.parse(text);
 
-        // Basic schema verification
-        if (typeof parsed !== 'object' || parsed === null || !('stage' in parsed) || !('bornTimestamp' in parsed)) {
+        // Schema verification & normalization
+        if (typeof parsed !== 'object' || parsed === null) {
           alert('Invalid save file format. Please upload a valid Pocket Pet JSON save file.');
           return;
         }
 
-        const species = parsed.species || parsed.stage || 'egg';
-        const confirmMsg = `Restore pet save for "${species}" (Stage: ${parsed.stage})?\nThis will replace your current pet save.`;
+        let validated;
+        if (window.Pocket_Pet && typeof window.Pocket_Pet.validateState === 'function') {
+          validated = window.Pocket_Pet.validateState(parsed);
+        } else {
+          if (!('stage' in parsed) || !('bornTimestamp' in parsed)) {
+            alert('Invalid save file format. Missing core pet properties.');
+            return;
+          }
+          validated = parsed;
+        }
+
+        const species = validated.species || validated.stage || 'egg';
+        const confirmMsg = `Restore pet save for "${species}" (Stage: ${validated.stage})?\nThis will replace your current pet save.`;
         if (confirm(confirmMsg)) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(validated));
           if (window.Pocket_Pet && typeof window.Pocket_Pet.init === 'function') {
             window.Pocket_Pet.init();
           } else {

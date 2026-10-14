@@ -163,6 +163,7 @@
 
     clearTimeout(synthTimer);
     scheduleNextNote();
+    startVisualizer();
 
     if (!clockTimer) {
       clockTimer = setInterval(function () {
@@ -180,6 +181,7 @@
     isPlaying = false;
     isPaused = true;
     clearTimeout(synthTimer);
+    stopVisualizer();
     if (statusEl) statusEl.textContent = '❚❚ PAUSED';
   }
 
@@ -187,6 +189,7 @@
     isPlaying = false;
     isPaused = false;
     clearTimeout(synthTimer);
+    stopVisualizer();
     clearInterval(clockTimer);
     clockTimer = null;
     elapsedSeconds = 0;
@@ -247,10 +250,14 @@
   const barWidth = 14;
   const barSpacing = 4;
   const peaks = new Array(numBars).fill(0);
+  let visAnimId = null;
 
-  function drawVisualizer() {
-    requestAnimationFrame(drawVisualizer);
-    if (!visCtx || !visCanvas) return;
+  function renderVisualizerFrame() {
+    if (!visCtx || !visCanvas || !isPlaying) {
+      visAnimId = null;
+      return;
+    }
+    visAnimId = requestAnimationFrame(renderVisualizerFrame);
 
     visCtx.fillStyle = '#000000';
     visCtx.fillRect(0, 0, visCanvas.width, visCanvas.height);
@@ -296,5 +303,24 @@
     }
   }
 
-  drawVisualizer();
+  function startVisualizer() {
+    if (!visCtx || !visCanvas || visAnimId) return;
+    visAnimId = requestAnimationFrame(renderVisualizerFrame);
+  }
+
+  function stopVisualizer() {
+    if (visAnimId) {
+      cancelAnimationFrame(visAnimId);
+      visAnimId = null;
+    }
+    if (visCtx && visCanvas) {
+      visCtx.fillStyle = '#000000';
+      visCtx.fillRect(0, 0, visCanvas.width, visCanvas.height);
+    }
+  }
+
+  // Draw initial idle frame if canvas exists, but do not schedule active loop
+  if (visCtx && visCanvas) {
+    stopVisualizer();
+  }
 })();

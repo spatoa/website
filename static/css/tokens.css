@@ -33,6 +33,25 @@
     --banner-glow: 0 3px 8px rgba(0, 0, 0, 0.6);
     --desktop-icon-color: #1a1a1a;
     --desktop-icon-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 3px #ffffff;
+    --taskbar-bg: #ece9d8;
+    --taskbar-border: #ffffff;
+    --desktop-btn-bg: #d4d0c8;
+    --desktop-btn-color: #000000;
+    --desktop-btn-border: var(--bevel-light);
+    --desktop-btn-hover-bg: #e8e4dc;
+    --start-btn-bg: linear-gradient(180deg, #3c8227 0%, #2b611c 100%);
+    --start-btn-border: #5cd638;
+    --start-btn-color: #ffffff;
+    --taskbar-item-active-bg: #b8b4ac;
+    --taskbar-item-active-color: #000000;
+    --taskbar-clock-bg: #ffffff;
+    --taskbar-clock-color: #000000;
+    --desktop-icon-hover-bg: rgba(0, 0, 128, 0.4);
+    --desktop-icon-hover-border: rgba(255, 255, 255, 0.7);
+    --item-selected-bg: #000080;
+    --item-selected-color: #ffffff;
+    --start-sidebar-bg: linear-gradient(180deg, #1b3a4b 0%, #0d212d 65%, #051016 100%);
+    --start-sidebar-accent: #00ff66;
 }
 
 /* 2. Windows Classic / Silver (Light Workstation) */
@@ -65,6 +84,25 @@ html[data-theme="windows"], :root[data-theme="windows"], [data-theme="windows"] 
     --banner-glow: 0 3px 8px rgba(0, 0, 0, 0.7);
     --desktop-icon-color: #000000;
     --desktop-icon-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 3px #ffffff;
+    --taskbar-bg: #ece9d8;
+    --taskbar-border: #ffffff;
+    --desktop-btn-bg: #d4d0c8;
+    --desktop-btn-color: #000000;
+    --desktop-btn-border: var(--bevel-light);
+    --desktop-btn-hover-bg: #e8e4dc;
+    --start-btn-bg: linear-gradient(180deg, #3c8227 0%, #2b611c 100%);
+    --start-btn-border: #5cd638;
+    --start-btn-color: #ffffff;
+    --taskbar-item-active-bg: #b8b4ac;
+    --taskbar-item-active-color: #000000;
+    --taskbar-clock-bg: #ffffff;
+    --taskbar-clock-color: #000000;
+    --desktop-icon-hover-bg: rgba(0, 0, 128, 0.4);
+    --desktop-icon-hover-border: rgba(255, 255, 255, 0.7);
+    --item-selected-bg: #000080;
+    --item-selected-color: #ffffff;
+    --start-sidebar-bg: linear-gradient(180deg, #0a246a 0%, #1c52b8 60%, #001f5c 100%);
+    --start-sidebar-accent: #00ff66;
 }
 
 /* 3. Midnight High-Contrast (Clean Accessible Dark Mode) */
@@ -98,6 +136,25 @@ html[data-theme="midnight"], :root[data-theme="midnight"], [data-theme="midnight
     --banner-glow: 0 4px 12px rgba(56, 189, 248, 0.4);
     --desktop-icon-color: #ffffff;
     --desktop-icon-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 4px rgba(0, 0, 0, 0.8);
+    --taskbar-bg: #111827;
+    --taskbar-border: #374151;
+    --desktop-btn-bg: #1f2937;
+    --desktop-btn-color: #f8fafc;
+    --desktop-btn-border: #4b5563;
+    --desktop-btn-hover-bg: #374151;
+    --start-btn-bg: linear-gradient(180deg, #1e3a5f 0%, #0d2036 100%);
+    --start-btn-border: #38bdf8;
+    --start-btn-color: #ffffff;
+    --taskbar-item-active-bg: #374151;
+    --taskbar-item-active-color: #38bdf8;
+    --taskbar-clock-bg: #02060b;
+    --taskbar-clock-color: #22c55e;
+    --desktop-icon-hover-bg: rgba(59, 130, 246, 0.35);
+    --desktop-icon-hover-border: rgba(147, 197, 253, 0.8);
+    --item-selected-bg: #1e3a8a;
+    --item-selected-color: #ffffff;
+    --start-sidebar-bg: linear-gradient(180deg, #1e3a5f 0%, #0f172a 65%, #050811 100%);
+    --start-sidebar-accent: #38bdf8;
 }
 
 /* 4. Cyber-Y2K (Electric Lime & Cyber Violet Dark Mode) */
@@ -131,6 +188,25 @@ html[data-theme="cyber-y2k"], :root[data-theme="cyber-y2k"], [data-theme="cyber-
     --banner-glow: 0 0 15px rgba(0, 255, 128, 0.6);
     --desktop-icon-color: #00ff80;
     --desktop-icon-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 6px rgba(0, 255, 128, 0.5);
+    --taskbar-bg: #0f1622;
+    --taskbar-border: #00ff80;
+    --desktop-btn-bg: #162032;
+    --desktop-btn-color: #00ff80;
+    --desktop-btn-border: #00ff80;
+    --desktop-btn-hover-bg: #22314d;
+    --start-btn-bg: linear-gradient(180deg, #7928ca 0%, #2a0845 100%);
+    --start-btn-border: #00ff80;
+    --start-btn-color: #00ff80;
+    --taskbar-item-active-bg: #243656;
+    --taskbar-item-active-color: #00ff80;
+    --taskbar-clock-bg: #000000;
+    --taskbar-clock-color: #00ff80;
+    --desktop-icon-hover-bg: rgba(0, 255, 128, 0.25);
+    --desktop-icon-hover-border: #00ff80;
+    --item-selected-bg: #00ff80;
+    --item-selected-color: #000000;
+    --start-sidebar-bg: linear-gradient(180deg, #7928ca 0%, #2a0845 60%, #00ff80 100%);
+    --start-sidebar-accent: #00ff80;
 }
 
 /* 5. Web 2.0 Candy (Glossy Aqua, Sky Blue & Tangerine) */
@@ -163,6 +239,25 @@ html[data-theme="candy-2000"], :root[data-theme="candy-2000"], [data-theme="cand
     --banner-glow: 0 4px 10px rgba(2, 132, 199, 0.5);
     --desktop-icon-color: #034570;
     --desktop-icon-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 4px #ffffff;
+    --taskbar-bg: #e0f2fe;
+    --taskbar-border: #38bdf8;
+    --desktop-btn-bg: #e0f2fe;
+    --desktop-btn-color: #0284c7;
+    --desktop-btn-border: #38bdf8;
+    --desktop-btn-hover-bg: #bae6fd;
+    --start-btn-bg: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+    --start-btn-border: #38bdf8;
+    --start-btn-color: #ffffff;
+    --taskbar-item-active-bg: #bae6fd;
+    --taskbar-item-active-color: #0369a1;
+    --taskbar-clock-bg: #f0f9ff;
+    --taskbar-clock-color: #0369a1;
+    --desktop-icon-hover-bg: rgba(56, 189, 248, 0.4);
+    --desktop-icon-hover-border: #0284c7;
+    --item-selected-bg: #0284c7;
+    --item-selected-color: #ffffff;
+    --start-sidebar-bg: linear-gradient(180deg, #38bdf8 0%, #0284c7 60%, #0369a1 100%);
+    --start-sidebar-accent: #ea580c;
 }
 
 /* 6. Scene Kid / Emo (Hot Pink & Acid Black Neon) */
@@ -195,6 +290,25 @@ html[data-theme="scene-punk"], :root[data-theme="scene-punk"], [data-theme="scen
     --banner-glow: 0 0 15px rgba(255, 20, 147, 0.7);
     --desktop-icon-color: #ffffff;
     --desktop-icon-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 6px rgba(255, 20, 147, 0.5);
+    --taskbar-bg: #1a1a1a;
+    --taskbar-border: #ff1493;
+    --desktop-btn-bg: #222222;
+    --desktop-btn-color: #ff69b4;
+    --desktop-btn-border: #ff1493;
+    --desktop-btn-hover-bg: #333333;
+    --start-btn-bg: linear-gradient(180deg, #ff1493 0%, #880055 100%);
+    --start-btn-border: #ff69b4;
+    --start-btn-color: #ffffff;
+    --taskbar-item-active-bg: #441133;
+    --taskbar-item-active-color: #ff69b4;
+    --taskbar-clock-bg: #000000;
+    --taskbar-clock-color: #ff69b4;
+    --desktop-icon-hover-bg: rgba(255, 20, 147, 0.35);
+    --desktop-icon-hover-border: #ff1493;
+    --item-selected-bg: #ff1493;
+    --item-selected-color: #000000;
+    --start-sidebar-bg: linear-gradient(180deg, #ff1493 0%, #880055 60%, #000000 100%);
+    --start-sidebar-accent: #ff69b4;
 }
 
 /* ==============================================

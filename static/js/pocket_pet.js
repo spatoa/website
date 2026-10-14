@@ -612,6 +612,65 @@
     };
   }
 
+  const VALID_STAGES = ['EGG', 'BABY', 'CHILD', 'TEEN', 'ADULT', 'DEAD'];
+  const VALID_SPECIES = [
+    'egg', 'babytchi', 'marutchi', 'tamatchi', 'kuchitamatchi',
+    'mametchi', 'ginjirotchi', 'maskutchi', 'kuchipatchi', 'nyatchi', 'tarakotchi',
+    'oyajitchi', 'ghost'
+  ];
+
+  function sanitizePetState(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+      return createDefaultState();
+    }
+    const def = createDefaultState();
+    const clean = Object.assign({}, def);
+
+    if (typeof raw.bornTimestamp === 'number' && !isNaN(raw.bornTimestamp) && raw.bornTimestamp > 0) {
+      clean.bornTimestamp = raw.bornTimestamp;
+    }
+    if (typeof raw.lastTickTimestamp === 'number' && !isNaN(raw.lastTickTimestamp)) {
+      clean.lastTickTimestamp = Math.min(Date.now(), Math.max(clean.bornTimestamp, raw.lastTickTimestamp));
+    }
+    if (typeof raw.hunger === 'number' && !isNaN(raw.hunger)) {
+      clean.hunger = Math.max(0, Math.min(4, Math.floor(raw.hunger)));
+    }
+    if (typeof raw.happiness === 'number' && !isNaN(raw.happiness)) {
+      clean.happiness = Math.max(0, Math.min(4, Math.floor(raw.happiness)));
+    }
+    if (typeof raw.discipline === 'number' && !isNaN(raw.discipline)) {
+      clean.discipline = Math.max(0, Math.min(100, Math.floor(raw.discipline)));
+    }
+    if (typeof raw.weight === 'number' && !isNaN(raw.weight)) {
+      clean.weight = Math.max(1, Math.min(99, Math.floor(raw.weight)));
+    }
+    if (typeof raw.age === 'number' && !isNaN(raw.age)) {
+      clean.age = Math.max(0, Math.min(99, Math.floor(raw.age)));
+    }
+    if (typeof raw.poopCount === 'number' && !isNaN(raw.poopCount)) {
+      clean.poopCount = Math.max(0, Math.min(4, Math.floor(raw.poopCount)));
+    }
+    if (typeof raw.careMistakes === 'number' && !isNaN(raw.careMistakes)) {
+      clean.careMistakes = Math.max(0, Math.min(50, Math.floor(raw.careMistakes)));
+    }
+
+    clean.isSick = Boolean(raw.isSick);
+    clean.lightsOn = raw.lightsOn !== false;
+    clean.isSleeping = Boolean(raw.isSleeping);
+
+    if (typeof raw.stage === 'string' && VALID_STAGES.includes(raw.stage.toUpperCase())) {
+      clean.stage = raw.stage.toUpperCase();
+    }
+    if (typeof raw.species === 'string' && VALID_SPECIES.includes(raw.species.toLowerCase())) {
+      clean.species = raw.species.toLowerCase();
+    }
+    if (raw.deathCause === 'sickness' || raw.deathCause === 'starvation' || raw.deathCause === 'old_age') {
+      clean.deathCause = raw.deathCause;
+    }
+
+    return clean;
+  }
+
   // --- Main Pocket_Pet Engine Object ---
   const Pocket_Pet = {
     state: createDefaultState(),
@@ -628,32 +687,53 @@
     petDirection: 1,        // 1 (right) or -1 (left)
     specialAnim: null,      // 'EAT', 'FLUSH', 'NO', 'JUMP', 'CURE'
     specialAnimTimer: 0,
+    tickIntervalId: null,
+    animIntervalId: null,
+    storageBound: false,
+    _keydownBound: false,
 
     init: function () {
+      if (!document.querySelector('.pocket_pet-canvas') && !document.querySelector('.pocket_pet-deck')) {
+        return;
+      }
+
       AudioEngine.init();
       this.loadState();
       this.processOfflineCatchup();
 
+      // Clear existing intervals if re-initialized to prevent stacking
+      if (this.tickIntervalId) {
+        clearInterval(this.tickIntervalId);
+        this.tickIntervalId = null;
+      }
+      if (this.animIntervalId) {
+        clearInterval(this.animIntervalId);
+        this.animIntervalId = null;
+      }
+
       // Start tick loop (every 1 second)
       const self = this;
-      setInterval(function () {
+      this.tickIntervalId = setInterval(function () {
         self.tick();
       }, 1000);
 
       // Start animation loop (approx 2.5 FPS for retro authentic LCD bounce)
-      setInterval(function () {
+      this.animIntervalId = setInterval(function () {
         self.updateAnimation();
       }, 400);
 
       // Listen for cross-tab storage changes
-      window.addEventListener('storage', function (e) {
-        if (e.key === STORAGE_KEY) {
-          self.loadState();
-          self.renderAll();
-        } else if (e.key === 'lachlan_pet_skin') {
-          self.applyCurrentSkin();
-        }
-      });
+      if (!this.storageBound) {
+        this.storageBound = true;
+        window.addEventListener('storage', function (e) {
+          if (e.key === STORAGE_KEY) {
+            self.loadState();
+            self.renderAll();
+          } else if (e.key === 'lachlan_pet_skin') {
+            self.applyCurrentSkin();
+          }
+        });
+      }
 
       // Mobile audio unlock on first touch gesture
       const unlockAudio = function () {
@@ -712,13 +792,15 @@
       return Object.keys(SPRITES);
     },
 
+    validateState: sanitizePetState,
+
     loadState: function () {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed.stage === 'string') {
-            this.state = Object.assign(createDefaultState(), parsed);
+          if (parsed && typeof parsed === 'object') {
+            this.state = sanitizePetState(parsed);
             return;
           }
         }
@@ -1581,22 +1663,38 @@
         }
       });
 
-      // Keyboard Controls (A, B, C or Left, Enter, Escape)
-      document.addEventListener('keydown', function (e) {
-        // Don't intercept when user is typing in inputs or search
-        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
-          return;
-        }
+      // Scoped Keyboard Controls (A, B, C or Left, Enter, Escape)
+      if (!self._keydownBound) {
+        self._keydownBound = true;
+        document.addEventListener('keydown', function (e) {
+          // Don't intercept when user is typing in inputs, textareas, or select dropdowns
+          if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+            return;
+          }
 
-        const key = e.key.toLowerCase();
-        if (key === 'a' || e.key === 'ArrowLeft') {
-          self.pressA();
-        } else if (key === 'b' || e.key === 'Enter' || e.key === ' ') {
-          self.pressB();
-        } else if (key === 'c' || e.key === 'Escape') {
-          self.pressC();
-        }
-      });
+          // Only handle if pet deck or pet window is focused or has focus-within, OR on standalone pet page
+          const isStandalonePage = document.body.classList.contains('pet-standalone-page');
+          const petDeck = document.querySelector('.pocket_pet-deck');
+          const petWindow = document.getElementById('pocket_pet-app');
+          const isFocused = isStandalonePage ||
+            (petDeck && (petDeck.matches(':focus-within') || petDeck.contains(document.activeElement))) ||
+            (petWindow && petWindow.classList.contains('window-focused'));
+
+          if (!isFocused) return;
+
+          const key = e.key.toLowerCase();
+          if (key === 'a' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            self.pressA();
+          } else if (key === 'b' || e.key === 'Enter') {
+            e.preventDefault();
+            self.pressB();
+          } else if (key === 'c' || e.key === 'Escape') {
+            e.preventDefault();
+            self.pressC();
+          }
+        });
+      }
     },
 
     updateIconBarUI: function () {
