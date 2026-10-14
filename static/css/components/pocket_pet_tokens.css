@@ -1,0 +1,171 @@
+/* ==============================================================
+   POCKET_PET_TOKENS.CSS - MODULAR DESIGN TOKENS & SWAPPABLE SKINS
+   Dedicated to customizable styling of the Pocket Pet Virtual Device
+   ============================================================== */
+
+:root,
+.pocket_pet-deck {
+    /* --- Casing / Deck Geometry & Background --- */
+    --pet-deck-bg: transparent;
+    --pet-deck-border: none;
+    --pet-deck-radius: 4px;
+    --pet-deck-shadow: none;
+    --pet-deck-padding: 0;
+
+    /* --- Recessed Screen Bezel --- */
+    --pet-bezel-bg: var(--panel-bg, #f0f0e8);
+    --pet-bezel-border: 2px inset var(--bevel-dark, #808080);
+    --pet-bezel-radius: 3px;
+    --pet-bezel-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.3);
+
+    /* --- Dot-Matrix LCD Matrix Palette (Daytime) --- */
+    --pet-lcd-bg: #9bb084;
+    --pet-lcd-pixel: #182412;
+
+    /* --- Dot-Matrix LCD Matrix Palette (Nighttime / Sleep) --- */
+    --pet-lcd-bg-night: #7d8e68;
+    --pet-lcd-pixel-night: #10170a;
+
+    /* --- LCD Screen Glass Frame --- */
+    --pet-lcd-border: 2px inset var(--bevel-dark, #808080);
+    --pet-lcd-radius: 2px;
+    --pet-lcd-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.45);
+
+    /* --- Pushbuttons (A, B, C) --- */
+    --pet-btn-bg: var(--panel-bg, #d4d0c8);
+    --pet-btn-border: 2px outset var(--bevel-light, #ffffff);
+    --pet-btn-text: var(--text-primary, #000000);
+    --pet-btn-radius: 2px;
+    --pet-btn-shadow: none;
+
+    /* --- Menu Icons --- */
+    --pet-icon-opacity-inactive: 0.45;
+    --pet-icon-opacity-active: 1.0;
+}
+
+/* ==============================================================
+   PRESET SHELL SKINS (Selectable via [data-pet-skin="..."])
+   ============================================================== */
+
+/* 1. Classic Win32 Appliance (Default) */
+[data-pet-skin="windows"],
+.pocket_pet-deck[data-pet-skin="windows"] {
+    --pet-bezel-bg: #e0ded8;
+    --pet-bezel-border: 2px inset #808080;
+    --pet-lcd-bg: #9bb084;
+    --pet-lcd-pixel: #182412;
+    --pet-lcd-bg-night: #7d8e68;
+    --pet-lcd-pixel-night: #10170a;
+    --pet-btn-bg: #d4d0c8;
+    --pet-btn-border: 2px outset #ffffff;
+    --pet-btn-text: #000000;
+    --pet-btn-radius: 2px;
+}
+
+/* 2. Nostalgic 1997 Keychain Egg (Pastel Pink & Gold) */
+[data-pet-skin="egg-pink"],
+.pocket_pet-deck[data-pet-skin="egg-pink"] {
+    --pet-deck-bg: radial-gradient(circle at 50% 28%, #f472b6 0%, #db2777 75%, #9d174d 100%);
+    --pet-deck-border: 3px solid #831843;
+    --pet-deck-radius: 50% 50% 46% 46% / 60% 60% 40% 40%;
+    --pet-deck-shadow: 0 6px 16px rgba(157, 23, 77, 0.45), inset 0 2px 6px rgba(255, 255, 255, 0.4);
+    --pet-deck-padding: 16px 14px 18px;
+
+    --pet-bezel-bg: #ccfbf1;
+    --pet-bezel-border: 2px inset #0f766e;
+    --pet-bezel-radius: 12px;
+    --pet-bezel-shadow: inset 1px 1px 4px rgba(15, 118, 110, 0.35);
+
+    --pet-lcd-bg: #a7f3d0;
+    --pet-lcd-pixel: #064e3b;
+    --pet-lcd-bg-night: #6ee7b7;
+    --pet-lcd-pixel-night: #022c22;
+    --pet-lcd-border: 2px inset #0f766e;
+    --pet-lcd-radius: 6px;
+
+    --pet-btn-bg: #fbbf24;
+    --pet-btn-border: 2px outset #fef08a;
+    --pet-btn-text: #78350f;
+    --pet-btn-radius: 50%;
+    --pet-btn-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 3. Atomic Translucent Purple (Late-90s Clear Tech) */
+[data-pet-skin="atomic-purple"],
+.pocket_pet-deck[data-pet-skin="atomic-purple"] {
+    --pet-deck-bg: linear-gradient(145deg, rgba(147, 51, 234, 0.88), rgba(88, 28, 135, 0.94));
+    --pet-deck-border: 2px solid rgba(216, 180, 254, 0.5);
+    --pet-deck-radius: 16px;
+    --pet-deck-shadow: 0 8px 20px rgba(88, 28, 135, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.35);
+    --pet-deck-padding: 12px 10px 14px;
+
+    --pet-bezel-bg: rgba(59, 7, 100, 0.75);
+    --pet-bezel-border: 2px inset #6b21a8;
+    --pet-bezel-radius: 8px;
+
+    --pet-lcd-bg: #fef08a;
+    --pet-lcd-pixel: #713f12;
+    --pet-lcd-bg-night: #eab308;
+    --pet-lcd-pixel-night: #422006;
+    --pet-lcd-border: 2px inset #581c87;
+    --pet-lcd-radius: 4px;
+
+    --pet-btn-bg: #a855f7;
+    --pet-btn-border: 2px outset #d8b4fe;
+    --pet-btn-text: #ffffff;
+    --pet-btn-radius: 14px;
+}
+
+/* 4. Cyber Matrix Neon (Jet-Black Housing with Acid Lime LCD) */
+[data-pet-skin="cyber-neon"],
+.pocket_pet-deck[data-pet-skin="cyber-neon"] {
+    --pet-deck-bg: #090d16;
+    --pet-deck-border: 2px solid #00ff80;
+    --pet-deck-radius: 6px;
+    --pet-deck-shadow: 0 0 12px rgba(0, 255, 128, 0.35);
+    --pet-deck-padding: 10px;
+
+    --pet-bezel-bg: #04070d;
+    --pet-bezel-border: 2px solid #7928ca;
+    --pet-bezel-radius: 4px;
+
+    --pet-lcd-bg: #031c10;
+    --pet-lcd-pixel: #00ff80;
+    --pet-lcd-bg-night: #010e08;
+    --pet-lcd-pixel-night: #00aa55;
+    --pet-lcd-border: 2px solid #00ff80;
+    --pet-lcd-radius: 2px;
+
+    --pet-btn-bg: #1e1136;
+    --pet-btn-border: 2px solid #00ff80;
+    --pet-btn-text: #00ff80;
+    --pet-btn-radius: 3px;
+    --pet-btn-shadow: 0 0 6px rgba(0, 255, 128, 0.4);
+}
+
+/* 5. Game Boy DMG (1989 Dot-Matrix Pea Soup) */
+[data-pet-skin="gameboy"],
+.pocket_pet-deck[data-pet-skin="gameboy"] {
+    --pet-deck-bg: #c7c1b7;
+    --pet-deck-border: 2px outset #e5e0d8;
+    --pet-deck-radius: 10px 10px 24px 10px;
+    --pet-deck-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --pet-deck-padding: 12px 10px;
+
+    --pet-bezel-bg: #525266;
+    --pet-bezel-border: 2px inset #2d2d3a;
+    --pet-bezel-radius: 8px 8px 18px 8px;
+
+    --pet-lcd-bg: #8b956d;
+    --pet-lcd-pixel: #2f3821;
+    --pet-lcd-bg-night: #6c7554;
+    --pet-lcd-pixel-night: #1c2214;
+    --pet-lcd-border: 2px inset #22222b;
+    --pet-lcd-radius: 4px;
+
+    --pet-btn-bg: #8f1d52;
+    --pet-btn-border: 2px outset #bd3273;
+    --pet-btn-text: #ffffff;
+    --pet-btn-radius: 50%;
+    --pet-btn-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}

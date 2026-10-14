@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <!-- Critter body gradient -->
+    <radialGradient id="critter-body" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="70%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#115e59"/>
+    </radialGradient>
+    <radialGradient id="antenna-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sparkle stars overhead -->
+  <!-- Star left -->
+  <polygon points="9,6 10,8 12,9 10,10 9,12 8,10 6,9 8,8" fill="#fbbf24"/>
+  <!-- Star right -->
+  <polygon points="39,4 40,6 42,7 40,8 39,10 38,8 36,7 38,6" fill="#ec4899"/>
+
+  <!-- Antennae Stems & Glowing Bulbs -->
+  <!-- Left antenna -->
+  <path d="M 18,17 Q 12,10 13,6" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="13" cy="6" r="3" fill="url(#antenna-glow)" stroke="#b45309" stroke-width="0.8"/>
+  <!-- Right antenna -->
+  <path d="M 30,17 Q 36,10 35,6" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="35" cy="6" r="3" fill="url(#antenna-glow)" stroke="#b45309" stroke-width="0.8"/>
+
+  <!-- Cute Chubby Body & Head -->
+  <ellipse cx="24" cy="27" rx="15" ry="14" fill="url(#critter-body)" stroke="#042f2e" stroke-width="2"/>
+
+  <!-- Belly Patch -->
+  <ellipse cx="24" cy="30" rx="9" ry="8" fill="#99f6e4" opacity="0.9"/>
+
+  <!-- Raised Cheerful Paws -->
+  <!-- Left Paw -->
+  <ellipse cx="8" cy="26" rx="3.5" ry="3" fill="#2dd4bf" stroke="#042f2e" stroke-width="1.8"/>
+  <!-- Right Paw -->
+  <ellipse cx="40" cy="26" rx="3.5" ry="3" fill="#2dd4bf" stroke="#042f2e" stroke-width="1.8"/>
+
+  <!-- Big Expressive Eyes -->
+  <!-- Left Eye -->
+  <ellipse cx="18" cy="22" rx="3.8" ry="4.5" fill="#0f172a" stroke="#042f2e" stroke-width="1"/>
+  <circle cx="17" cy="20.5" r="1.5" fill="#ffffff"/>
+  <circle cx="19.5" cy="24" r="0.8" fill="#ffffff"/>
+
+  <!-- Right Eye -->
+  <ellipse cx="30" cy="22" rx="3.8" ry="4.5" fill="#0f172a" stroke="#042f2e" stroke-width="1"/>
+  <circle cx="29" cy="20.5" r="1.5" fill="#ffffff"/>
+  <circle cx="31.5" cy="24" r="0.8" fill="#ffffff"/>
+
+  <!-- Pink Cheek Blushes -->
+  <ellipse cx="12" cy="26" rx="2.5" ry="1.5" fill="#f472b6" opacity="0.85"/>
+  <ellipse cx="36" cy="26" rx="2.5" ry="1.5" fill="#f472b6" opacity="0.85"/>
+
+  <!-- Joyful Wide Smile with Tongue -->
+  <path d="M 20,27 Q 24,33 28,27 Z" fill="#ec4899" stroke="#042f2e" stroke-width="1.4"/>
+  <path d="M 22,30 Q 24,32 26,30" fill="#fbcfe8"/>
+
+  <!-- Cracked Eggshell Base (Matching pocket_pet-egg.svg pink shell) -->
+  <polygon points="10,44 14,37 18,43 23,36 28,42 33,37 38,44 35,46 13,46" fill="#ec4899" stroke="#9d174d" stroke-width="1.5"/>
+  <!-- White Eggshell Inner Rim -->
+  <polygon points="11,43 14,38 18,42 23,37 28,41 33,38 37,43" fill="none" stroke="#fbcfe8" stroke-width="1"/>
+</svg>

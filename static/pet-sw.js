@@ -11,6 +11,7 @@ const PRECACHE_ASSETS = [
   '/js/pocket_pet.js',
   '/js/pet-standalone.js',
   '/stickers/pocket_pet-egg.svg',
+  '/stickers/pocket_pet-critter.svg',
   '/favicon.ico',
   '/pet-manifest.json'
 ];

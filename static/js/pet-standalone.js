@@ -166,6 +166,41 @@
       });
     }
 
+    // Options -> Skin Switcher
+    const skinButtons = document.querySelectorAll('.menu-skin-btn');
+    skinButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const skinId = btn.getAttribute('data-skin');
+        if (skinId && window.Pocket_Pet && typeof window.Pocket_Pet.setSkin === 'function') {
+          window.Pocket_Pet.setSkin(skinId);
+        } else if (skinId) {
+          try {
+            localStorage.setItem('lachlan_pet_skin', skinId);
+          } catch (e) {}
+          document.querySelectorAll('.pocket_pet-deck').forEach(function (deck) {
+            deck.setAttribute('data-pet-skin', skinId);
+          });
+        }
+        updateActiveSkinUI();
+        closeAllMenus();
+      });
+    });
+
+    function updateActiveSkinUI() {
+      const activeSkin = (window.Pocket_Pet && typeof window.Pocket_Pet.getSkin === 'function')
+        ? window.Pocket_Pet.getSkin()
+        : (localStorage.getItem('lachlan_pet_skin') || 'windows');
+
+      document.querySelectorAll('.menu-skin-btn').forEach(function (btn) {
+        if (btn.getAttribute('data-skin') === activeSkin) {
+          btn.classList.add('active-skin');
+        } else {
+          btn.classList.remove('active-skin');
+        }
+      });
+    }
+
+    updateActiveSkinUI();
     updateSoundLabel();
   }
 
@@ -305,6 +340,11 @@
         openModal('pet-help-modal');
       } else if (window.location.hash === '#about') {
         openModal('pet-about-modal');
+      } else if (window.location.hash.startsWith('#skin-')) {
+        const targetSkin = window.location.hash.replace('#skin-', '');
+        if (window.Pocket_Pet && typeof window.Pocket_Pet.setSkin === 'function') {
+          window.Pocket_Pet.setSkin(targetSkin);
+        }
       }
     }
     checkUrlHash();

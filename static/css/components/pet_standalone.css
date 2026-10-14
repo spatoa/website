@@ -176,6 +176,28 @@ body.pet-standalone-page {
     outline: none;
 }
 
+.win-menu-header-label {
+    font-size: 9px;
+    font-weight: bold;
+    color: var(--text-muted, #555555);
+    padding: 4px 10px 2px;
+    letter-spacing: 0.5px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.win-dropdown-item.active-skin {
+    font-weight: bold;
+    color: var(--accent-gold, #b45309);
+}
+
+.win-dropdown-item.active-skin::after {
+    content: " ✓";
+    font-weight: bold;
+    color: var(--term-green, #008f11);
+    float: right;
+}
+
 .win-menu-separator {
     height: 1px;
     background: var(--bevel-dark, #808080);

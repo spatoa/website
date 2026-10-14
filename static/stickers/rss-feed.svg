@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31" shape-rendering="crispEdges">
+  <!-- Orange Button Background -->
+  <rect width="88" height="31" fill="#c2410c"/>
+  <!-- Bevel Highlights -->
+  <rect x="0" y="0" width="88" height="1" fill="#fdba74"/>
+  <rect x="0" y="0" width="1" height="31" fill="#fdba74"/>
+  <!-- Bevel Shadows -->
+  <rect x="87" y="0" width="1" height="31" fill="#7c2d12"/>
+  <rect x="0" y="30" width="88" height="1" fill="#7c2d12"/>
+
+  <!-- Left Side: Orange Pill with RSS Broadcast Icon -->
+  <rect x="1" y="1" width="30" height="29" fill="#ea580c"/>
+  <!-- RSS Radio Waves in Crisp Vector -->
+  <!-- Center Dot -->
+  <circle cx="8" cy="22" r="2.5" fill="#ffffff"/>
+  <!-- Inner Wave Arc -->
+  <path d="M 6,15 A 8 8 0 0 1 15,24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="square"/>
+  <!-- Outer Wave Arc -->
+  <path d="M 6,9 A 14 14 0 0 1 21,24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="square"/>
+
+  <!-- Divider -->
+  <rect x="31" y="1" width="1" height="29" fill="#fdba74"/>
+
+  <!-- Right Side: RSS XML Feed Text -->
+  <text x="36" y="13" font-family="'Lucida Console', monospace" font-size="8.5" font-weight="900" fill="#ffffff" letter-spacing="-0.5">RSS 2.0</text>
+  <text x="36" y="24" font-family="'Lucida Console', monospace" font-size="7.5" font-weight="bold" fill="#fef08a" letter-spacing="-0.5">FEED/XML</text>
+</svg>

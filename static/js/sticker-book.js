@@ -15,9 +15,9 @@
 
   function resolveStickerAnimType(src) {
     if (!src) return 'anim-float';
-    if (src.includes('sparkle-star') || src.includes('y2k-butterfly')) return 'anim-shimmer';
-    if (src.includes('pixel-flame') || src.includes('pocket_pet-egg') || src.includes('retro-smiley')) return 'anim-pulse';
-    if (src.includes('notepad-made') || src.includes('xhtml-valid') || src.includes('winamp-whips') || src.includes('ie-best') || src.includes('dialup-56k') || src.includes('cassette-mixtape')) return 'anim-sway';
+    if (src.includes('sparkle-star') || src.includes('y2k-butterfly') || src.includes('cdr-disc') || src.includes('flip-phone')) return 'anim-shimmer';
+    if (src.includes('pixel-flame') || src.includes('pocket_pet-egg') || src.includes('pocket_pet-critter') || src.includes('retro-smiley') || src.includes('reticulum-radio')) return 'anim-pulse';
+    if (src.includes('notepad-made') || src.includes('xhtml-valid') || src.includes('css-valid') || src.includes('rss-feed') || src.includes('res-1024') || src.includes('ctf-flag') || src.includes('winamp-whips') || src.includes('ie-best') || src.includes('dialup-56k') || src.includes('cassette-mixtape') || src.includes('no-spyware')) return 'anim-sway';
     return 'anim-float';
   }
 

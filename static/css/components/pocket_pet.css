@@ -27,6 +27,12 @@
     margin: 0 auto;
     outline: none;
     box-sizing: border-box;
+    background: var(--pet-deck-bg, transparent);
+    border: var(--pet-deck-border, none);
+    border-radius: var(--pet-deck-radius, 4px);
+    box-shadow: var(--pet-deck-shadow, none);
+    padding: var(--pet-deck-padding, 0);
+    transition: background 0.25s ease, border-color 0.25s ease, border-radius 0.25s ease, box-shadow 0.25s ease;
 }
 
 .pocket_pet-deck:focus-visible {
@@ -36,17 +42,18 @@
 
 /* Recessed Inset LCD Frame - Matched to site's inset bevel tokens */
 .pocket_pet-screen-bezel {
-    background: var(--panel-bg, #f0f0e8);
-    border: 2px inset var(--bevel-dark, #808080);
-    border-radius: 2px;
+    background: var(--pet-bezel-bg, var(--panel-bg, #f0f0e8));
+    border: var(--pet-bezel-border, 2px inset var(--bevel-dark, #808080));
+    border-radius: var(--pet-bezel-radius, 2px);
     padding: 6px 8px;
-    box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--pet-bezel-shadow, inset 1px 1px 2px rgba(0, 0, 0, 0.25));
     width: 100%;
     max-width: 236px;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
+    transition: background 0.25s ease, border-color 0.25s ease, border-radius 0.25s ease;
 }
 
 /* 8 LCD Icons Row */
@@ -123,15 +130,17 @@
     width: 176px;
     height: 106px;
     max-width: 100%;
-    background: #9bb084;
-    border: 2px inset var(--bevel-dark, #808080);
-    box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.5);
+    background: var(--pet-lcd-bg, #9bb084);
+    border: var(--pet-lcd-border, 2px inset var(--bevel-dark, #808080));
+    border-radius: var(--pet-lcd-radius, 2px);
+    box-shadow: var(--pet-lcd-shadow, inset 1px 1px 4px rgba(0, 0, 0, 0.5));
     margin: 3px 0;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     box-sizing: border-box;
+    transition: background 0.25s ease, border-color 0.25s ease;
 }
 
 /* Screen pixel canvas */
@@ -179,6 +188,12 @@
     white-space: nowrap;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    background: var(--pet-btn-bg, var(--panel-bg, #d4d0c8));
+    border: var(--pet-btn-border, 2px outset var(--bevel-light, #ffffff));
+    color: var(--pet-btn-text, var(--text-primary, #000000));
+    border-radius: var(--pet-btn-radius, 2px);
+    box-shadow: var(--pet-btn-shadow, none);
+    transition: background 0.2s ease, border-radius 0.2s ease, color 0.2s ease;
 }
 
 .pocket_pet-controls .retro-btn:active {
