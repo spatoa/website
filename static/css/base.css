@@ -79,6 +79,7 @@ body {
     background-image: var(--body-bg-pattern);
     background-size: var(--body-bg-size);
     font-family: Tahoma, Verdana, Geneva, sans-serif;
+    font-size: 11px;
     line-height: 1.45;
     color: var(--text-primary);
     transition: background-color 0.15s ease;

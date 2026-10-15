@@ -1,0 +1,55 @@
+/* ==============================================
+   DESKTOP OS LAUNCH PANEL (GRID LAYOUT WIDGET)
+   ============================================== */
+.desktop-launch-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.desktop-launch-inner {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.desktop-launch-icon {
+    font-size: 32px;
+    padding: 6px;
+    background: var(--panel-inner-bg);
+    border: 2px inset var(--bevel-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.desktop-launch-content {
+    flex: 1;
+}
+
+.desktop-launch-desc {
+    font-size: 10px;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
+.desktop-launch-action {
+    text-align: right;
+}
+
+.desktop-launch-btn {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 11px;
+}
+
+/* Hide Desktop Mode launch panel completely on mobile */
+@media (max-width: 768px) {
+    .desktop-launch-panel,
+    #desktop-launch-window,
+    .nav-btn-desktop {
+        display: none !important;
+    }
+}

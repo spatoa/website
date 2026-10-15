@@ -953,19 +953,6 @@ body.desktop-mobile-isolated .window-controls,
     color: var(--text-muted);
 }
 
-.settings-font-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.settings-font-btns {
-    display: flex;
-    gap: 4px;
-}
-
 .settings-actions-row {
     display: flex;
     gap: 6px;

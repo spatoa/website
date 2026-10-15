@@ -329,29 +329,3 @@ html[data-theme="scene-punk"], :root[data-theme="scene-punk"], [data-theme="scen
     --start-sidebar-accent: #ff69b4;
 }
 
-/* ==============================================
-   ACCESSIBILITY: FONT SCALING TIERS
-   ============================================== */
-html[data-font-scale="default"] body {
-    font-size: 11px;
-}
-html[data-font-scale="default"] .markdown-content {
-    font-size: 13px;
-    line-height: 1.55;
-}
-
-html[data-font-scale="medium"] body {
-    font-size: 13px;
-}
-html[data-font-scale="medium"] .markdown-content {
-    font-size: 15px;
-    line-height: 1.65;
-}
-
-html[data-font-scale="large"] body {
-    font-size: 15px;
-}
-html[data-font-scale="large"] .markdown-content {
-    font-size: 17px;
-    line-height: 1.75;
-}

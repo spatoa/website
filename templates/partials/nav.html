@@ -3,18 +3,9 @@
     <a href="{{ get_url(path='/') }}" class="nav-btn">{{ config.extra.strings.nav_home | default(value="[ HOME ]") }}</a>
     <a href="{{ get_url(path='blog/') }}" class="nav-btn">{{ config.extra.strings.nav_blog | default(value="[ BLOG ]") }}</a>
     <a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener" class="nav-btn">{{ config.extra.strings.nav_ctf | default(value="[ CTF ↗ ]") }}</a>
-    <a href="{{ get_url(path='desktop/') }}" class="nav-btn" title="Launch Interactive Retro Web OS">{{ config.extra.strings.nav_desktop | default(value="[ &#128421; Desktop OS ]") | safe }}</a>
   </div>
 
   <div class="nav-controls">
-    <!-- Accessible Font Size Toggle -->
-    <div class="font-size-box" role="group" aria-label="Font size controls">
-      <span class="toolbar-label">{{ config.extra.strings.font_size_label | default(value="TEXT:") }}</span>
-      <button type="button" class="font-btn" id="font-btn-sm" data-font-scale="default" title="Default compact font (11px)" aria-label="Small font size (11px)" aria-pressed="true">A-</button>
-      <button type="button" class="font-btn" id="font-btn-md" data-font-scale="medium" title="Medium readable font (13px)" aria-label="Medium font size (13px)" aria-pressed="false">A</button>
-      <button type="button" class="font-btn" id="font-btn-lg" data-font-scale="large" title="Large accessible font (15px)" aria-label="Large font size (15px)" aria-pressed="false">A+</button>
-    </div>
-
     <!-- Theme Selector -->
     <div class="theme-selector-box">
       <label for="theme-selector" class="theme-label">{{ config.extra.strings.theme_label | default(value="THEME:") }}</label>

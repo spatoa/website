@@ -63,11 +63,10 @@ These guidelines ensure that all future agents build and maintain features in **
 - **Zero framework dependencies**: Vanilla ECMAScript only. No React, Vue, jQuery, or bloated npm bundles.
 - **Loading behavior**:
   - Scripts must be placed in `static/js/` and loaded in `base.html` using `<script src="..." defer></script>`.
-  - Avoid polluting the global namespace; expose only documented APIs under `window` (e.g., `window.switchSiteTheme`, `window.setFontScale`).
+  - Avoid polluting the global namespace; expose only documented APIs under `window` (e.g., `window.switchSiteTheme`).
 - **LocalStorage conventions**:
   - Always prefix keys with `lachlan_` to prevent collisions:
     - `lachlan_site_theme`: Selected theme ID.
-    - `lachlan_font_scale`: Selected font scale (`default`, `medium`, `large`).
     - `lachlan_desktop_mode`: Desktop view toggle state (`true` / `false`).
     - `lachlan_stickers`: JSON array of placed stickers and coordinates.
     - `lachlan_window_states`: Saved positions and minimization states of windows.
@@ -122,7 +121,7 @@ These guidelines ensure that all future agents and contributors maintain the aut
   - Terminals, tickers & metadata: `"Lucida Console", Monaco, monospace`.
 - **Accessibility & Contrast**:
   - Maintain WCAG AA readability for all text elements.
-  - Support font scaling tiers (`[data-font-scale="default"]`, `[data-font-scale="medium"]`, `[data-font-scale="large"]`).
+  - Standard retro typography locked to default 11px body sizing across themes.
   - Always retain the skip-to-content accessibility link.
 
 ---

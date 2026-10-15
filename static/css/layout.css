@@ -96,7 +96,7 @@
         width: 100%;
     }
 
-    .font-size-box, .theme-selector-box, .search-box {
+    .theme-selector-box, .search-box {
         width: 100%;
         justify-content: space-between;
     }

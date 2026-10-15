@@ -1,0 +1,20 @@
+<section class="panel desktop-launch-panel" id="desktop-launch-window" aria-labelledby="desktop-launch-heading">
+  <div class="panel-header" id="desktop-launch-heading">
+    {{ config.extra.strings.header_desktop_os | default(value="★ Interactive Desktop OS ★") }}
+  </div>
+  <div class="panel-body desktop-launch-body">
+    <div class="desktop-launch-inner">
+      <div class="desktop-launch-icon" aria-hidden="true">&#128421;</div>
+      <div class="desktop-launch-content">
+        <p class="desktop-launch-desc">
+          {{ config.extra.strings.desktop_launch_desc | default(value="Experience Lachlan's World in a full mid-2000s Web OS desktop with draggable windows, chiptune player, and arcade games.") }}
+        </p>
+        <div class="desktop-launch-action">
+          <a href="{{ get_url(path='desktop/') }}" class="retro-btn desktop-launch-btn" title="Launch Interactive Retro Web OS">
+            {{ config.extra.strings.desktop_launch_btn | default(value="[ &#128421; Launch Desktop OS &raquo; ]") | safe }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
