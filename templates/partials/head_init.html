@@ -26,7 +26,7 @@
   })();
 </script>
 
-<link rel="stylesheet" href="{{ get_url(path='css/style.css') | safe }}">
+<link rel="stylesheet" href="{{ get_url(path='css/style.css', cachebust=true) | safe }}">
 <link rel="icon" href="{{ get_url(path='favicon.ico') | safe }}">
 <style>
   :root:not([data-theme="midnight"]):not([data-theme="windows"]):not([data-theme="cyber-y2k"]):not([data-theme="candy-2000"]):not([data-theme="scene-punk"]), [data-theme="paper"] {

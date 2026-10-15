@@ -51,11 +51,26 @@
 @media (max-width: 768px) {
     body {
         padding: 4px 2px;
+        overflow-x: hidden;
     }
 
     .site-container {
         padding: 4px;
         border-width: 2px;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .single-post-container,
+    .post-panel,
+    .markdown-content {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .markdown-content img {
+        max-width: 100% !important;
+        height: auto !important;
     }
 
     .banner h1 {

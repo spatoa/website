@@ -65,6 +65,11 @@ a, button, select, input, [role="button"], canvas {
     cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M5 1 L7 1 L7 6 L9 6 L9 7 L11 7 L11 8 L13 8 L13 12 L12 15 L4 15 L3 11 L1 8 L3 7 L5 9 Z' fill='%23ffffff' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E"), pointer;
 }
 
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 body {
     position: relative;
     min-height: 100vh;

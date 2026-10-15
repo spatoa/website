@@ -348,6 +348,18 @@
 }
 
 /* Browser Reader Mode & Single Post View */
+.single-post-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.post-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
 .single-post-header {
     margin-bottom: 12px;
 }
@@ -399,6 +411,10 @@
 /* Markdown Content Styling for Readability */
 .markdown-content {
     color: var(--text-primary);
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 /* Markdown Content URLs & Hyperlinks */
@@ -553,12 +569,16 @@
     color: inherit;
 }
 
-/* Centered Blog Images with Mid-2000s Retro Framing */
-.markdown-content img {
+/* Centered Blog Images with Mid-2000s Retro Framing & Responsive Mobile Scaling */
+.markdown-content img,
+.blog-entry-body img,
+.reader-markdown img,
+.single-post-container img {
     display: block;
     margin: 16px auto;
-    max-width: 100%;
-    height: auto;
+    max-width: 100% !important;
+    width: auto;
+    height: auto !important;
     border: 2px inset var(--bevel-dark);
     padding: 3px;
     background: var(--panel-inner-bg);
@@ -566,18 +586,26 @@
     box-sizing: border-box;
 }
 
-/* Ensure paragraph containers and link wrappers containing images center properly */
+/* Ensure paragraph containers and link wrappers containing images center properly and fit horizontally */
 .markdown-content p:has(> img),
 .markdown-content p:has(> a > img) {
     text-align: center;
+    max-width: 100%;
 }
 
 .markdown-content a:has(> img) {
     display: inline-block;
+    max-width: 100%;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
     text-decoration: none;
+    box-sizing: border-box;
+}
+
+.markdown-content a > img {
+    max-width: 100% !important;
+    height: auto !important;
 }
 
 .markdown-content a:has(> img):hover img {
@@ -589,10 +617,14 @@
     display: block;
     margin: 16px auto;
     text-align: center;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .markdown-content figure img {
     margin: 0 auto;
+    max-width: 100% !important;
+    height: auto !important;
 }
 
 .markdown-content figcaption {
@@ -614,6 +646,13 @@
     font-size: 10px;
     margin-bottom: 12px;
     color: var(--text-primary);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+}
+
+.post-permalink-box code {
+    word-break: break-all;
+    overflow-wrap: anywhere;
 }
 
 [data-theme="midnight"] .post-permalink-box {
