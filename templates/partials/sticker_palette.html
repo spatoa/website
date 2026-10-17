@@ -1,3 +1,11 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/sticker_palette.html
+  ENVIRONMENT: Reusable Component
+  INCLUDED BY: templates/partials/sticker_book.html, templates/partials/desktop_sticker_window.html
+  DESCRIPTION: Collection of draggable retro stickers, SVG badges, and mid-2000s web buttons.
+  ==============================================================
+#}
 <!-- Canonical Sticker Palette (Shared across Sticker Drawer, Desktop OS Window, and Galleries) -->
 <div class="sticker-item" data-src="{{ get_url(path='stickers/notepad-made.svg') | safe }}" title="Made with Notepad Badge" role="button" tabindex="0" aria-label="Add Notepad Badge sticker" draggable="true">
   <img src="{{ get_url(path='stickers/notepad-made.svg') | safe }}" alt="Notepad Badge" loading="lazy">

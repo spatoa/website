@@ -1,6 +1,24 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/status_diagnostics.html
+  ENVIRONMENT: Reusable Component
+  INCLUDED BY: templates/partials/status.html, templates/partials/settings_window.html
+  DESCRIPTION: Live client-side telemetry gauges (simulated server ping, uptime, browser environment).
+  ==============================================================
+#}
 <div class="status-indicator">
   <span class="status-dot"></span> <strong>{{ config.extra.strings.status_label_state | default(value="STATUS:") }}</strong> {{ config.extra.strings.status_state | default(value="ONLINE & READY") }}
 </div>
-<div class="status-line"><strong>{{ config.extra.strings.status_label_mood | default(value="Mood:") }}</strong> {{ config.extra.strings.status_mood | default(value="Busy Hacking") }}</div>
-<div class="status-line"><strong>{{ config.extra.strings.status_label_project | default(value="Current Project:") }}</strong> {{ config.extra.strings.status_current_project | default(value="Personal Site v2") }}</div>
-<div class="status-line"><strong>{{ config.extra.strings.status_label_arch | default(value="Server Architecture:") }}</strong> {{ config.extra.strings.status_server_arch | default(value="Linux x86_64 / NixOS") }}</div>
+<div class="status-line"><strong>{{ config.extra.strings.status_label_host | default(value="Host Node:") }}</strong> {{ config.extra.strings.status_host | default(value="vps01 (BinaryLane Melbourne)") }}</div>
+<div class="status-line"><strong>{{ config.extra.strings.status_label_arch | default(value="Server Arch:") }}</strong> {{ config.extra.strings.status_server_arch | default(value="Linux x86_64 / NixOS") }}</div>
+<div class="status-line"><strong>{{ config.extra.strings.status_label_webserver | default(value="Web Server:") }}</strong> {{ config.extra.strings.status_webserver | default(value="Caddy v2 + Nginx") }}</div>
+<div class="status-line"><strong>{{ config.extra.strings.status_label_engine | default(value="Static Engine:") }}</strong> {{ config.extra.strings.status_engine | default(value="Zola SSG (Rust)") }}</div>
+<div class="status-line"><strong>{{ config.extra.strings.status_label_network | default(value="Uplink / IP:") }}</strong> {{ config.extra.strings.status_network | default(value="Dual-Stack IPv4 / Native IPv6") }}</div>
+<div class="status-line"><strong>{{ config.extra.strings.status_label_location | default(value="Location:") }}</strong> {{ config.extra.strings.status_location | default(value="Melbourne, Victoria, AU") }}</div>
+<div class="status-line"><strong>{{ config.extra.strings.status_label_mood | default(value="Mood:") }}</strong> {{ config.extra.strings.status_mood | default(value="Overworked and underemployed") }}</div>
+<div class="status-line"><strong>{{ config.extra.strings.status_label_project | default(value="Current Project:") }}</strong> {{ config.extra.strings.status_current_project | default(value="www.lachlans.world (v2)") }}</div>
+{% if config.extra.extra_status_lines %}
+  {% for item in config.extra.extra_status_lines %}
+    <div class="status-line"><strong>{{ item.label }}</strong> {{ item.value }}</div>
+  {% endfor %}
+{% endif %}

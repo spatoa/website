@@ -110,12 +110,17 @@
 }
 
 .avatar-box {
-    width: 80px;
+    width: 82px;
     flex-shrink: 0;
     text-align: center;
     background: #e8e4da;
     border: 2px inset var(--bevel-dark);
-    padding: 6px 2px;
+    padding: 6px 3px 4px 3px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 [data-theme="windows"] .avatar-box {
@@ -142,6 +147,21 @@
     border-color: #ff1493;
 }
 
+.avatar-img {
+    width: 60px;
+    height: 60px;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.28));
+    transition: transform 0.18s ease-out, filter 0.18s ease-out;
+    user-select: none;
+}
+
+.avatar-img:hover {
+    transform: scale(1.08) rotate(1deg);
+    filter: drop-shadow(0 4px 10px rgba(14, 165, 233, 0.55));
+}
+
 .avatar-pixel {
     font-size: 38px;
     line-height: 1;
@@ -154,8 +174,10 @@
     font-family: "Lucida Console", monospace;
     background: #1b3a4b;
     color: #ffffff;
-    margin-top: 4px;
-    padding: 1px;
+    margin-top: 5px;
+    padding: 1px 3px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 [data-theme="windows"] .avatar-caption {
@@ -252,7 +274,7 @@
     color: var(--link-active);
 }
 
-/* Bullet Lists & Trivia */
+/* Bullet Lists */
 .retro-bullet-list {
     margin: 0;
     padding-left: 18px;

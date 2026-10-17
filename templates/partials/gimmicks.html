@@ -1,0 +1,61 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/gimmicks.html
+  ENVIRONMENT: Shared Window (Portal & Desktop)
+  INCLUDED BY: templates/index.html, templates/desktop.html
+  DESCRIPTION: Interactive novelty box with vintage WordArt generator, fortunes, and fake software wizard.
+  ==============================================================
+#}
+<section class="panel desktop-window" id="legit-software"
+         data-app-id="legit-software"
+         data-app-title="Totally 100% Legitimate Virus Free Software"
+         data-app-icon="💾"
+         data-default-x="520"
+         data-default-y="240">
+  <div class="panel-header">{{ config.extra.strings.header_gimmicks | default(value="★ Totally 100% Legitimate Virus Free Software ★") }}</div>
+  <div class="panel-body gimmicks-panel-body">
+    <!-- Active Gimmick Card Container -->
+    <div class="gimmick-card" id="gimmick-active-card">
+      <div class="gimmick-content-row">
+        <!-- Colorful Emoji Icon Box (Intentionally departs from monochrome Wingdings style for scam ad parody) -->
+        <div class="gimmick-icon-box" id="gimmick-icon" aria-hidden="true">&#x26A1;&#xFE0F;</div>
+
+        <!-- NOTE: This window intentionally departs from the usual site-wide style guidelines (including Wingdings substitutions) to parody colorful scam download ads and fake 5-star reviews with star emojis. Do not modify this window to match the aforementioned style. -->
+        <div class="gimmick-reviews" aria-label="Rated 5.0 out of 5 stars by users">
+          <span class="gimmick-stars" aria-hidden="true">&#x2B50;&#xFE0F;&#x2B50;&#xFE0F;&#x2B50;&#xFE0F;&#x2B50;&#xFE0F;&#x2B50;&#xFE0F;</span>
+          <span class="gimmick-review-count" id="gimmick-review-count">5.0 (9,842 user reviews)</span>
+        </div>
+
+        <div class="gimmick-info">
+          <div class="gimmick-desc" id="gimmick-desc">Allocates 64 gigabytes of physical memory over HTTP. Please allow three to five business seconds for memory delivery.</div>
+        </div>
+      </div>
+
+      <!-- Centered Free Download Action Area (Replaced by Progress Bar and SUCCESS State on click) -->
+      <div class="gimmick-action-area" id="gimmick-action-area">
+        <!-- 1. Authentic Mid-2000s Scam Download Button -->
+        <button type="button" class="gimmick-action-btn" id="gimmick-action-btn">
+          <span class="gimmick-btn-icon" id="gimmick-btn-icon" aria-hidden="true">⬇️</span>
+          <span class="gimmick-btn-label" id="gimmick-btn-text">FREE DOWNLOAD: 64GB_RAM.EXE</span>
+        </button>
+
+        <!-- 2. Mid-2000s Download Progress Bar (starts slow, then accelerates) -->
+        <div class="gimmick-progress-container" id="gimmick-progress-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+          <div class="gimmick-progress-status-row">
+            <span class="gimmick-progress-label" id="gimmick-progress-label">Connecting to server...</span>
+            <span class="gimmick-progress-pct" id="gimmick-progress-pct">0%</span>
+          </div>
+          <div class="gimmick-progress-track">
+            <div class="gimmick-progress-fill" id="gimmick-progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- 3. Joke-Relevant SUCCESS Banner (Stays until next page refresh) -->
+        <div class="gimmick-success-box" id="gimmick-success-box" role="status" aria-live="polite" hidden>
+          <span class="gimmick-success-icon" id="gimmick-success-icon" aria-hidden="true">✅</span>
+          <span class="gimmick-success-text" id="gimmick-success-text">SUCCESS! 64GB DDR5 DOWNLOADED.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

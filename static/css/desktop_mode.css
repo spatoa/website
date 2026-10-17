@@ -1,8 +1,24 @@
-/* ==============================================
-   DESKTOP OS PAGE & RETRO WINDOW MANAGER
-   Dedicated styles for /desktop/ SPA environment
-   ============================================== */
+/* ==============================================================
+   LACHLAN'S WORLD — RETRO DESKTOP OS & WINDOW MANAGER STYLES
+   Dedicated Stylesheet for /desktop/ Single-Page OS Environment
+   ==============================================================
+   TABLE OF CONTENTS:
+   [01] Fullscreen Desktop Viewport & Body Frame
+   [02] Top System Bar & Operating System Branding
+   [03] Desktop Shortcut Icons Grid
+   [04] Desktop Sticker Integration Layer
+   [05] Draggable Window Frames & Window Chrome
+   [06] Application: Blog Reader Window
+   [07] Application: File Explorer (Explorer.exe)
+   [08] Retro Taskbar, System Tray & Clock
+   [09] Desktop Start Menu & Program Groups
+   [10] Application: Settings & Display Properties (Settings.exe)
+   [11] Mobile Viewport Isolation (< 768px)
+   ============================================================== */
 
+/* ==============================================================
+   [01] FULLSCREEN DESKTOP VIEWPORT & BODY FRAME
+   ============================================================== */
 /* Fullscreen Desktop OS Body */
 body.desktop-os-page {
     overflow: hidden;
@@ -16,6 +32,9 @@ body.desktop-os-page {
     background-size: var(--body-bg-size);
 }
 
+/* ==============================================================
+   [02] TOP SYSTEM BAR & OPERATING SYSTEM BRANDING
+   ============================================================== */
 /* Desktop Top System Bar */
 .desktop-top-bar {
     position: fixed;
@@ -119,6 +138,9 @@ body.desktop-os-page {
 }
 
 /* Desktop Shortcut Icons */
+/* ==============================================================
+   [03] DESKTOP SHORTCUT ICONS GRID
+   ============================================================== */
 .desktop-icons-container {
     position: absolute;
     top: 14px;
@@ -154,6 +176,8 @@ body.desktop-os-page {
 }
 
 .desktop-icon-img {
+    font-family: "Wingdings", "Wingdings 2", "Wingdings 3", "Webdings", "Segoe MDL2 Assets", "Noto Sans Symbols 2", "Apple Symbols", Tahoma, sans-serif;
+    font-variant-emoji: text;
     font-size: 28px;
     line-height: 1;
     filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.8));
@@ -171,6 +195,9 @@ body.desktop-os-page {
 }
 
 /* Desktop Canvas Sticker Layer */
+/* ==============================================================
+   [04] DESKTOP STICKER INTEGRATION LAYER
+   ============================================================== */
 .desktop-sticker-layer {
     position: absolute;
     top: 0;
@@ -182,6 +209,9 @@ body.desktop-os-page {
 }
 
 /* Floating Window Behavior */
+/* ==============================================================
+   [05] DRAGGABLE WINDOW FRAMES & WINDOW CHROME
+   ============================================================== */
 .desktop-windows-layer {
     position: absolute;
     top: 0;
@@ -258,6 +288,9 @@ body.desktop-os-page {
 }
 
 /* In-Desktop Blog Reader Window (Blog_Reader.exe) */
+/* ==============================================================
+   [06] APPLICATION: BLOG READER WINDOW
+   ============================================================== */
 .reader-body {
     display: flex;
     flex-direction: column;
@@ -303,12 +336,13 @@ body.desktop-os-page {
     overflow-y: auto;
     background: var(--shell-bg);
     border: 2px inset var(--bevel-dark);
-    padding: 12px;
+    padding: 16px 20px;
     user-select: text;
 }
 
 .reader-article {
     display: none;
+    padding: 4px 6px;
 }
 
 .reader-article.active {
@@ -328,6 +362,9 @@ body.desktop-os-page {
 }
 
 /* In-Desktop File Explorer Window (Explorer.exe) */
+/* ==============================================================
+   [07] APPLICATION: FILE EXPLORER (EXPLORER.EXE)
+   ============================================================== */
 .explorer-body {
     display: flex;
     flex-direction: column;
@@ -600,6 +637,9 @@ body.desktop-os-page {
 }
 
 /* Retro Desktop Taskbar */
+/* ==============================================================
+   [08] RETRO TASKBAR, SYSTEM TRAY & CLOCK
+   ============================================================== */
 .desktop-taskbar {
     position: fixed;
     bottom: 0;
@@ -710,6 +750,9 @@ body.desktop-os-page {
 }
 
 /* Start Menu & Submenus */
+/* ==============================================================
+   [09] DESKTOP START MENU & PROGRAM GROUPS
+   ============================================================== */
 .desktop-start-menu {
     position: fixed;
     bottom: 32px;
@@ -977,6 +1020,9 @@ html.has-custom-wallpaper body.desktop-os-page {
 }
 
 /* Retro Tabbed Dialogs (Settings.exe) */
+/* ==============================================================
+   [10] APPLICATION: SETTINGS & DISPLAY PROPERTIES (SETTINGS.EXE)
+   ============================================================== */
 .settings-tabs-nav {
     display: flex;
     gap: 2px;
@@ -1121,8 +1167,8 @@ html.has-custom-wallpaper body.desktop-os-page {
     color: rgba(255, 255, 255, 0.85);
 }
 
-/* ==============================================
-   MOBILE ISOLATION (< 768px OR .desktop-mobile-isolated)
+/* ==============================================================
+   [11] MOBILE VIEWPORT ISOLATION (< 768px OR .desktop-mobile-isolated)
    Bypasses floating desktop window chrome on small viewports
    ============================================== */
 @media (max-width: 767px) {

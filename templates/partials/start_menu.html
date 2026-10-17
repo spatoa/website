@@ -1,3 +1,11 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/start_menu.html
+  ENVIRONMENT: Desktop OS
+  INCLUDED BY: templates/partials/taskbar.html
+  DESCRIPTION: Pop-up Start Menu listing installed desktop applications and web shortcuts.
+  ==============================================================
+#}
 <!-- Retro Windows Start Menu (Desktop Mode) -->
 <div id="desktop-start-menu" class="desktop-start-menu" role="menu" aria-label="Start Menu" hidden>
   <!-- Left Side Banner (Retro Windows 98/2000 style) -->
@@ -16,7 +24,7 @@
     <!-- Blog Posts Directory Submenu -->
     <div class="start-menu-has-submenu">
       <div class="start-menu-item start-folder-item" id="start-blog-folder" tabindex="0" role="menuitem" aria-haspopup="true" aria-expanded="false">
-        <span class="start-item-icon" aria-hidden="true">&#128193;</span>
+        <span class="start-item-icon" aria-hidden="true">🗀</span>
         <span class="start-item-label">Blog Posts Directory</span>
         <span class="start-arrow" aria-hidden="true">&#9658;</span>
       </div>
@@ -26,7 +34,7 @@
         {% if blog_section and blog_section.pages %}
           {% for post in blog_section.pages %}
             <a href="{{ post.permalink }}" class="start-menu-item" role="menuitem">
-              <span class="start-item-icon" aria-hidden="true">&#128196;</span>
+              <span class="start-item-icon" aria-hidden="true">🗎</span>
               <span class="start-item-label">{{ post.title }}</span>
             </a>
           {% endfor %}
@@ -35,7 +43,7 @@
         {% endif %}
         <div class="start-menu-divider" role="separator"></div>
         <button type="button" class="start-menu-item" role="menuitem" data-action="open-window" data-target="file-explorer-window">
-          <span class="start-item-icon" aria-hidden="true">&#128194;</span>
+          <span class="start-item-icon" aria-hidden="true">🗁</span>
           <span class="start-item-label">Browse Blog Archive in Explorer &raquo;</span>
         </button>
       </div>
@@ -43,7 +51,7 @@
 
     <!-- CTF Challenges Link -->
     <a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener" class="start-menu-item" role="menuitem">
-      <span class="start-item-icon" aria-hidden="true">&#128272;</span>
+      <span class="start-item-icon" aria-hidden="true">⚿</span>
       <span class="start-item-label">CTF Challenges &#8599;</span>
     </a>
 
@@ -51,7 +59,7 @@
 
     <!-- Switch Back to Grid Mode -->
     <a href="{{ get_url(path='/') }}" class="start-menu-item start-action-exit" role="menuitem">
-      <span class="start-item-icon" aria-hidden="true">&#128421;</span>
+      <span class="start-item-icon" aria-hidden="true">🖵</span>
       <span class="start-item-label">Exit to Website</span>
     </a>
   </div>

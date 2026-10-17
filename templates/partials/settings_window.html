@@ -1,14 +1,22 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/settings_window.html
+  ENVIRONMENT: Desktop OS
+  INCLUDED BY: templates/desktop.html
+  DESCRIPTION: Display Properties dialog (Settings.exe) with tabs for wallpaper, resolution, diagnostics, and about.
+  ==============================================================
+#}
 <!-- In-Desktop Settings & Display Properties Window (Settings.exe) -->
 <section class="panel desktop-window window-closed" id="settings-window"
          data-app-id="settings-window"
          data-app-title="Settings & System"
-         data-app-icon="⚙️"
+         data-app-icon="⚙"
          data-default-x="280"
          data-default-y="70"
          style="width: 520px; max-width: calc(100vw - 20px);">
   <div class="panel-header">
     <div class="panel-header-title">
-      <span class="win-icon" aria-hidden="true">&#9881;</span> Settings.exe &bull; System &amp; Display Properties
+      <span class="win-icon" aria-hidden="true">⚙</span> Settings.exe &bull; System &amp; Display Properties
     </div>
   </div>
 
@@ -16,16 +24,16 @@
     <!-- Retro Tabbed Navigation Header -->
     <div class="settings-tabs-nav" id="settings-tabs-nav" role="tablist" aria-label="Settings Categories">
       <button type="button" class="settings-tab-btn active" id="tab-btn-display" data-tab="settings-tab-display" role="tab" aria-selected="true" aria-controls="settings-tab-display">
-        <span class="tab-icon" aria-hidden="true">&#128421;</span> Display
+        <span class="tab-icon" aria-hidden="true">🖵</span> Display
       </button>
       <button type="button" class="settings-tab-btn" id="tab-btn-about" data-tab="settings-tab-about" role="tab" aria-selected="false" aria-controls="settings-tab-about">
-        <span class="tab-icon" aria-hidden="true">&#128100;</span> About System
+        <span class="tab-icon" aria-hidden="true">☺</span> About System
       </button>
       <button type="button" class="settings-tab-btn" id="tab-btn-network" data-tab="settings-tab-network" role="tab" aria-selected="false" aria-controls="settings-tab-network">
-        <span class="tab-icon" aria-hidden="true">&#127760;</span> Network (Traffic)
+        <span class="tab-icon" aria-hidden="true">↔</span> Network (Traffic)
       </button>
       <button type="button" class="settings-tab-btn" id="tab-btn-status" data-tab="settings-tab-status" role="tab" aria-selected="false" aria-controls="settings-tab-status">
-        <span class="tab-icon" aria-hidden="true">&#9889;</span> System Status
+        <span class="tab-icon" aria-hidden="true">◷</span> System Status
       </button>
     </div>
 
@@ -33,7 +41,7 @@
     <div class="settings-tab-pane active" id="settings-tab-display" role="tabpanel" aria-labelledby="tab-btn-display">
       <!-- Theme Palette Selector -->
       <fieldset class="settings-fieldset">
-        <legend class="settings-legend"><span aria-hidden="true">&#127912;</span> Theme Color Scheme</legend>
+        <legend class="settings-legend"><span aria-hidden="true">❖</span> Theme Color Scheme</legend>
         <div class="settings-row">
           <label for="settings-theme-select" class="settings-label">Active Palette:</label>
           <select id="settings-theme-select" class="retro-select settings-select" data-theme-select>
@@ -53,16 +61,16 @@
 
       <!-- Custom Desktop Wallpaper -->
       <fieldset class="settings-fieldset">
-        <legend class="settings-legend"><span aria-hidden="true">&#128444;</span> Custom Desktop Wallpaper</legend>
+        <legend class="settings-legend"><span aria-hidden="true">🗔</span> Custom Desktop Wallpaper</legend>
         <div class="settings-row">
           <span class="settings-label">Image Source:</span>
           <div class="settings-btn-group" style="display: flex; gap: 4px; flex-wrap: wrap; flex: 1;">
             <label class="retro-btn" style="cursor: pointer; padding: 2px 7px; font-size: 10px;">
-              <span aria-hidden="true">&#128193;</span> Choose File...
+              <span aria-hidden="true">🗀</span> Choose File...
               <input type="file" id="settings-wallpaper-file" accept="image/*" style="display: none;" aria-label="Upload custom wallpaper image">
             </label>
-            <button type="button" class="retro-btn" id="settings-wallpaper-url-btn" style="padding: 2px 7px; font-size: 10px;" title="Provide an image web link"><span aria-hidden="true">&#128279;</span> Image URL</button>
-            <button type="button" class="retro-btn" id="settings-wallpaper-reset-btn" style="padding: 2px 7px; font-size: 10px;" title="Reset wallpaper to default theme pattern"><span aria-hidden="true">&#8635;</span> Default Pattern</button>
+            <button type="button" class="retro-btn" id="settings-wallpaper-url-btn" style="padding: 2px 7px; font-size: 10px;" title="Provide an image web link"><span aria-hidden="true">☍</span> Image URL</button>
+            <button type="button" class="retro-btn" id="settings-wallpaper-reset-btn" style="padding: 2px 7px; font-size: 10px;" title="Reset wallpaper to default theme pattern"><span aria-hidden="true">↺</span> Default Pattern</button>
           </div>
         </div>
 
@@ -90,7 +98,7 @@
 
       <!-- Desktop Preferences & Motion -->
       <fieldset class="settings-fieldset">
-        <legend class="settings-legend"><span aria-hidden="true">&#128421;</span> Workspace &amp; Windows</legend>
+        <legend class="settings-legend"><span aria-hidden="true">🖵</span> Workspace &amp; Windows</legend>
         <div class="settings-row" style="margin-bottom: 6px;">
           <label for="settings-sticker-motion-toggle" class="settings-label" style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
             <input type="checkbox" id="settings-sticker-motion-toggle" checked style="cursor: pointer;">
@@ -98,8 +106,8 @@
           </label>
         </div>
         <div class="settings-actions-row">
-          <button type="button" class="retro-btn" id="settings-reset-pos-btn" title="Reset all window positions to their defaults"><span aria-hidden="true">&#8635;</span> Reset Window Positions</button>
-          <button type="button" class="retro-btn" id="settings-clear-stickers-btn" title="Remove all stickers from desktop wallpaper"><span aria-hidden="true">&#128465;</span> Clear Desktop Stickers</button>
+          <button type="button" class="retro-btn" id="settings-reset-pos-btn" title="Reset all window positions to their defaults"><span aria-hidden="true">↺</span> Reset Window Positions</button>
+          <button type="button" class="retro-btn" id="settings-clear-stickers-btn" title="Remove all stickers from desktop wallpaper"><span aria-hidden="true">⌧</span> Clear Desktop Stickers</button>
         </div>
       </fieldset>
     </div>
@@ -107,18 +115,12 @@
     <!-- TAB 2: ABOUT THIS SYSTEM -->
     <div class="settings-tab-pane" id="settings-tab-about" role="tabpanel" aria-labelledby="tab-btn-about">
       {% include "partials/about_profile_card.html" %}
-
-      <!-- Bulletin Facts / Trivia -->
-      <fieldset class="settings-fieldset" style="margin-top: 8px;">
-        <legend class="settings-legend"><span aria-hidden="true">&#128161;</span> Bulletin Facts &amp; Architecture</legend>
-        {% include "partials/trivia_list.html" %}
-      </fieldset>
     </div>
 
     <!-- TAB 3: NETWORK (TRAFFIC) -->
     <div class="settings-tab-pane" id="settings-tab-network" role="tabpanel" aria-labelledby="tab-btn-network">
       <fieldset class="settings-fieldset text-center">
-        <legend class="settings-legend"><span aria-hidden="true">&#128290;</span> User Session &amp; Visit Telemetry</legend>
+        <legend class="settings-legend"><span aria-hidden="true">◎</span> User Session &amp; Visit Telemetry</legend>
         <div class="counter-label" style="font-weight: bold; font-family: monospace; font-size: 11px; margin-bottom: 6px;">YOUR PERSONAL SITE VISITS:</div>
         <div class="counter-box" id="settings-counter-box" role="status" aria-label="Visit count: 1" style="margin: 0 auto 6px auto;">
           <span class="counter-digit" aria-hidden="true">0</span>
@@ -133,7 +135,7 @@
       </fieldset>
 
       <fieldset class="settings-fieldset" style="margin-top: 8px;">
-        <legend class="settings-legend"><span aria-hidden="true">&#128225;</span> Connection Status &amp; Ports</legend>
+        <legend class="settings-legend"><span aria-hidden="true">📡</span> Connection Status &amp; Ports</legend>
         <table class="retro-meta-table" style="width: 100%; font-size: 10px;">
           <tr>
             <td class="meta-label">Protocol:</td>
@@ -158,12 +160,12 @@
     <!-- TAB 4: SYSTEM STATUS -->
     <div class="settings-tab-pane" id="settings-tab-status" role="tabpanel" aria-labelledby="tab-btn-status">
       <fieldset class="settings-fieldset">
-        <legend class="settings-legend"><span aria-hidden="true">&#128187;</span> Operator Status &amp; Diagnostics</legend>
+        <legend class="settings-legend"><span aria-hidden="true">🖵</span> Operator Status &amp; Diagnostics</legend>
         {% include "partials/status_diagnostics.html" %}
       </fieldset>
 
       <fieldset class="settings-fieldset" style="margin-top: 8px;">
-        <legend class="settings-legend"><span aria-hidden="true">&#9881;</span> Kernel Specifications</legend>
+        <legend class="settings-legend"><span aria-hidden="true">⚙</span> Kernel Specifications</legend>
         <table class="retro-meta-table" style="width: 100%; font-size: 10px;">
           <tr>
             <td class="meta-label">Operating System:</td>

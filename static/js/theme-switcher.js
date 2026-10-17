@@ -1,9 +1,17 @@
 /**
- * theme-switcher.js - High-Contrast Theme Switcher
- * Lachlan's World (Web 2.0)
+ * @module ThemeSwitcher
+ * @description Manages site-wide themes (paper, windows, midnight, cyber-y2k, candy-2000, scene-punk).
+ * Persists theme selection to localStorage and updates document.body class hierarchy.
  *
- * Manages Tech Paper, Windows Classic, Midnight Dark, Cyber-Y2K,
- * Web 2.0 Candy, and Scene Kid themes with localStorage persistence.
+ * @dependencies
+ * - DOM: select[data-theme-select], #theme-selector, #settings-theme-select
+ * - window.SITE_CONFIG
+ *
+ * @exports
+ * - window.switchSiteTheme
+ *
+ * @storageKeys
+ * - lachlan_site_theme (string: theme name)
  */
 
 (function () {

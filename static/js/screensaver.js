@@ -1,10 +1,19 @@
 /**
- * screensaver.js - Classic Mid-2000s 3D Starfield Screensaver & WASM Container
- * Lachlan's World (Web 2.0)
- *
- * Provides an interactive 3D warp screensaver running on HTML5 Canvas,
- * with hybrid pointer/mouse/touch steering, burst clicks, and control buttons.
+ * @module Screensaver
+ * @description Mid-2000s 3D Starfield Screensaver running on HTML5 Canvas.
+ * Supports interactive mouse steering, warp speed acceleration bursts, and pause/resume hooks.
  * Primed for hot-swapping with a custom WebAssembly binary via window.GamePlayerWasm.
+ *
+ * @dependencies
+ * - DOM: #wasm-canvas, #btn-warp, #btn-toggle, #canvas-status
+ *
+ * @exports
+ * - window.GamePlayerWasm
+ * - window.startScreensaver
+ * - window.stopScreensaver
+ *
+ * @storageKeys
+ * - None
  */
 
 (function () {

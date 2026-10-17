@@ -1,0 +1,318 @@
+/* ==============================================================
+   TOTALLY 100% LEGITIMATE VIRUS FREE SOFTWARE & RETRO GIMMICKS WINDOW
+   Mid-2000s Web Utility, Shareware & Anti-Climax Parody Styling
+
+   NOTE: This window intentionally departs from the usual site-wide style guidelines
+   (including retro monochrome Wingdings substitutions) to parody colorful software scam ads,
+   vibrant glossy shareware badges, and fake 5-star reviews with star emojis.
+   Do not modify this window to match the aforementioned style.
+   ============================================================== */
+
+/* Panel Body Layout */
+.gimmicks-panel-body {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Gimmick Active Card (Centered) */
+.gimmick-card {
+    background: var(--panel-inner-bg);
+    border: 2px inset var(--bevel-light);
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.gimmick-card.gimmick-flash {
+    animation: gimmickFlashAnim 0.3s ease-out;
+}
+
+@keyframes gimmickFlashAnim {
+    0% {
+        opacity: 0.6;
+        transform: scale(0.99);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Content Row: Icon + Reviews + Description (Centered) */
+.gimmick-content-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Colorful Vibrant Shareware Icon Badge */
+.gimmick-icon-box {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    background: linear-gradient(135deg, #ff007f 0%, #ff5e36 30%, #ffa500 65%, #ffd700 100%);
+    border: 2px outset #ffea70;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(255, 94, 54, 0.45), inset 1px 1px 0 rgba(255, 255, 255, 0.8), inset -1px -1px 0 rgba(0, 0, 0, 0.25);
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    user-select: none;
+    margin: 0 auto;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.gimmick-icon-box:hover {
+    transform: scale(1.08);
+    filter: brightness(1.1);
+}
+
+/* Fake 5-Star Review (Intentional colorful emoji departure for scam ad parody) */
+.gimmick-reviews {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 1px;
+    margin-bottom: 2px;
+    user-select: none;
+}
+
+/* Colorful Emoji Font Enforcement (Bypasses site Wingdings suppression for scam ad parody) */
+.gimmick-stars,
+.gimmick-icon-box,
+.gimmick-btn-icon,
+.gimmick-success-icon {
+    font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Twemoji Mozilla", sans-serif !important;
+    font-variant-emoji: emoji !important;
+}
+
+.gimmick-stars {
+    font-size: 14px;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.gimmick-review-count {
+    font-size: 9.5px;
+    font-family: Tahoma, Verdana, sans-serif;
+    color: var(--text-muted);
+    font-weight: bold;
+    letter-spacing: 0.3px;
+}
+
+.gimmick-info {
+    width: 100%;
+    text-align: center;
+}
+
+.gimmick-desc {
+    font-family: Tahoma, Verdana, sans-serif;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    text-align: center;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+/* Action Area (Centered Free Download Action / Progress / SUCCESS Area) */
+.gimmick-action-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 4px;
+    min-height: 38px;
+}
+
+.gimmick-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 22px;
+    background: linear-gradient(180deg, #5de632 0%, #2ba516 48%, #1f800f 52%, #17660c 100%);
+    border: 2px outset #8eff62;
+    border-radius: 3px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px #0c3306;
+    font-family: "Impact", "Arial Black", Arial, sans-serif;
+    font-size: 12.5px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    user-select: none;
+    text-decoration: none;
+}
+
+.gimmick-action-btn:hover {
+    background: linear-gradient(180deg, #71ef44 0%, #34bb1c 48%, #259412 52%, #1c750e 100%);
+    box-shadow: 0 4px 10px rgba(40, 180, 20, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    color: #ffffff;
+}
+
+.gimmick-action-btn:active {
+    border-style: inset;
+    background: linear-gradient(180deg, #17660c 0%, #1f800f 48%, #2ba516 52%, #5de632 100%);
+    box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.gimmick-action-btn[hidden] {
+    display: none !important;
+}
+
+.gimmick-btn-icon {
+    font-size: 14px;
+    filter: drop-shadow(1px 1px 1px #0c3306);
+}
+
+.gimmick-btn-label {
+    display: inline-block;
+}
+
+/* ==============================================================
+   MID-2000s RETRO DOWNLOAD PROGRESS BAR
+   Accelerates non-linearly (starts slow, then zooms to 100%)
+   ============================================================== */
+.gimmick-progress-container {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-sizing: border-box;
+    padding: 2px 4px;
+}
+
+.gimmick-progress-container[hidden] {
+    display: none !important;
+}
+
+.gimmick-progress-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--text-muted);
+    padding: 0 2px;
+    user-select: none;
+}
+
+.gimmick-progress-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gimmick-progress-pct {
+    flex-shrink: 0;
+    margin-left: 8px;
+    color: var(--term-green, #17660c);
+}
+
+.gimmick-progress-track {
+    height: 18px;
+    background: var(--panel-inner-bg, #ffffff);
+    border: 2px inset var(--bevel-light);
+    padding: 1px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.gimmick-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(180deg, #6fe843 0%, #30b115 48%, #1c7c0c 52%, #125506 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transition: width 0.16s ease-out; /* Smooth glide on burst jumps with authentic choppy pauses */
+    position: relative;
+}
+
+/* Authentic segmented blocks overlay for classic OS installer progress */
+.gimmick-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(0, 0, 0, 0.28) 8px,
+        rgba(0, 0, 0, 0.28) 10px
+    );
+    pointer-events: none;
+}
+
+/* ==============================================================
+   JOKE-RELEVANT SUCCESS BADGE
+   Stays displayed in place of the button until page refresh
+   ============================================================== */
+.gimmick-success-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    max-width: 440px;
+    width: 100%;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, #1b5310 0%, #0f3508 100%);
+    border: 2px outset #5cd638;
+    border-radius: 3px;
+    color: #e2ffd9;
+    text-shadow: 1px 1px 2px #061c02;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    animation: gimmickSuccessPop 0.25s ease-out;
+    user-select: text;
+}
+
+.gimmick-success-box[hidden] {
+    display: none !important;
+}
+
+@keyframes gimmickSuccessPop {
+    0% {
+        transform: scale(0.96);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.gimmick-success-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.gimmick-success-text {
+    font-family: "Impact", "Arial Black", Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    line-height: 1.35;
+    text-align: center;
+}

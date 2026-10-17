@@ -1,15 +1,19 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/winamp_window.html
+  ENVIRONMENT: Shared Window (Portal & Desktop)
+  INCLUDED BY: templates/index.html, templates/desktop.html
+  DESCRIPTION: Winamp-style chiptune music player window with equalizer visualizer and audio controls.
+  ==============================================================
+#}
 <!-- Winamp-Style Chiptune Audio Player Window -->
 <section class="panel desktop-window" id="music-player"
          data-app-id="music-player"
          data-app-title="Winamp_Mini.exe"
-         data-app-icon="🎵"
+         data-app-icon="♫"
          data-default-x="530"
          data-default-y="50">
-  <div class="panel-header">
-    <div class="panel-header-title">
-      <span class="win-icon" aria-hidden="true">🎵</span> {{ config.extra.strings.header_music | default(value="★ Audio Deck ★") }}
-    </div>
-  </div>
+  <div class="panel-header">{{ config.extra.strings.header_music | default(value="★ Audio Deck ★") }}</div>
   <div class="panel-body winamp-panel-body">
     <!-- Green LCD Track Display -->
     <div class="winamp-display">

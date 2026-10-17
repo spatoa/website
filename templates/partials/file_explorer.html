@@ -1,13 +1,21 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/file_explorer.html
+  ENVIRONMENT: Desktop OS
+  INCLUDED BY: templates/desktop.html
+  DESCRIPTION: Retro Win32 Explorer application window with virtual tree view, breadcrumbs, and file table.
+  ==============================================================
+#}
 <section class="panel desktop-window window-closed" id="file-explorer-window"
          data-app-id="file-explorer-window"
          data-app-title="Explorer.exe"
-         data-app-icon="📁"
+         data-app-icon="🗀"
          data-default-x="260"
          data-default-y="110"
          style="width: 600px; max-width: calc(100vw - 20px);">
   <div class="panel-header">
     <div class="panel-header-title">
-      <span class="win-icon" aria-hidden="true">&#128194;</span> Explorer.exe &bull; C:\Documents\Blog_Archive\
+      <span class="win-icon" aria-hidden="true">🗀</span> Explorer.exe &bull; C:\Documents\Blog_Archive\
     </div>
     <div class="window-controls">
       <button type="button" class="window-btn" id="explorer-min-btn" title="Minimize" aria-label="Minimize Explorer.exe">_</button>
@@ -36,7 +44,7 @@
       <div class="explorer-address-bar">
         <label for="explorer-address-input" class="explorer-address-label">Address:</label>
         <div class="explorer-address-box">
-          <span class="explorer-address-icon" aria-hidden="true">&#128194;</span>
+          <span class="explorer-address-icon" aria-hidden="true">🗀</span>
           <input type="text" id="explorer-address-input" class="explorer-address-input" value="C:\Documents\Blog_Archive\" readonly>
         </div>
       </div>
@@ -48,7 +56,7 @@
             type="text" 
             id="explorer-search-input" 
             class="search-input" 
-            placeholder="{{ config.extra.strings.search_placeholder | default(value="Search... 🔍") }}" 
+            placeholder="{{ config.extra.strings.search_placeholder | default(value="Search... ⌕") }}" 
             autocomplete="off" 
             aria-label="Search Blog Archive"
           />
@@ -57,7 +65,7 @@
         <!-- Live Explorer Search Results Dropdown Pane -->
         <div id="explorer-search-dropdown" class="explorer-search-dropdown" role="region" aria-label="Explorer Search Results" hidden>
           <div class="search-results-header">
-            <span class="search-header-title">&#128269; SEARCH RESULTS</span>
+            <span class="search-header-title">⌕ SEARCH RESULTS</span>
             <button type="button" id="explorer-search-close-btn" class="search-close-btn" title="Close search results" aria-label="Close search results">[x]</button>
           </div>
           <div id="explorer-search-status-bar" class="search-status-bar" aria-live="polite"></div>
@@ -72,12 +80,12 @@
       <aside class="explorer-sidebar" aria-label="Folders">
         <div class="explorer-pane-header">Folders</div>
         <div class="explorer-tree" id="explorer-tree" role="tree" aria-label="Folder Tree">
-          <div class="tree-item" data-folder="desktop" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128421;</span> Desktop</div>
-          <div class="tree-item tree-expanded" data-folder="documents" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128194;</span> My Documents</div>
-          <div class="tree-item tree-sub tree-active" data-folder="blog-archive" role="treeitem" aria-selected="true" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128194;</span> Blog_Archive</div>
-          <div class="tree-item" data-folder="floppy" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128190;</span> 3½ Floppy (A:)</div>
-          <div class="tree-item" data-folder="disk-c" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">&#128191;</span> Local Disk (C:)</div>
-          <div class="tree-item" role="treeitem" aria-selected="false"><a href="{{ get_url(path='blog/') }}" target="_blank" rel="noopener" class="tree-link"><span class="tree-icon" aria-hidden="true">&#127760;</span> Web Archive &#8599;</a></div>
+          <div class="tree-item" data-folder="desktop" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">🖵</span> Desktop</div>
+          <div class="tree-item tree-expanded" data-folder="documents" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">🗀</span> My Documents</div>
+          <div class="tree-item tree-sub tree-active" data-folder="blog-archive" role="treeitem" aria-selected="true" tabindex="0"><span class="tree-icon" aria-hidden="true">🗁</span> Blog_Archive</div>
+          <div class="tree-item" data-folder="floppy" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">🖫</span> 3½ Floppy (A:)</div>
+          <div class="tree-item" data-folder="disk-c" role="treeitem" aria-selected="false" tabindex="0"><span class="tree-icon" aria-hidden="true">🖴</span> Local Disk (C:)</div>
+          <div class="tree-item" role="treeitem" aria-selected="false"><a href="{{ get_url(path='blog/') }}" target="_blank" rel="noopener" class="tree-link"><span class="tree-icon" aria-hidden="true">↔</span> Web Archive &#8599;</a></div>
         </div>
       </aside>
 
@@ -95,7 +103,7 @@
             {% for post in blog_section.pages %}
               <div class="explorer-file-row" data-slug="{{ post.slug }}" data-title="{{ post.title }}" data-description="{{ post.description | default(value='') }}" tabindex="0" role="button" title="Click to open in Blog_Reader.exe">
                 <div class="file-name">
-                  <span class="file-icon" aria-hidden="true">&#128196;</span>
+                  <span class="file-icon" aria-hidden="true">🗏</span>
                   <span class="file-title-text">{{ post.slug }}.doc</span>
                 </div>
                 <div class="file-date">{{ post.date | date(format="%Y-%m-%d") }}</div>

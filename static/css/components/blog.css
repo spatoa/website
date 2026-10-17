@@ -267,13 +267,13 @@
 .blog-tags-bar, .post-tags-row {
     display: flex;
     align-items: center;
-    gap: 4px;
-    margin-bottom: 8px;
+    gap: 8px;
+    margin: 8px 0 14px 0;
     flex-wrap: wrap;
 }
 
 .tags-label {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: bold;
     color: var(--text-muted);
 }
@@ -283,9 +283,11 @@
     border: 1px solid #b8b0a4;
     color: var(--link-color);
     font-family: "Lucida Console", monospace;
-    font-size: 9px;
-    padding: 1px 5px;
+    font-size: 10px;
+    padding: 3px 8px;
     text-decoration: none;
+    line-height: 1.4;
+    border-radius: 2px;
 }
 
 [data-theme="midnight"] .tag-pill {
@@ -360,16 +362,29 @@
     min-width: 0;
 }
 
+/* Generous internal spacing between the beveled panel walls and the article content */
+.post-panel .panel-body {
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .post-panel .panel-body {
+        padding: 12px 8px;
+    }
+}
+
 .single-post-header {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    padding: 0 20px;
 }
 
 .single-post-title {
     margin: 0 0 6px 0;
-    font-size: 22px;
+    font-size: 20px;
     color: var(--panel-header-top);
     font-family: "Impact", "Arial Black", Tahoma, sans-serif;
     letter-spacing: 0.5px;
+    line-height: 1.25;
 }
 
 [data-theme="midnight"] .single-post-title {
@@ -405,7 +420,7 @@
 .dotted-hr {
     border: none;
     border-top: 1px dotted var(--panel-border);
-    margin: 14px 0;
+    margin: 16px 20px;
 }
 
 /* Markdown Content Styling for Readability */
@@ -415,6 +430,17 @@
     max-width: 100%;
     overflow-wrap: break-word;
     word-wrap: break-word;
+    line-height: 1.6;
+    padding: 0 20px;
+}
+
+/* Centered Text Support for [center]...[/center] keyword tags */
+.center-text,
+.markdown-content .center-text {
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Markdown Content URLs & Hyperlinks */
@@ -477,7 +503,11 @@
 .markdown-content h3 { font-size: 15px; }
 
 .markdown-content p {
-    margin: 0 0 12px 0;
+    margin: 0 0 14px 0;
+}
+
+.markdown-content > :first-child {
+    margin-top: 0 !important;
 }
 
 .markdown-content ul, .markdown-content ol {
@@ -637,6 +667,7 @@
 
 .single-post-footer {
     margin-top: 16px;
+    padding: 0 20px;
 }
 
 .post-permalink-box {

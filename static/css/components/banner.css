@@ -4,9 +4,10 @@
 .banner {
     background: var(--banner-gradient);
     border: 2px outset var(--bevel-light);
-    padding: 14px 10px 10px 10px;
+    padding: 16px 10px 10px 10px;
     text-align: center;
     position: relative;
+    overflow: hidden;
 }
 
 .banner h1 {
@@ -21,6 +22,180 @@
         2px -2px 0 #000,
         -2px 2px 0 #000,
         var(--banner-glow);
+}
+
+/* ==============================================
+   MICROSOFT WORD "WORD ART" STYLES
+   ============================================== */
+.banner h1.wordart-title {
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.12s ease-out;
+    padding: 2px 10px;
+    outline: none;
+}
+
+.banner h1.wordart-title:hover {
+    filter: brightness(1.12);
+}
+
+.banner h1.wordart-title:active {
+    transform: scale(0.96) !important;
+}
+
+/* Style 1: Word 97 Classic Rainbow Arc */
+.banner h1.wordart-rainbow {
+    font-family: "Impact", "Arial Black", sans-serif;
+    background: linear-gradient(90deg, #ff0000 0%, #ff7700 16%, #ffee00 33%, #00dd22 50%, #00bbff 66%, #2244ff 83%, #9900ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(2px 2px 0 #000000) drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.45));
+    transform: perspective(300px) rotateX(12deg) scaleY(1.08);
+    letter-spacing: 2px;
+    text-shadow: none;
+}
+
+/* Style 2: 3D Yellow with Multi-Layer Blue Extrusion */
+.banner h1.wordart-extruded-blue {
+    font-family: "Impact", "Arial Black", sans-serif;
+    color: #ffe600;
+    -webkit-text-stroke: 1px #805500;
+    -webkit-text-fill-color: #ffe600;
+    text-shadow:
+        1px 1px 0 #0055aa,
+        2px 2px 0 #0055aa,
+        3px 3px 0 #004488,
+        4px 4px 0 #004488,
+        5px 5px 0 #003366,
+        6px 6px 0 #002244,
+        7px 7px 0 #001122,
+        8px 8px 3px rgba(0, 0, 0, 0.65);
+    transform: skew(-4deg, -2deg);
+    letter-spacing: 2px;
+}
+
+/* Style 3: Metallic Horizon Chrome 3D */
+.banner h1.wordart-chrome {
+    font-family: "Arial Black", "Impact", sans-serif;
+    background: linear-gradient(180deg, #ffffff 0%, #d4e3f5 35%, #2a5caa 50%, #153267 52%, #5b9bf8 75%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter:
+        drop-shadow(1px 0 0 #000)
+        drop-shadow(-1px 0 0 #000)
+        drop-shadow(0 1px 0 #000)
+        drop-shadow(0 -1px 0 #000)
+        drop-shadow(3px 3px 0 #0f172a)
+        drop-shadow(5px 5px 2px rgba(0, 0, 0, 0.7));
+    letter-spacing: 3px;
+    transform: scaleY(1.05);
+    text-shadow: none;
+}
+
+/* Style 4: Sunset Flare / Ombre Horizon */
+.banner h1.wordart-sunset {
+    font-family: "Impact", "Arial Black", sans-serif;
+    background: linear-gradient(180deg, #ff1a00 0%, #ff6600 35%, #ffbb00 70%, #ffff55 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(2px 2px 0 #000000) drop-shadow(4px 4px 0 #550000) drop-shadow(6px 6px 2px rgba(0, 0, 0, 0.5));
+    transform: skewX(-10deg) scaleY(1.15);
+    letter-spacing: 2px;
+    text-shadow: none;
+}
+
+/* Style 5: Style 1 Clean Hollow with Offset Drop Shadow */
+.banner h1.wordart-outline-shadow {
+    font-family: "Arial Black", "Impact", sans-serif;
+    color: #ffffff;
+    -webkit-text-stroke: 1.5px #111111;
+    -webkit-text-fill-color: #ffffff;
+    text-shadow:
+        3px 3px 0 #888888,
+        4px 4px 0 #555555,
+        5px 5px 0 #222222;
+    letter-spacing: 3px;
+    transform: none;
+}
+
+/* Style 6: Purple Velvet Wave */
+.banner h1.wordart-purple-wave {
+    font-family: "Impact", "Arial Black", sans-serif;
+    background: linear-gradient(180deg, #ff66cc 0%, #ba55d3 40%, #8a2be2 60%, #3b0764 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(2px 2px 0 #00ffff) drop-shadow(4px 4px 0 #1e003a);
+    transform: perspective(300px) rotateX(-10deg) skewX(-4deg);
+    letter-spacing: 2px;
+    text-shadow: none;
+}
+
+/* Style 7: Cyber Lime Glow */
+.banner h1.wordart-neon-lime {
+    font-family: "Impact", "Arial Black", sans-serif;
+    background: linear-gradient(180deg, #ffffff 0%, #a6ff00 35%, #00e640 70%, #004d1a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(1px 1px 0 #000) drop-shadow(0 0 10px #00ff66) drop-shadow(3px 3px 0 #00260f);
+    letter-spacing: 2px;
+    text-shadow: none;
+}
+
+/* Style 8: 3D Metallic Gold Trophy */
+.banner h1.wordart-gold-bevel {
+    font-family: "Arial Black", "Impact", sans-serif;
+    background: linear-gradient(180deg, #fffbe6 0%, #ffd700 40%, #d49b00 50%, #805500 52%, #ffcc00 85%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter:
+        drop-shadow(1px 1px 0 #3d2400)
+        drop-shadow(2px 2px 0 #5c3800)
+        drop-shadow(4px 4px 0 #1f1200)
+        drop-shadow(6px 6px 3px rgba(0, 0, 0, 0.5));
+    letter-spacing: 3px;
+    transform: scaleY(1.05);
+    text-shadow: none;
+}
+
+/* Style 9: Superhero Slanted Red/Yellow */
+.banner h1.wordart-superhero {
+    font-family: "Impact", "Arial Black", sans-serif;
+    background: linear-gradient(180deg, #ff0000 0%, #ff5500 45%, #ffdd00 70%, #ffffaa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter:
+        drop-shadow(2px 0 0 #000)
+        drop-shadow(-2px 0 0 #000)
+        drop-shadow(0 2px 0 #000)
+        drop-shadow(0 -2px 0 #000)
+        drop-shadow(4px 4px 0 #111827)
+        drop-shadow(6px 6px 0 #000);
+    transform: scale(1, 1.1) skew(-6deg, -2deg);
+    letter-spacing: 2px;
+    text-shadow: none;
+}
+
+/* Style 10: Bubble Blue Inflatable */
+.banner h1.wordart-inflatable {
+    font-family: "Arial Black", "Trebuchet MS", sans-serif;
+    background: linear-gradient(180deg, #ffffff 0%, #a5f3fc 30%, #0284c7 70%, #082f49 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter:
+        drop-shadow(2px 2px 0 #0369a1)
+        drop-shadow(4px 4px 0 #082f49)
+        drop-shadow(6px 6px 2px rgba(0, 0, 0, 0.4));
+    transform: scaleY(1.1) perspective(200px) rotateX(8deg);
+    letter-spacing: 1px;
+    text-shadow: none;
+}
+
+@media (max-width: 600px) {
+    .banner h1.wordart-title {
+        font-size: clamp(30px, 9vw, 38px);
+        letter-spacing: 1.5px;
+    }
 }
 
 .led-ticker-container {

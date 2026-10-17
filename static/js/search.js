@@ -1,7 +1,21 @@
 /**
- * Lachlan's World - Retro Client-Side Search
- * Powered by Zola's native ElasticLunr index with zero external dependencies.
+ * @module Search
+ * @description Client-side search powered by Zola's native ElasticLunr index.
+ * Lazily loads elasticlunr.min.js and search index JSON on first focus, rendering an accessible
+ * retro search results dropdown.
+ *
+ * @dependencies
+ * - DOM: #site-search-input, #search-results-dropdown, #search-status-bar, #search-results-list
+ * - window.SEARCH_CONFIG (injected inline in base.html)
+ *
+ * @exports
+ * - window.searchIndex
+ * - window.elasticlunr
+ *
+ * @storageKeys
+ * - None
  */
+
 (function () {
   'use strict';
 

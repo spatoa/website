@@ -1,6 +1,21 @@
 /**
- * pet-standalone.js - Standalone Win32 Appliance Controller & PWA Integration
- * Dedicated to Lachlan's World (/pet)
+ * @module PetStandalone
+ * @description Standalone Win32 Shell & PWA Controller for Pocket_Pet (/pet).
+ * Manages Win32 window chrome, menu bar dropdowns (File, Sound, Skins, Help),
+ * Service Worker offline registration, and plastic housing skins.
+ *
+ * @dependencies
+ * - window.Pocket_Pet (static/js/pocket_pet.js)
+ * - window.switchSiteTheme (static/js/theme-switcher.js)
+ * - DOM: .win-menu-btn, .win-dropdown-menu, #pet-skin-select, etc.
+ *
+ * @exports
+ * - Service Worker registration at scope "/pet/"
+ *
+ * @storageKeys
+ * - lachlan_pet_skin (string: active plastic skin ID)
+ * - lachlan_site_theme (string: active theme)
+ * - lachlan_pocket_pet_sound (string: sound state)
  */
 
 (function () {
@@ -336,7 +351,7 @@
     const soundItem = document.getElementById('menu-opt-sound');
     if (!soundItem) return;
     const isMuted = safeGetItem(SOUND_KEY) === 'muted';
-    soundItem.textContent = isMuted ? '🔇 Sound: OFF (Click to Unmute)' : '🔊 Sound: ON (Click to Mute)';
+    soundItem.innerHTML = isMuted ? '<span class="wingdings" aria-hidden="true">&#x2669;</span> Sound: OFF (Click to Unmute)' : '<span class="wingdings" aria-hidden="true">&#x266B;</span> Sound: ON (Click to Mute)';
   }
 
   // --- Cycle Site Theme ---

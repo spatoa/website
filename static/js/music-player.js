@@ -1,9 +1,18 @@
 /**
- * music-player.js - Winamp-style Procedural Chiptune Audio Deck
- * Lachlan's World (Web 2.0)
+ * @module MusicPlayer
+ * @description Winamp-style Procedural Chiptune Audio Deck and Spectrum Equalizer.
+ * Generates authentic retro 8-bit melodies using the Web Audio API with volume control,
+ * visualizer rendering, and track switching.
  *
- * Uses the Web Audio API to generate authentic retro 8-bit chiptune melodies
- * with spectrum equalizer visualizer, volume control, and track switcher.
+ * @dependencies
+ * - Web Audio API (AudioContext)
+ * - DOM: #winamp-screen, #winamp-play, #winamp-stop, #winamp-vol, etc.
+ *
+ * @exports
+ * - window.stopMusicPlayback
+ *
+ * @storageKeys
+ * - None
  */
 
 (function () {

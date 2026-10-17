@@ -74,7 +74,7 @@
     }
 
     .banner h1 {
-        font-size: 26px;
+        font-size: clamp(30px, 9vw, 38px);
     }
 
     nav.tab-bar {
@@ -94,15 +94,41 @@
     .nav-controls {
         flex-direction: column;
         width: 100%;
+        gap: 6px;
     }
 
     .theme-selector-box, .search-box {
         width: 100%;
-        justify-content: space-between;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    .theme-selector-box select, .search-input-wrap, .search-input {
+    .theme-label, .search-label {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .theme-selector-box select {
+        flex: 1;
+        min-width: 0;
         width: 100%;
+        box-sizing: border-box;
+    }
+
+    .search-input-wrap {
+        flex: 1;
+        min-width: 0;
+        width: 100%;
+        display: flex;
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 0;
+        width: 100% !important;
+        box-sizing: border-box;
     }
 
     .search-results-dropdown {
@@ -117,14 +143,24 @@
         grid-template-columns: 1fr;
     }
 
+    /* Mobile Profile Section: Remove awkward square avatar icon, clean left-aligned typography */
     .about-flex {
         flex-direction: column;
-        align-items: center;
-        text-align: center;
+        align-items: stretch;
+        text-align: left;
     }
 
     .avatar-box {
-        margin-bottom: 6px;
+        display: none !important;
+    }
+
+    .about-bio {
+        text-align: left;
+        margin-bottom: 8px;
+    }
+
+    .retro-meta-table {
+        width: 100%;
     }
 
     .win-body canvas {

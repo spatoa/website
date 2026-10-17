@@ -1,6 +1,18 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/about_profile_card.html
+  ENVIRONMENT: Reusable Component
+  INCLUDED BY: templates/partials/about.html, templates/partials/settings_window.html
+  DESCRIPTION: Renders avatar photo, bio snippet, workstation specs, and external project links.
+  ==============================================================
+#}
 <div class="about-flex">
   <div class="avatar-box">
-    <div class="avatar-pixel" role="img" aria-label="Operator workstation icon">{{ config.extra.avatar_icon | default(value="&#128421;") | safe }}</div>
+    {% if config.extra.avatar_img %}
+    <img src="{{ get_url(path=config.extra.avatar_img) | safe }}" class="avatar-img" alt="Operator user profile avatar" width="60" height="60">
+    {% else %}
+    <div class="avatar-pixel wingdings" role="img" aria-label="Operator workstation icon">{{ config.extra.avatar_icon | default(value="&#x1F5B5;") | safe }}</div>
+    {% endif %}
     <div class="avatar-caption">{{ config.extra.strings.about_avatar_caption | default(value="OPERATOR") }}</div>
   </div>
   <div class="about-text">

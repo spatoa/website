@@ -14,6 +14,9 @@
   <meta property="article:published_time" content="{{ page.date | date(format='%Y-%m-%d') }}">
   <meta property="article:author" content="{{ config.extra.author_name }}">
   {% endif %}
+  {% if page is defined and page.updated %}
+  <meta property="article:modified_time" content="{{ page.updated | date(format='%Y-%m-%d') }}">
+  {% endif %}
 
   {% include "partials/head_init.html" %}
 </head>
@@ -55,6 +58,7 @@
   <script src="{{ get_url(path='js/visit-counter.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/search.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/stickers.js') | safe }}" defer></script>
-  <script src="{{ get_url(path='js/pocket_pet.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/gimmicks.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/wordart.js') | safe }}" defer></script>
 </body>
 </html>

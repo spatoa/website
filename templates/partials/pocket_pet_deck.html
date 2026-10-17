@@ -1,13 +1,21 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/pocket_pet_deck.html
+  ENVIRONMENT: Reusable Component
+  INCLUDED BY: templates/partials/pocket_pet_window.html, templates/pet.html
+  DESCRIPTION: Hardware appliance deck with 32x19 dot-matrix LCD canvas and 3-button control pad (A, B, C).
+  ==============================================================
+#}
 <!-- Canonical Reusable Pocket_Pet LCD Appliance Deck -->
 <div class="pocket_pet-deck" role="region" aria-label="Pocket_Pet Virtual Pet Device" tabindex="0">
   <!-- LCD Screen Bezel Frame -->
   <div class="pocket_pet-screen-bezel">
     <!-- Top Row Icons (Feed, Light, Game, Medicine) -->
     <div class="pocket_pet-icon-bar top-bar" role="group" aria-label="Pocket_Pet Top Menu Icons">
-      <button type="button" class="t-icon" data-icon-index="0" data-icon-name="feed" title="Feed (Meal or Snack)" aria-label="Feed">🍽️</button>
-      <button type="button" class="t-icon" data-icon-index="1" data-icon-name="light" title="Lights (Sleep)" aria-label="Lights">💡</button>
-      <button type="button" class="t-icon" data-icon-index="2" data-icon-name="game" title="Game (Heading Minigame)" aria-label="Play Game">🎮</button>
-      <button type="button" class="t-icon" data-icon-index="3" data-icon-name="medicine" title="Medicine (Cure Sickness)" aria-label="Medicine">💉</button>
+      <button type="button" class="t-icon" data-icon-index="0" data-icon-name="feed" title="Feed (Meal or Snack)" aria-label="Feed">🍴</button>
+      <button type="button" class="t-icon" data-icon-index="1" data-icon-name="light" title="Lights (Sleep)" aria-label="Lights">☼</button>
+      <button type="button" class="t-icon" data-icon-index="2" data-icon-name="game" title="Game (Heading Minigame)" aria-label="Play Game">&#x2684;</button>
+      <button type="button" class="t-icon" data-icon-index="3" data-icon-name="medicine" title="Medicine (Cure Sickness)" aria-label="Medicine">✚</button>
     </div>
 
     <!-- LCD Matrix Screen -->
@@ -18,10 +26,10 @@
 
     <!-- Bottom Row Icons (Clean, Meter, Discipline, Attention) -->
     <div class="pocket_pet-icon-bar bottom-bar" role="group" aria-label="Pocket_Pet Bottom Menu Icons">
-      <button type="button" class="t-icon" data-icon-index="4" data-icon-name="clean" title="Clean (Flush Poop)" aria-label="Clean">🦆</button>
-      <button type="button" class="t-icon" data-icon-index="5" data-icon-name="meter" title="Status Meter (Age/Weight/Hearts)" aria-label="Status Meter">⚖️</button>
-      <button type="button" class="t-icon" data-icon-index="6" data-icon-name="discipline" title="Discipline (Train)" aria-label="Discipline">📣</button>
-      <span class="t-icon-alert" data-icon-name="alert" role="status" title="Attention (Pet Needs Care)" aria-label="Attention Indicator">🚨</span>
+      <button type="button" class="t-icon" data-icon-index="4" data-icon-name="clean" title="Clean (Flush Poop)" aria-label="Clean">♨</button>
+      <button type="button" class="t-icon" data-icon-index="5" data-icon-name="meter" title="Status Meter (Age/Weight/Hearts)" aria-label="Status Meter">⚖</button>
+      <button type="button" class="t-icon" data-icon-index="6" data-icon-name="discipline" title="Discipline (Train)" aria-label="Discipline">☛</button>
+      <span class="t-icon-alert" data-icon-name="alert" role="status" title="Attention (Pet Needs Care)" aria-label="Attention Indicator">⚠</span>
     </div>
   </div>
 
@@ -41,14 +49,14 @@
   <!-- Sub Controls (Sound toggle, Reset, Pop-out) -->
   <div class="pocket_pet-sub-controls">
     <button type="button" class="retro-btn btn-mute-toggle" id="pocket_pet-mute-toggle" title="Toggle 1-bit Sound (A+C)" aria-pressed="true">
-      🔊 Sound: ON
+      ♫ Sound: ON
     </button>
     <button type="button" class="retro-btn btn-reset-toggle" id="pocket_pet-reset-btn" title="Reset / Rebirth Pet (A+C)">
-      🔄 Reset
+      ↺ Reset
     </button>
     {% if not hide_popout %}
     <a href="{{ get_url(path='pet') }}" class="retro-btn btn-pwa-popout" title="Open Dedicated Standalone Pocket Pet / Mobile PWA">
-      📱 Pop-Out PWA ↗
+      🗔 Pop-Out PWA ↗
     </a>
     {% endif %}
   </div>

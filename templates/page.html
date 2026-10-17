@@ -16,16 +16,21 @@
         <h1 class="single-post-title p-name" itemprop="headline">{{ page.title }}</h1>
         
         <div class="single-post-meta">
-          <span><span aria-hidden="true">&#128197;</span> <strong>{{ config.extra.strings.post_date_prefix | default(value="Published:") }}</strong> 
+          {% if page.updated %}{% set updated_date = page.updated %}{% else %}{% set updated_date = page.date %}{% endif %}
+          <span><span class="wingdings" aria-hidden="true">&#x25F7;</span> <strong>{{ config.extra.strings.post_updated_prefix | default(value="Last Updated:") }}</strong> 
+            <time itemprop="dateModified" datetime="{{ updated_date | date(format='%Y-%m-%d') }}" class="dt-updated">{{ updated_date | date(format="%B %d, %Y") }}</time>
+          </span>
+          <span class="meta-sep" aria-hidden="true">|</span>
+          <span><span class="wingdings" aria-hidden="true">&#x25F7;</span> <strong>{{ config.extra.strings.post_posted_prefix | default(value="First Posted:") }}</strong> 
             <time itemprop="datePublished" datetime="{{ page.date | date(format='%Y-%m-%d') }}" class="dt-published">{{ page.date | date(format="%B %d, %Y") }}</time>
           </span>
           <span class="meta-sep" aria-hidden="true">|</span>
           <span itemprop="author" itemscope itemtype="http://schema.org/Person" class="p-author">
-            <span aria-hidden="true">&#128100;</span> <strong>{{ config.extra.strings.post_author_prefix | default(value="Author:") }}</strong> 
+            <span class="wingdings" aria-hidden="true">&#x263A;</span> <strong>{{ config.extra.strings.post_author_prefix | default(value="Author:") }}</strong> 
             <span itemprop="name" rel="author">{{ page.extra.author | default(value=config.extra.author_name) }}</span>
           </span>
           <span class="meta-sep" aria-hidden="true">|</span>
-          <span><span aria-hidden="true">&#9201;</span> <strong>{{ config.extra.strings.post_reading_time_prefix | default(value="Reading Time:") }}</strong> {{ page.reading_time }} min read</span>
+          <span><span class="wingdings" aria-hidden="true">&#x231B;</span> <strong>{{ config.extra.strings.post_reading_time_prefix | default(value="Reading Time:") }}</strong> {{ page.reading_time }} min read</span>
         </div>
 
         {% if page.taxonomies.tags %}
@@ -41,7 +46,7 @@
       <hr class="dotted-hr" aria-hidden="true">
 
       <div itemprop="articleBody" class="e-content markdown-content">
-        {{ page.content | safe }}
+        {{ page.content | regex_replace(pattern="(?s)<p>\\s*\\[center\\](.*?)\\[/center\\]\\s*</p>", rep="<p class=\"center-text\">$1</p>") | regex_replace(pattern="(?s)\\[center\\](.*?)\\[/center\\]", rep="<span class=\"center-text\">$1</span>") | safe }}
       </div>
 
       <hr class="dotted-hr" aria-hidden="true">

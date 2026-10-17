@@ -1,7 +1,15 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/recent_posts.html
+  ENVIRONMENT: Web Portal
+  INCLUDED BY: templates/index.html
+  DESCRIPTION: Left-column feed rendering cards for the 3 most recent blog dispatches.
+  ==============================================================
+#}
 <section class="panel desktop-window" id="recent-posts"
          data-app-id="recent-posts"
          data-app-title="Blog Bulletins"
-         data-app-icon="📋"
+         data-app-icon="🗎"
          data-default-x="530"
          data-default-y="220">
   <div class="panel-header">{{ config.extra.strings.header_posts | default(value="★ Recent Blog Posts & Bulletins ★") }}</div>

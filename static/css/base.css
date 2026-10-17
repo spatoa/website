@@ -126,3 +126,27 @@ a:active {
     color: var(--link-color);
 }
 
+/* ==============================================
+   RETRO WINGDINGS & DINGBAT SYMBOL TYPOGRAPHY
+   ============================================== */
+.wingdings,
+.win-icon,
+.desktop-icon-img,
+.tab-icon,
+.tree-icon,
+.file-icon,
+.start-item-icon,
+.t-icon,
+.t-icon-alert,
+.explorer-address-icon,
+.search-header-title,
+.desktop-os-logo,
+.update-stamp .stamp-icon,
+.desktop-launch-icon,
+.avatar-pixel {
+    font-family: "Wingdings", "Wingdings 2", "Wingdings 3", "Webdings", "Segoe MDL2 Assets", "Noto Sans Symbols 2", "Apple Symbols", Tahoma, sans-serif;
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+    font-variant-emoji: text;
+}
+

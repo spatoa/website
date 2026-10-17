@@ -66,6 +66,8 @@
 }
 
 .t-icon {
+    font-family: "Wingdings", "Wingdings 2", "Wingdings 3", "Webdings", "Segoe MDL2 Assets", "Noto Sans Symbols 2", "Apple Symbols", Tahoma, sans-serif;
+    font-variant-emoji: text;
     background: transparent;
     border: 1px solid transparent;
     font-size: 13px;
@@ -102,6 +104,8 @@
 }
 
 .t-icon-alert {
+    font-family: "Wingdings", "Wingdings 2", "Wingdings 3", "Webdings", "Segoe MDL2 Assets", "Noto Sans Symbols 2", "Apple Symbols", Tahoma, sans-serif;
+    font-variant-emoji: text;
     display: inline-flex;
     align-items: center;
     justify-content: center;

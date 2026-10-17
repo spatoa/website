@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
+  <defs>
+    <!-- Background Aqua Orb Gradient -->
+    <radialGradient id="aeroSphere" cx="35%" cy="30%" r="68%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="18%" stop-color="#a5f3fc" stop-opacity="0.9" />
+      <stop offset="42%" stop-color="#38bdf8" stop-opacity="0.95" />
+      <stop offset="75%" stop-color="#0284c7" stop-opacity="1" />
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="1" />
+    </radialGradient>
+    
+    <!-- User Silhouette Head Radial Gradient -->
+    <radialGradient id="userHeadGrad" cx="38%" cy="28%" r="62%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="35%" stop-color="#e0f9ff" stop-opacity="0.95" />
+      <stop offset="70%" stop-color="#7dd3fc" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="1" />
+    </radialGradient>
+
+    <!-- User Silhouette Body Gradient -->
+    <radialGradient id="userBodyGrad" cx="50%" cy="20%" r="75%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="30%" stop-color="#e0f9ff" stop-opacity="0.95" />
+      <stop offset="68%" stop-color="#38bdf8" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="1" />
+    </radialGradient>
+
+    <!-- Top Gloss Arc Gradient -->
+    <linearGradient id="glossGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.88" />
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Outer Glass Rim Gradient -->
+    <linearGradient id="rimGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="48%" stop-color="#7dd3fc" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.8" />
+    </linearGradient>
+    
+    <!-- Drop Shadow Filter -->
+    <filter id="aeroShadow" x="-15%" y="-15%" width="135%" height="135%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#0369a1" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Base Shadow & Glass Orb -->
+  <circle cx="50" cy="50" r="44" fill="url(#aeroSphere)" filter="url(#aeroShadow)" stroke="url(#rimGrad)" stroke-width="2.5" />
+
+  <!-- Inner Refraction Ring -->
+  <circle cx="50" cy="50" r="41.5" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.45" />
+
+  <!-- User Silhouette Body (Shoulders / Torso) -->
+  <path d="M 23 80 C 23 63, 34 56, 50 56 C 66 56, 77 63, 77 80 C 73 86.5, 62 89, 50 89 C 38 89, 27 86.5, 23 80 Z"
+        fill="url(#userBodyGrad)" stroke="#ffffff" stroke-width="1.2" />
+
+  <!-- User Silhouette Head -->
+  <circle cx="50" cy="39" r="14.5" fill="url(#userHeadGrad)" stroke="#ffffff" stroke-width="1.2" />
+
+  <!-- Head Specular Highlight Glint -->
+  <ellipse cx="46" cy="33.5" rx="5.5" ry="3" fill="#ffffff" opacity="0.8" transform="rotate(-20 46 33.5)" />
+
+  <!-- Top Glass Specular Reflection Dome (The Iconic Frutiger Aero Curved Gloss) -->
+  <path d="M 12 43 C 15 19, 30 9, 50 9 C 70 9, 85 19, 88 43 C 75 35, 62 31, 50 31 C 38 31, 25 35, 12 43 Z"
+        fill="url(#glossGrad)" />
+
+  <!-- Bottom Rim Ambient Glow -->
+  <ellipse cx="50" cy="88" rx="25" ry="3" fill="#ffffff" opacity="0.55" />
+
+  <!-- Lens Flare Sparkle (Top-right of glass orb) -->
+  <g transform="translate(73, 22) scale(0.7)" opacity="0.95">
+    <ellipse cx="0" cy="0" rx="9" ry="2" fill="#ffffff" />
+    <ellipse cx="0" cy="0" rx="2" ry="9" fill="#ffffff" />
+    <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
+  </g>
+</svg>

@@ -1,13 +1,21 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/blog_reader.html
+  ENVIRONMENT: Desktop OS
+  INCLUDED BY: templates/desktop.html
+  DESCRIPTION: Full in-window blog post reader application with article dropdown selector.
+  ==============================================================
+#}
 <section class="panel desktop-window" id="blog-reader-window"
          data-app-id="blog-reader-window"
          data-app-title="Blog_Reader.exe"
-         data-app-icon="📝"
+         data-app-icon="🗏"
          data-default-x="120"
          data-default-y="350"
          style="width: 580px; max-width: calc(100vw - 20px);">
   <div class="panel-header">
     <div class="panel-header-title">
-      <span class="win-icon" aria-hidden="true">&#128221;</span> Blog_Reader.exe &bull; Bulletin Viewer
+      <span class="win-icon" aria-hidden="true">🗏</span> Blog_Reader.exe &bull; Bulletin Viewer
     </div>
     <div class="window-controls">
       <button type="button" class="window-btn" id="reader-min-btn" title="Minimize" aria-label="Minimize Blog_Reader.exe">_</button>
@@ -42,9 +50,12 @@
             <header class="single-post-header">
               <h2 class="single-post-title" style="font-size: 18px; margin: 4px 0;">{{ post.title }}</h2>
               <div class="single-post-meta">
-                <span><span aria-hidden="true">&#128197;</span> <strong>Date:</strong> <time datetime="{{ post.date | date(format='%Y-%m-%d') }}">{{ post.date | date(format="%B %d, %Y") }}</time></span>
+                {% set updated_date = post.updated | default(value=post.date) %}
+                <span><span class="wingdings" aria-hidden="true">&#x25F7;</span> <strong>{{ config.extra.strings.post_updated_prefix | default(value="Last Updated:") }}</strong> <time datetime="{{ updated_date | date(format='%Y-%m-%d') }}">{{ updated_date | date(format="%B %d, %Y") }}</time></span>
                 <span class="meta-sep" aria-hidden="true">|</span>
-                <span><span aria-hidden="true">&#9201;</span> <strong>Reading Time:</strong> {{ post.reading_time }} min</span>
+                <span><span class="wingdings" aria-hidden="true">&#x25F7;</span> <strong>{{ config.extra.strings.post_posted_prefix | default(value="First Posted:") }}</strong> <time datetime="{{ post.date | date(format='%Y-%m-%d') }}">{{ post.date | date(format="%B %d, %Y") }}</time></span>
+                <span class="meta-sep" aria-hidden="true">|</span>
+                <span><span class="wingdings" aria-hidden="true">&#x231B;</span> <strong>{{ config.extra.strings.post_reading_time_prefix | default(value="Reading Time:") }}</strong> {{ post.reading_time }} min</span>
                 {% if post.taxonomies.tags %}
                   <span class="meta-sep" aria-hidden="true">|</span>
                   {% for tag in post.taxonomies.tags %}
@@ -55,7 +66,7 @@
             </header>
             <hr class="dotted-hr" style="margin: 8px 0;" aria-hidden="true">
             <div class="markdown-content reader-markdown">
-              {{ post.content | safe }}
+              {{ post.content | regex_replace(pattern="(?s)<p>\\s*\\[center\\](.*?)\\[/center\\]\\s*</p>", rep="<p class=\"center-text\">$1</p>") | regex_replace(pattern="(?s)\\[center\\](.*?)\\[/center\\]", rep="<span class=\"center-text\">$1</span>") | safe }}
             </div>
           </article>
         {% endfor %}

@@ -1,15 +1,19 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/game_window.html
+  ENVIRONMENT: Shared Window (Portal & Desktop)
+  INCLUDED BY: templates/index.html, templates/desktop.html
+  DESCRIPTION: Interactive CRT monitor window running the procedural Starfield screensaver canvas.
+  ==============================================================
+#}
 <!-- Interactive Client-Side Element: Game Player -->
 <section class="panel desktop-window" id="interactive-element"
          data-app-id="interactive-element"
          data-app-title="Game_Player.exe"
-         data-app-icon="🎮"
+         data-app-icon="★"
          data-default-x="530"
          data-default-y="350">
-  <div class="panel-header">
-    <div class="panel-header-title">
-      <span class="win-icon" aria-hidden="true">🎮</span> {{ config.extra.strings.header_game | default(value="★ Interactive Canvas ★") }}
-    </div>
-  </div>
+  <div class="panel-header">{{ config.extra.strings.header_game | default(value="★ Interactive Canvas ★") }}</div>
   <div class="panel-body">
     <div class="game-viewport-wrap">
       <canvas id="wasm-canvas" width="380" height="200" role="img" aria-label="Interactive 3D Starfield Simulation"></canvas>

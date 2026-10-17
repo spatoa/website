@@ -1,10 +1,24 @@
 /**
- * stickers.js - Unified Retro Sticker Engine
- * Lachlan's World (Web 2.0 & Desktop OS)
+ * @module StickerEngine
+ * @description Unified Retro Sticker Physics & Placement Engine.
+ * Supports dragging, rotating, deleting, floating CSS animations, motion accessibility preference,
+ * and isolated persistence across both Web Portal and Desktop OS environments.
  *
- * Supports drag-and-drop stickers, rotation, deletion, subtle CSS floating animations,
- * motion accessibility preference, keyboard navigation, hybrid pointer/touch input,
- * and isolated localStorage persistence for both standard Web Portal and Desktop OS environments.
+ * @dependencies
+ * - DOM: .sticker-item, #sticker-tray, #desktop-sticker-layer, #sticker-canvas-grid
+ *
+ * @exports
+ * - window.clearDesktopStickers
+ * - window.applyStickerMotionPreference
+ * - window.toggleStickerMotionPreference
+ * - window.StickerEngine
+ *
+ * @storageKeys
+ * - lachlan_grid_stickers (JSON array of portal stickers)
+ * - lachlan_desktop_stickers (JSON array of desktop OS stickers)
+ * - lachlan_stickers (Legacy portal stickers mirror)
+ * - lachlan_sticker_motion ("enabled" | "disabled")
+ * - lachlan_grid_sticker_drawer_open ("true" | "false")
  */
 
 (function () {

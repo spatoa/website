@@ -1,7 +1,16 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/nav.html
+  ENVIRONMENT: Web Portal
+  INCLUDED BY: templates/base.html
+  DESCRIPTION: Main navigation bar with quick links and live site search input box.
+  ==============================================================
+#}
 <nav class="tab-bar" aria-label="Main Navigation">
   <div class="nav-links">
     <a href="{{ get_url(path='/') }}" class="nav-btn">{{ config.extra.strings.nav_home | default(value="[ HOME ]") }}</a>
     <a href="{{ get_url(path='blog/') }}" class="nav-btn">{{ config.extra.strings.nav_blog | default(value="[ BLOG ]") }}</a>
+    <a href="{{ get_url(path='pet/') }}" class="nav-btn">{{ config.extra.strings.nav_pet | default(value="[ PET ]") }}</a>
     <a href="{{ config.extra.ctf_url }}" target="_blank" rel="noopener" class="nav-btn">{{ config.extra.strings.nav_ctf | default(value="[ CTF ↗ ]") }}</a>
   </div>
 
@@ -27,7 +36,7 @@
           type="text" 
           id="site-search-input" 
           class="search-input" 
-          placeholder="{{ config.extra.strings.search_placeholder | default(value="Search... 🔍") }}" 
+          placeholder="{{ config.extra.strings.search_placeholder | default(value="Search... ⌕") }}" 
           autocomplete="off" 
           role="combobox"
           aria-expanded="false"
@@ -39,7 +48,7 @@
       </div>
       <div id="search-results-dropdown" class="search-results-dropdown" role="region" aria-label="{{ config.extra.strings.search_results_title | default(value="SEARCH RESULTS") }}" hidden>
         <div class="search-results-header">
-          <span class="search-header-title">&#128269; {{ config.extra.strings.search_results_title | default(value="SEARCH RESULTS") }}</span>
+          <span class="search-header-title">&#x2315; {{ config.extra.strings.search_results_title | default(value="SEARCH RESULTS") }}</span>
           <button type="button" id="search-close-btn" class="search-close-btn" title="{{ config.extra.strings.search_close_title | default(value="Close search results") }}" aria-label="{{ config.extra.strings.search_close_title | default(value="Close search results") }}">[x]</button>
         </div>
         <div id="search-status-bar" class="search-status-bar" aria-live="polite"></div>

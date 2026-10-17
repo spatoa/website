@@ -1,10 +1,18 @@
 /**
- * visit-counter.js - Personal Visit Counter
- * Lachlan's World (Web 2.0)
+ * @module VisitCounter
+ * @description Retro mechanical odometer personal visit counter.
+ * Tracks visits per user using localStorage with a sessionStorage guard to prevent reload spam,
+ * rendering a classic 7-digit rolling counter with ordinal suffixes.
  *
- * Tracks individual visits from the current user using localStorage & sessionStorage.
- * Increments once per browser session to prevent reload spam, rendering
- * a classic 7-digit retro odometer display with personalized visit text.
+ * @dependencies
+ * - DOM: #visit-counter-odometer, #visit-counter-text
+ *
+ * @exports
+ * - window.VisitCounter
+ *
+ * @storageKeys
+ * - lachlan_user_visits (localStorage: total visit count string)
+ * - lachlan_session_visited (sessionStorage: boolean flag)
  */
 
 (function () {

@@ -1,7 +1,15 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/status.html
+  ENVIRONMENT: Web Portal
+  INCLUDED BY: templates/index.html
+  DESCRIPTION: Right-column telemetry box embedding the status diagnostics meters.
+  ==============================================================
+#}
 <section class="panel desktop-window" id="system-status"
          data-app-id="system-status"
          data-app-title="System Status"
-         data-app-icon="💻"
+         data-app-icon="🖵"
          data-default-x="920"
          data-default-y="50">
   <div class="panel-header">{{ config.extra.strings.header_status | default(value="★ Operator Status & Log ★") }}</div>

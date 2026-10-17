@@ -10,9 +10,7 @@ compile_sass = false
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
-taxonomies = [
-    { name = "tags", feed = false },
-]
+taxonomies = [{ name = "tags", feed = false }]
 
 [markdown]
 
@@ -31,8 +29,26 @@ author = "spatoa"
 author_name = "Lachlan (spatoa)"
 git_url = "https://git.lachlans.world"
 ctf_url = "https://ctf.lachlans.world"
+pet_url = "https://www.lachlans.world/pet"
 default_theme = "windows"
-avatar_icon = "&#128421;"
+avatar_icon = "&#x1F5B5;"
+avatar_img = "images/frutiger_user.svg"
+
+# Scrolling LED Ticker Messages (Easily add or edit lines here)
+ticker_items = [
+    "WELCOME TO MY WEBSITE",
+    "LACHLAN'S WORLD \"WEB 2.0\" RELAUNCH IS LIVE",
+    "ZERO FRAMEWORKS, PURE JS NONSENSE",
+    "LACHLAN HAS A NEW SERVER (THIS ONE)",
+    "BEST VIEWED AT 1024x768 IN MOZILLA FIREFOX",
+    "FIRST-CLASS IPV6 TRAFFIC ONLY!!",
+    "UNDER CONSTRUCTION INDEFINITELY",
+    "VISITOR COUNT: IDK?",
+    "HUGE THANK YOU TO TCP/IP",
+    "LACHLAN ROCKS",
+    "BUY LACHLAN A COKE ZERO",
+    "NO THANK YOU TO DNS, YOU SUCK",
+]
 
 # Customizable Color Palette (injected into CSS root variables)
 [extra.colors]
@@ -51,19 +67,20 @@ accent_red = "#b91c1c"
 # Localizable UI Strings (ready for i18n / multi-lingual translations)
 [extra.strings]
 skip_to_content = "Skip to main content"
-ticker_text = "WELCOME TO MY WEBSITE ♦♦ LACHLAN'S WORLD \"WEB 2.0\" RELAUNCH IS LIVE ♦♦ ZERO FRAMEWORKS, PURE JS NONSENE ♦♦ LACHLAN HAS A NEW SERVER (THIS ONE) ♦♦ BEST VIEWED AT 1024x768 IN MOZILLA FIREFOX ♦♦ FIRST-CLASS IPV6 TRAFFIC ONLY!! ♦♦ UNDER CONSTRUCTION INDEFINITELY ♦♦ VISITOR COUNT: IDK? ♦♦ HUGE THANK YOU TO TCP/IP ♦♦ LACHLAN ROCKS ♦♦ BUY LACHLAN A COKE ZERO ♦♦ NO THANK YOU TO DNS, YOU SUCK"
+ticker_text = "WELCOME TO MY WEBSITE ♦♦ LACHLAN'S WORLD \"WEB 2.0\" RELAUNCH IS LIVE ♦♦ ZERO FRAMEWORKS, PURE JS NONSENSE ♦♦ LACHLAN HAS A NEW SERVER (THIS ONE) ♦♦ BEST VIEWED AT 1024x768 IN MOZILLA FIREFOX ♦♦ FIRST-CLASS IPV6 TRAFFIC ONLY!! ♦♦ UNDER CONSTRUCTION INDEFINITELY ♦♦ VISITOR COUNT: IDK? ♦♦ HUGE THANK YOU TO TCP/IP ♦♦ LACHLAN ROCKS ♦♦ BUY LACHLAN A COKE ZERO ♦♦ NO THANK YOU TO DNS, YOU SUCK"
 last_updated_prefix = "LAST UPDATED:"
 sys_status_tag = "SYS_STATUS: OPERATIONAL"
 
 # Navigation & Menus
 nav_home = "[ HOME ]"
 nav_blog = "[ BLOG ]"
+nav_pet = "[ PET ]"
 nav_ctf = "[ CTF ↗ ]"
 nav_git = "[ GIT ↗ ]"
-nav_desktop = "[ 🖥 Desktop OS ]"
+nav_desktop = "[ 🖳 Desktop OS ]"
 # Site Search
-search_label = "SEARCH ALL:"
-search_placeholder = "Search... 🔍"
+search_label = "SEARCH:"
+search_placeholder = "Search... ⌕"
 search_results_title = "SEARCH RESULTS"
 search_loading = "Searching index..."
 search_no_results = "No matching records found."
@@ -81,15 +98,16 @@ theme_candy_2000 = "Web 2.0 Candy (Aqua Gloss)"
 theme_scene_punk = "Scene Kid (Hot Pink)"
 
 # Section Headers
-header_about = "★ About Me / My Profile ★"
+header_about = "★ My Profile ★"
 header_posts = "★ Recent Posts & Bulletins ★"
-header_trivia = "★ Did You Know? / Fun Facts! ★"
+header_gimmicks = "★ Totally 100% Legitimate Virus Free Software ★"
 header_game = "★ Interactive Canvas ★"
-header_music = "★ Audio Deck★ "
+header_music = "★ Audio Deck ★"
 header_status = "★ Server Status ★"
 header_desktop_os = "★ Interactive Desktop OS ★"
+desktop_launch_icon = "&#x1F5B3;"
 desktop_launch_desc = "Experience Lachlan's World in a full mid-2000s Web OS desktop with draggable windows, chiptune player, and arcade games."
-desktop_launch_btn = "[ &#128421; Launch Desktop OS &raquo; ]"
+desktop_launch_btn = "[ 🖳 Launch Desktop OS &raquo; ]"
 header_pocket_pet = "★ Pocket_Pet.exe ★"
 header_tags = "★ Tag Cloud / Index ★"
 header_tag_single = "★ Tagged Entries:"
@@ -106,12 +124,22 @@ about_label_security = "Security:"
 # Status Panel Content & Labels
 status_label_state = "STATUS:"
 status_state = "ONLINE & READY"
+status_label_host = "Host Node:"
+status_host = "vps02"
+status_label_arch = "Server Arch:"
+status_server_arch = "Linux x86_64 / Alpine"
+status_label_webserver = "Web Server:"
+status_webserver = "Caddy v2 + Nginx"
+status_label_engine = "Static Engine:"
+status_engine = "Zola SSG (Rust)"
+status_label_network = "Uplink / IP:"
+status_network = "Dual-Stack IPv4 / Native IPv6"
+status_label_location = "Location:"
+status_location = "Melbourne, Victoria, AU"
 status_label_mood = "Mood:"
 status_mood = "Overworked and underemployed"
 status_label_project = "Current Project:"
 status_current_project = "www.lachlans.world (v2)"
-status_label_arch = "Server Architecture:"
-status_server_arch = "Linux x86_64 / Alpine Linux"
 counter_label = "YOUR VISIT COUNT:"
 
 # Blog Archive Strings
@@ -130,6 +158,8 @@ blog_next_page = "Older Posts »"
 # Post View Strings
 post_author_prefix = "Author:"
 post_date_prefix = "Published:"
+post_updated_prefix = "Last Updated:"
+post_posted_prefix = "First Posted:"
 post_reading_time_prefix = "Reading Time:"
 post_tags_prefix = "Categorized as:"
 post_permalink_label = "Entry URL:"
@@ -143,14 +173,5 @@ error_404_header = "★ 404 Not Found ★"
 error_404_message = "The requested page or bulletin could not be found on this server."
 
 # Footer
-footer_view_note = "Best viewed at 1024x768 • Made with Zola SSG"
-footer_copyright = "Hosted on my servers"
-
-# Bullet points for Did You Know section
-trivia_facts = [
-    "Static Site Generation: This site builds super quick in under 50ms with Zola! WOW!!",
-    "\"Web 2.0\" Relaunch: Version 2.0 does away with the extreme minimalism to bring back the fun!!",
-    "WASM Ready: The interactive viewport is wired up for upcoming experiments...",
-    "Audio Player: A synth player running on your side!",
-    "Privacy Conscious: No analytics, zero tracking cookies, hosted only on the cheapest servers!!! Wait...",
-]
+footer_view_note = "Best viewed at 1024x768 • Made with love and a smile"
+footer_license = "Code licensed under Apache-2.0 • Content under CC BY 4.0"

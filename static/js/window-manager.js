@@ -1,6 +1,7 @@
 /**
- * window-manager.js - Extensible Retro Desktop OS Architecture & Window Manager
- * Dedicated to Lachlan's World Desktop OS (/desktop/)
+ * @module DesktopOS
+ * @description Extensible Mid-2000s Web OS Shell, Window Manager, and Integrated Desktop Applications.
+ * Dedicated to Lachlan's World Desktop OS (/desktop/).
  *
  * Implements a robust DesktopOS App Registry:
  * - Hybrid activation logic combining window.matchMedia viewport checks with pointer/touch input support
@@ -12,6 +13,42 @@
  * - Handles window lifecycles (pausing screensaver canvas & audio on close or mobile teardown)
  * - Rich File Explorer with live search dropdown pane, folder navigation, and column sorting
  * - Dedicated Display Properties & Settings App (Settings.exe)
+ *
+ * @dependencies
+ * - DOM: .desktop-window, #desktop-viewport, #taskbar-tasks, #desktop-start-menu, etc.
+ * - window.switchSiteTheme (static/js/theme-switcher.js)
+ * - window.stopMusicPlayback (static/js/music-player.js)
+ * - window.stopScreensaver / window.startScreensaver (static/js/screensaver.js)
+ * - window.clearDesktopStickers (static/js/stickers.js)
+ *
+ * @exports
+ * - window.DesktopOS
+ * - window.openDesktopWindow
+ * - window.closeDesktopWindow
+ * - window.minimizeDesktopWindow
+ * - window.openDesktopArticle
+ *
+ * @storageKeys
+ * - lachlan_desktop_window_positions (JSON Object mapping appId -> { x, y })
+ * - lachlan_window_states (Legacy window positions mirror)
+ * - lachlan_desktop_mode ("true" | "false")
+ * - lachlan_custom_wallpaper (string data URL or path)
+ * - lachlan_custom_wallpaper_fit ("center" | "tile" | "stretch")
+ * - lachlan_sticker_motion ("enabled" | "disabled")
+ *
+ * ============================================================================
+ * TABLE OF CONTENTS:
+ * 1. Storage & Persistence Engine (Safe localStorage helpers & position state)
+ * 2. Capability & Viewport Engine (Hybrid pointer, touch, and media-query checks)
+ * 3. System Shell Utilities (System tray clock, keyboard activation helper)
+ * 4. DesktopOS Core Controller & Window Manager (Registration, Drag, Chrome, Z-Index)
+ * 5. Desktop Shell Interface (Show Desktop toggle, desktop shortcuts, taskbar)
+ * 6. Application: Blog Reader (initBlogReader & article switching)
+ * 7. Application: File Explorer (Virtual filesystem, tree navigation, search, sorting)
+ * 8. Application: Start Menu & System Tray (initStartMenu, initShowDesktopBtn)
+ * 9. Application: Settings & Display Properties (initSettingsApp)
+ * 10. Viewport Synchronization & Boot (syncViewportMode, boot lifecycle)
+ * ============================================================================
  */
 
 (function () {
@@ -33,6 +70,9 @@
   let sessionController = null;
   let initialBlogFileNodes = null;
 
+  // ==========================================================================
+  // [01] Storage & Persistence Engine (Safe LocalStorage & Position Cache)
+  // ==========================================================================
   function safeGetItem(key) {
     try {
       return localStorage.getItem(key);
@@ -93,6 +133,9 @@
    * so traditional desktops, large-screen tablets, and touch-enabled laptops all activate cleanly,
    * while small mobile viewports (< 768px) isolate and bypass the desktop window manager.
    */
+  // ==========================================================================
+  // [02] Capability & Viewport Engine (Hybrid Pointer & Media Query Checks)
+  // ==========================================================================
   function checkDesktopCapability() {
     if (typeof window.matchMedia !== 'function') {
       return window.innerWidth >= 768;
@@ -110,6 +153,9 @@
   }
 
   // --- Clock updater ---
+  // ==========================================================================
+  // [03] System Shell Utilities (Clock, Keyboards, Accessibility)
+  // ==========================================================================
   function updateClock() {
     const clock = document.getElementById('taskbar-clock');
     if (!clock) return;
@@ -134,6 +180,9 @@
   }
 
   // --- DesktopOS Architecture ---
+  // ==========================================================================
+  // [04] DesktopOS Core Controller & Window Manager (Drag, Chrome, Layering)
+  // ==========================================================================
   const DesktopOS = {
     apps: new Map(),
     isActive: false,
@@ -355,17 +404,17 @@
       if (iconAttr) return iconAttr;
 
       const iconMap = {
-        'about': '👤',
-        'interactive-element': '🎮',
-        'music-player': '🎵',
-        'blog-reader-window': '📝',
-        'file-explorer-window': '📁',
-        'recent-posts': '📋',
+        'about': '☺',
+        'interactive-element': '★',
+        'music-player': '♫',
+        'blog-reader-window': '🗏',
+        'file-explorer-window': '🗀',
+        'recent-posts': '🗎',
         'sticker-album-window': '★',
-        'system-status': '💻',
-        'trivia-facts': '💡',
-        'pocket_pet-app': '🥚',
-        'settings-window': '⚙️'
+        'system-status': '🖵',
+        'legit-software': '🖫',
+        'pocket_pet-app': '☺',
+        'settings-window': '⚙'
       };
       return iconMap[panelId] || '🗔';
     },
@@ -727,7 +776,7 @@
         'settings-window': { x: 360, y: 120 },
         'system-status': { x: 920, y: 50 },
         'pocket_pet-app': { x: 480, y: 180 },
-        'trivia-facts': { x: 920, y: 440 }
+        'legit-software': { x: 520, y: 240 }
       };
 
       windows.forEach(function (panel) {
@@ -873,6 +922,9 @@
     }
   };
 
+  // ==========================================================================
+  // [05] Desktop Shell Interface (Show Desktop Toggle & Windows Stacking)
+  // ==========================================================================
   // --- Show Desktop Toggle (Bottom Right System Tray) ---
   function toggleShowDesktop() {
     if (!DesktopOS.isActive) return;
@@ -913,6 +965,9 @@
     }
   }
 
+  // ==========================================================================
+  // [06] Application: Blog Reader (initBlogReader & switchArticle)
+  // ==========================================================================
   // --- Blog Reader Manager ---
   function initBlogReader(signal) {
     const select = document.getElementById('reader-post-select');
@@ -979,6 +1034,9 @@
     window.openDesktopArticle = switchArticle;
   }
 
+  // ==========================================================================
+  // [07] Application: File Explorer (Explorer.exe Virtual Filesystem & Table)
+  // ==========================================================================
   // --- Safe DOM Row Builders for File Explorer ---
   function createExplorerFileRow(cfg) {
     const row = document.createElement('div');
@@ -994,9 +1052,9 @@
     nameDiv.className = 'file-name';
 
     const iconSpan = document.createElement('span');
-    iconSpan.className = 'file-icon';
+    iconSpan.className = 'file-icon wingdings';
     iconSpan.setAttribute('aria-hidden', 'true');
-    iconSpan.textContent = cfg.icon || '📄';
+    iconSpan.textContent = cfg.icon || '🗎';
 
     const textSpan = document.createElement('span');
     textSpan.className = 'file-title-text';
@@ -1119,7 +1177,7 @@
         filesList.appendChild(createExplorerFileRow({
           nav: 'blog-archive',
           title: 'Open Blog Archive',
-          icon: '📂',
+          icon: '🗀',
           name: 'Blog_Archive',
           date: '2026-10-13',
           type: 'File Folder',
@@ -1141,7 +1199,7 @@
         filesList.appendChild(createExplorerFileRow({
           nav: 'desktop',
           title: 'Open Desktop folder',
-          icon: '📂',
+          icon: '🗀',
           name: 'Desktop',
           date: '2026-10-13',
           type: 'File Folder',
@@ -1150,7 +1208,7 @@
         filesList.appendChild(createExplorerFileRow({
           nav: 'documents',
           title: 'Open Documents folder',
-          icon: '📂',
+          icon: '🗀',
           name: 'Documents',
           date: '2026-10-13',
           type: 'File Folder',
@@ -1158,7 +1216,7 @@
         }));
         filesList.appendChild(createExplorerFileRow({
           title: 'Windows System Folder',
-          icon: '📂',
+          icon: '🗀',
           name: 'WINDOWS',
           date: '2005-08-24',
           type: 'System Folder',
@@ -1166,7 +1224,7 @@
         }));
         filesList.appendChild(createExplorerFileRow({
           title: 'Program Files',
-          icon: '📂',
+          icon: '🗀',
           name: 'Program Files',
           date: '2026-10-13',
           type: 'File Folder',
@@ -1180,9 +1238,10 @@
         msgBox.style.cssText = 'padding: 24px; text-align: center; color: var(--text-muted); font-family: monospace;';
 
         const floppyIcon = document.createElement('div');
+        floppyIcon.className = 'wingdings';
         floppyIcon.style.cssText = 'font-size: 32px; margin-bottom: 8px;';
         floppyIcon.setAttribute('aria-hidden', 'true');
-        floppyIcon.textContent = '💾';
+        floppyIcon.textContent = '🖫';
 
         const strongEl = document.createElement('strong');
         strongEl.textContent = 'Drive A: is not ready.';
@@ -1362,8 +1421,9 @@
             titleDiv.className = 'explorer-result-title';
 
             const iconSpan = document.createElement('span');
+            iconSpan.className = 'wingdings';
             iconSpan.setAttribute('aria-hidden', 'true');
-            iconSpan.textContent = res.type === 'app' ? '⚙️' : '📄';
+            iconSpan.textContent = res.type === 'app' ? '⚙' : '🗎';
 
             const strongTitle = document.createElement('strong');
             strongTitle.textContent = res.title;
@@ -1521,6 +1581,9 @@
     renderFolderContent('blog-archive', false);
   }
 
+  // ==========================================================================
+  // [08] Application: Start Menu & Taskbar Tray Elements
+  // ==========================================================================
   // --- Show Desktop Button (Taskbar Tray) ---
   function initShowDesktopBtn(signal) {
     const showDesktopBtn = document.getElementById('show-desktop-btn');
@@ -1615,6 +1678,9 @@
     }, opts);
   }
 
+  // ==========================================================================
+  // [09] Application: Settings & Display Properties (Settings.exe)
+  // ==========================================================================
   // --- Settings App Integration ---
   function initSettingsApp(signal) {
     const themeSelect = document.getElementById('settings-theme-select');
@@ -1891,6 +1957,9 @@
     applyCustomWallpaper();
   }
 
+  // ==========================================================================
+  // [10] Viewport Synchronization, Global Expositions & System Boot
+  // ==========================================================================
   // --- Global Window Expositions ---
   window.DesktopOS = DesktopOS;
   window.openDesktopWindow = function (appId) { DesktopOS.openApp(appId); };

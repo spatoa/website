@@ -124,6 +124,28 @@ These guidelines ensure that all future agents and contributors maintain the aut
   - Standard retro typography locked to default 11px body sizing across themes.
   - Always retain the skip-to-content accessibility link.
 
+### 3.4 Wingdings & Iconography Over Emojis
+- **Prioritize Wingdings over modern emojis**:
+  - Always prioritize the use of authentic Wingdings, Webdings, and retro dingbat symbols over modern emojis across templates, scripts, stylesheets, and content unless explicitly specified otherwise.
+  - Never introduce modern color emojis (e.g. `🎮`, `🎵`, `📝`, `📁`, `💾`, `⚡`, `⬇️`, `⭐⭐⭐⭐⭐`, etc.) or Unicode variation selectors (`\uFE0F`) that trigger modern color emoji font renderers (such as Noto Color Emoji or Apple Color Emoji).
+- **Retro Font Stack & Emoji Suppression**:
+  - All symbols, window icons, desktop shortcut icons, tabs, tree items, and UI dingbats must use the standardized retro font stack:
+    ```css
+    font-family: "Wingdings", "Wingdings 2", "Wingdings 3", "Webdings", "Segoe MDL2 Assets", "Noto Sans Symbols 2", "Apple Symbols", Tahoma, sans-serif;
+    font-variant-emoji: text;
+    ```
+  - Apply the `.wingdings` class or component-specific icon classes (such as `.win-icon`, `.desktop-icon-img`, `.tab-icon`, `.gimmick-stars`, etc.) to enforce crisp monochrome retro glyph rendering across Linux, Windows, and macOS.
+- **Common Wingdings Mapping Reference**:
+  - **Window & System Chrome**: `🗔` (U+1F5D4 Win32 Window), `⌧` (U+2327 Ballot X / Recycle Bin)
+  - **Workstation & Display**: `🖵` (U+1F5B5 CRT Monitor)
+  - **Storage & Floppy**: `🖫` (U+1F5AB 3.5" Diskette), `🖴` (U+1F5B4 Hard Drive)
+  - **Folders & Documents**: `🗀` (U+1F5C0 Folder), `🗁` (U+1F5C1 Open Folder), `🗎` (U+1F5CE Document), `🗏` (U+1F5CF Note / Page)
+  - **Audio & Media**: `♫` (U+266B Beamed Notes), `♩` (U+2669 Quarter Note)
+  - **Hardware & Games**: `⌨` (U+2328 Keyboard), `★` (U+2605 Solid Star), `⚄` (U+2684 Dice / Game)
+  - **Controls, Tools & Status**: `⚙` (U+2699 Gear), `⌕` (U+2315 Search Lens), `◷` (U+25F7 Clock), `⌛` (U+231B Hourglass), `☺` (U+263A Classic Smiley), `☞` / `☛` (Hand Pointers), `⚠` (Warning Triangle)
+- **Portal Window Headers**:
+  - Keep portal panel headers in normal grid mode clean (e.g., `★ About Me / My Profile ★`, `★ Interactive Canvas ★`) without hardcoded emoji glyphs in the HTML templates. In Desktop Mode, `window-manager.js` injects the corresponding Wingdings application icon dynamically.
+
 ---
 
 ## 4. Browser Testing & Verification Rules

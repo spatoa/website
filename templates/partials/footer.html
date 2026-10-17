@@ -1,6 +1,15 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/footer.html
+  ENVIRONMENT: Web Portal
+  INCLUDED BY: templates/base.html
+  DESCRIPTION: Bottom portal footer displaying license information and retro web badges.
+  ==============================================================
+#}
 <footer class="footer-note" role="contentinfo">
   <div class="footer-bevel">
     <div>{{ config.extra.strings.footer_view_note | default(value="Best viewed at 1024x768 • Valid XHTML 1.0 Strict • Built with Zola SSG") }}</div>
-    <div>&copy; 2005-{{ now() | date(format="%Y") }} {{ config.extra.author_name }} &bull; {{ config.extra.strings.footer_copyright | default(value="Hosted on my servers") }}</div>
+    <div>&copy; 2005-{{ now() | date(format="%Y") }} {{ config.extra.author_name }}</div>
+    <div>{{ config.extra.strings.footer_license | default(value="Code licensed under Apache-2.0 • Content under CC BY 4.0") }}</div>
   </div>
 </footer>
