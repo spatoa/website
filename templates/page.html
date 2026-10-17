@@ -46,7 +46,7 @@
       <hr class="dotted-hr" aria-hidden="true">
 
       <div itemprop="articleBody" class="e-content markdown-content">
-        {{ page.content | regex_replace(pattern="(?s)<p>\\s*\\[center\\](.*?)\\[/center\\]\\s*</p>", rep="<p class=\"center-text\">$1</p>") | regex_replace(pattern="(?s)\\[center\\](.*?)\\[/center\\]", rep="<span class=\"center-text\">$1</span>") | safe }}
+        {{ page.content | regex_replace(pattern="(?s)<p>\\s*\\[center\\](.*?)\\[/center\\]\\s*</p>", rep="<p class='center-text'>$1</p>") | regex_replace(pattern="(?s)\\[center\\](.*?)\\[/center\\]", rep="<span class='center-text'>$1</span>") | safe }}
       </div>
 
       <hr class="dotted-hr" aria-hidden="true">
