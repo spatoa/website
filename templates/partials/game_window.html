@@ -3,7 +3,7 @@
   PARTIAL: templates/partials/game_window.html
   ENVIRONMENT: Shared Window (Portal & Desktop)
   INCLUDED BY: templates/index.html, templates/desktop.html
-  DESCRIPTION: Interactive CRT monitor window running the procedural Starfield screensaver canvas.
+  DESCRIPTION: Interactive Game Cartridge Player window running Desert Golfing, Starfield Screensaver, or other cartridges.
   ==============================================================
 #}
 <!-- Interactive Client-Side Element: Game Player -->
@@ -15,22 +15,34 @@
          data-default-y="350">
   <div class="panel-header">{{ config.extra.strings.header_game | default(value="★ Interactive Canvas ★") }}</div>
   <div class="panel-body">
-    <div class="game-viewport-wrap">
-      <canvas id="wasm-canvas" width="380" height="200" role="img" aria-label="Interactive 3D Starfield Simulation"></canvas>
-      <div class="canvas-overlay-notice">Move cursor / touch to steer warp &bull; Click to burst stars</div>
-    </div>
-    <div class="win-statusbar">
-      <span id="canvas-status" aria-live="off">STATUS: RUNNING (60 FPS)</span>
-      <span id="canvas-mode">MODE: 3D STARFIELD</span>
+    <!-- Retro Cartridge Slot Bar -->
+    <div class="cartridge-slot-bar" role="toolbar" aria-label="Game cartridge selector">
+      <div class="cartridge-info">
+        <span class="wingdings cartridge-slot-icon" id="cartridge-active-icon" aria-hidden="true">⚑</span>
+        <span class="cartridge-slot-label">CARTRIDGE:</span>
+        <strong id="cartridge-active-title" class="cartridge-title">Desert Golfing</strong>
+      </div>
+      <button type="button" class="retro-btn btn-swap-cartridge" id="btn-swap-cartridge" title="Cycle to next game cartridge" aria-label="Swap game cartridge">
+        <span class="wingdings" aria-hidden="true">⚄</span> Swap Game
+      </button>
     </div>
 
-    <div class="arcade-controls" role="group" aria-label="Starfield simulation controls">
+    <div class="game-viewport-wrap">
+      <canvas id="wasm-canvas" width="380" height="200" role="img" aria-label="Interactive Game Player Canvas"></canvas>
+      <div class="canvas-overlay-notice" id="canvas-instructions">Pull back to set angle and power &bull; Release to shoot &bull; Endless sand dunes</div>
+    </div>
+    <div class="win-statusbar">
+      <span id="canvas-status" aria-live="off">STATUS: RUNNING</span>
+      <span id="canvas-mode">MODE: DESERT GOLFING</span>
+    </div>
+
+    <div class="arcade-controls" id="arcade-controls-starfield" role="group" aria-label="Simulation controls">
       <button type="button" class="retro-btn" id="btn-warp" aria-label="Cycle warp speed">Hyperdrive Speed</button>
       <button type="button" class="retro-btn" id="btn-toggle" aria-pressed="false" aria-label="Pause or play simulation">Pause / Play</button>
       <button type="button" class="retro-btn" id="btn-theme" aria-label="Cycle starfield color palette">Toggle Color</button>
     </div>
     <div class="wasm-notice">
-      <span aria-hidden="true">&#9881;</span> <em>Placeholder for upcoming WASM game binary / retro desktop env.</em>
+      <span class="wingdings" aria-hidden="true">⚙</span> <em>Modular Game Engine &bull; Endless local storage persistence</em>
     </div>
   </div>
 </section>

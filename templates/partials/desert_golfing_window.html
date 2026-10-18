@@ -1,0 +1,43 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/desert_golfing_window.html
+  ENVIRONMENT: Desktop OS
+  INCLUDED BY: templates/desktop.html
+  DESCRIPTION: Dedicated Desert Golfing application window for Desktop OS.
+  ==============================================================
+#}
+<section class="panel desktop-window window-closed" id="desert-golfing-window"
+         data-app-id="desert-golfing-window"
+         data-app-title="Desert_Golfing.exe"
+         data-app-icon="⚑"
+         data-default-x="360"
+         data-default-y="160"
+         style="width: 490px; max-width: calc(100vw - 20px);">
+  <div class="panel-header">
+    <div class="panel-header-title">
+      <span class="win-icon" aria-hidden="true">⚑</span> Desert_Golfing.exe &bull; Endless Dunes
+    </div>
+    <div class="window-controls">
+      <button type="button" class="window-btn" id="golf-min-btn" title="Minimize" aria-label="Minimize Desert_Golfing.exe">_</button>
+      <button type="button" class="window-btn" id="golf-close-btn" title="Close" aria-label="Close Desert_Golfing.exe">&#10005;</button>
+    </div>
+  </div>
+
+  <div class="panel-body golf-window-body" style="padding: 4px;">
+    <!-- Game Viewport -->
+    <div class="game-viewport-wrap golf-viewport-wrap">
+      <canvas id="desert-golfing-canvas" width="470" height="250" role="img" aria-label="Desert Golfing 2D Physics Canvas"></canvas>
+      <div class="canvas-overlay-notice">Pull back like a slingshot &bull; Release to hit &bull; Endless journey</div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="win-statusbar golf-statusbar">
+      <span id="golf-status-info" aria-live="polite">ENDLESS PHYSICS RUN</span>
+      <span id="golf-status-controls">TOUCH / DRAG TO AIM</span>
+    </div>
+
+    <div class="arcade-controls golf-controls" role="group" aria-label="Desert Golfing Controls">
+      <button type="button" class="retro-btn" id="btn-golf-sound" aria-label="Toggle Sound Effects">♫ Sound: Active</button>
+    </div>
+  </div>
+</section>

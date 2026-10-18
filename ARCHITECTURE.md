@@ -27,7 +27,9 @@ graph TD
         PetCore["Pocket Pet Simulation\nstatic/js/pocket_pet.js"]
         PetSprites["Sprite Bitmap Bank\nstatic/js/pocket_pet_sprites.js"]
         Audio["Chiptune Audio Player\nstatic/js/music-player.js"]
-        Canvas["WASM/Canvas Screensaver\nstatic/js/screensaver.js"]
+        Canvas["Modular Game Host & Cartridge Engine\nstatic/js/game-engine.js"]
+        Golf["Desert Golfing Engine\nstatic/js/desert-golfing.js"]
+        Screensaver["WASM/Canvas Screensaver\nstatic/js/screensaver.js"]
         Stickers["Sticker Physics & Tray\nstatic/js/stickers.js"]
         Search["ElasticLunr Search Index\nstatic/js/search.js"]
     end
@@ -134,7 +136,8 @@ graph LR
 | `desktop_launch_window.html`| Web Portal | `index.html` | Promotional callout button inviting users into the interactive Desktop OS. |
 | `sticker_book.html` | Web Portal | `base.html` | Floating bottom sticker tray panel for dragging stickers onto the portal page. |
 | `sticker_palette.html` | Reusable Card | `sticker_book.html`, `desktop_sticker_window.html` | Palette of collectible 2000s stickers (Y2K badges, animated GIFs, retro logos). |
-| `game_window.html` | Shared Window | `index.html`, `desktop.html` | Retro CRT display monitor running the Starfield/Geometry screensaver loop. |
+| `game_window.html` | Shared Window | `index.html`, `desktop.html` | Modular retro CRT monitor window hosting hot-swappable game cartridges (Desert Golfing, Starfield Screensaver). |
+| `desert_golfing_window.html`| Desktop OS | `desktop.html` | Dedicated Desert_Golfing.exe application window with 2D physics simulation and endless dunes. |
 | `winamp_window.html` | Shared Window | `index.html`, `desktop.html` | Authentic Winamp v2-inspired procedural Web Audio 8-bit chiptune synthesizer and visualizer. |
 | `gimmicks.html` | Shared Window | `index.html`, `desktop.html` | Retro interactive gimmick box (random fortune, visitor prank, fake installer). |
 | `pocket_pet_deck.html` | Reusable Card | `pocket_pet_window.html`, `pet.html` | Hardware LCD virtual pet deck with 32x19 canvas screen and 3-button control pad (A, B, C). |
@@ -171,6 +174,8 @@ All scripts are written in vanilla ECMAScript (ES6+) without npm dependencies or
 | `window.StickerEngine` | `stickers.js` | External extensions | Public API for sticker management (`getActiveContainer()`, `getStorageKey()`). |
 | `window.PocketPetSprites` | `pocket_pet_sprites.js`| `pocket_pet.js` | 2D bitmask dictionary for all 32x19 virtual LCD sprite graphics. |
 | `window.Pocket_Pet` | `pocket_pet.js` | Pet UI, standalone PWA | Virtual pet simulation engine (lifecycle, feeding, hygiene, minigame loop). |
+| `window.GameEngine` | `game-engine.js` | Web Portal, Desktop OS | Cartridge registry & container host (`registerCartridge`, `mountCartridge`, `cycleNextCartridge`). |
+| `window.DesertGolfing` | `desert-golfing.js` | GameEngine, DesktopOS | Desert Golfing physics engine factory (`createInstance(canvas)`, `getState()`). |
 | `window.VisitCounter` | `visit-counter.js` | Status widget | Calculates visitor visit count and formats retro mechanical odometer digits. |
 | `window.LegitSoftware` | `gimmicks.js` | Gimmicks window | Interactive fake software setup wizard minigame. |
 | `window.randomizeWordArt()` | `wordart.js` | Gimmicks window | Re-rolls gradient style on vintage WordArt elements. |
@@ -197,6 +202,8 @@ All client state is isolated under the `lachlan_` prefix to prevent collision wi
 | `lachlan_grid_sticker_drawer_open` | `localStorage` | `string` | `'false'` | `stickers.js` | Drawer open/closed state on portal layout. |
 | `lachlan_pocket_pet_v1` | `localStorage` | `JSON Object` | `{}` | `pocket_pet.js` | Virtual pet state (species, stage, hunger, happiness, discipline, age, sickness, poo, lastTick). |
 | `lachlan_pocket_pet_sound` | `localStorage` | `string` | `'active'` | `pocket_pet.js` | Sound toggle for 1-bit piezo buzzer (`'active'` or `'muted'`). |
+| `lachlan_desert_golfing_v1`| `localStorage` | `JSON Object` | `{}` | `desert-golfing.js` | Endless physics golf state (`hole`, `strokes`, `totalStrokes`, `ball`, `seed`, `sound`). |
+| `lachlan_active_portal_game`| `localStorage`| `string` | `null` | `game-engine.js` | ID of the active cartridge mounted on the Web Portal interactive canvas. |
 | `lachlan_pet_skin` | `localStorage` | `string` | `'windows'` | `pet-standalone.js` | Visual housing plastic skin for the standalone pet appliance. |
 | `lachlan_user_visits` | `localStorage` | `string` | `'1'` | `visit-counter.js` | Total persistent visit counter number. |
 | `lachlan_wordart_style` | `localStorage` | `string` | `'0'` | `wordart.js` | Current active vintage WordArt gradient preset index. |
@@ -221,6 +228,7 @@ style.css (Entry Point)
     ├── panel.css
     ├── desktop_launch.css
     ├── screensaver.css
+    ├── desert_golfing.css
     ├── winamp.css
     ├── search.css
     ├── blog.css

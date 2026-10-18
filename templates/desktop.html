@@ -62,6 +62,7 @@
 
     <!-- Draggable Windows Area (Info apps consolidated inside Settings.exe tabs) -->
     <div class="desktop-windows-layer" id="desktop-windows-layer">
+      {% include "partials/desert_golfing_window.html" %}
       {% include "partials/game_window.html" %}
       {% include "partials/winamp_window.html" %}
       {% include "partials/pocket_pet_window.html" %}
@@ -78,6 +79,8 @@
 
   {% include "partials/site_config.html" %}
   <script src="{{ get_url(path='js/theme-switcher.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/game-engine.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/desert-golfing.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/screensaver.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/music-player.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/visit-counter.js') | safe }}" defer></script>

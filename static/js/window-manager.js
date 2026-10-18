@@ -282,6 +282,23 @@
         app.onOpen();
       } else if (appId === 'interactive-element' && typeof window.startScreensaver === 'function') {
         window.startScreensaver();
+      } else if (appId === 'desert-golfing-window') {
+        if (!DesktopOS._golfInstance && window.DesertGolfing) {
+          const golfCanvas = document.getElementById('desert-golfing-canvas');
+          if (golfCanvas) {
+            DesktopOS._golfInstance = window.DesertGolfing.createInstance(golfCanvas);
+            const soundBtn = document.getElementById('btn-golf-sound');
+            if (soundBtn) {
+              soundBtn.addEventListener('click', function () {
+                const active = DesktopOS._golfInstance.toggleSound();
+                soundBtn.textContent = active ? '♫ Sound: Active' : '♫ Sound: Muted';
+              });
+            }
+          }
+        }
+        if (DesktopOS._golfInstance) {
+          DesktopOS._golfInstance.start();
+        }
       }
     },
 
@@ -336,6 +353,9 @@
       if (appId === 'interactive-element' && typeof window.stopScreensaver === 'function') {
         window.stopScreensaver();
       }
+      if (appId === 'desert-golfing-window' && DesktopOS._golfInstance) {
+        DesktopOS._golfInstance.pause();
+      }
 
       // Focus topmost remaining visible window
       this._focusTopmost();
@@ -362,6 +382,9 @@
       } else {
         if (appId === 'interactive-element' && typeof window.stopScreensaver === 'function') {
           window.stopScreensaver();
+        }
+        if (appId === 'desert-golfing-window' && DesktopOS._golfInstance) {
+          DesktopOS._golfInstance.pause();
         }
         if (appId === 'music-player' && typeof window.stopMusicPlayback === 'function') {
           window.stopMusicPlayback();
@@ -414,7 +437,8 @@
         'system-status': '🖵',
         'legit-software': '🖫',
         'pocket_pet-app': '☺',
-        'settings-window': '⚙'
+        'settings-window': '⚙',
+        'desert-golfing-window': '⚑'
       };
       return iconMap[panelId] || '🗔';
     },
@@ -470,7 +494,7 @@
         header.appendChild(controls);
       }
 
-      const minBtn = controls.querySelector('button[title="Minimize"], #reader-min-btn, #sticker-win-min-btn, #explorer-min-btn');
+      const minBtn = controls.querySelector('button[title="Minimize"], #reader-min-btn, #sticker-win-min-btn, #explorer-min-btn, #golf-min-btn');
       if (minBtn) {
         minBtn.addEventListener('click', function (e) {
           e.stopPropagation();
@@ -478,7 +502,7 @@
         }, listenerOpts);
       }
 
-      const closeBtn = controls.querySelector('button[title="Close"], #reader-close-btn, #sticker-win-close-btn, #explorer-close-btn');
+      const closeBtn = controls.querySelector('button[title="Close"], #reader-close-btn, #sticker-win-close-btn, #explorer-close-btn, #golf-close-btn');
       if (closeBtn) {
         closeBtn.addEventListener('click', function (e) {
           e.stopPropagation();
@@ -776,7 +800,8 @@
         'settings-window': { x: 360, y: 120 },
         'system-status': { x: 920, y: 50 },
         'pocket_pet-app': { x: 480, y: 180 },
-        'legit-software': { x: 520, y: 240 }
+        'legit-software': { x: 520, y: 240 },
+        'desert-golfing-window': { x: 360, y: 160 }
       };
 
       windows.forEach(function (panel) {
@@ -1194,8 +1219,39 @@
         }));
         bindNavRows();
         if (statusCount) statusCount.textContent = '2 Object(s)';
+      } else if (folderKey === 'games') {
+        if (addressInput) addressInput.value = 'C:\\Games\\';
+        filesList.appendChild(createExplorerFileRow({
+          launch: 'desert-golfing-window',
+          title: 'Launch Desert Golfing',
+          icon: '⚑',
+          name: 'Desert_Golfing.exe',
+          date: '2026-10-18',
+          type: 'Application',
+          size: '64 KB'
+        }));
+        filesList.appendChild(createExplorerFileRow({
+          launch: 'interactive-element',
+          title: 'Launch Game Player / Screensaver',
+          icon: '★',
+          name: 'Game_Player.exe',
+          date: '2026-10-13',
+          type: 'Application',
+          size: '32 KB'
+        }));
+        bindAppRows();
+        if (statusCount) statusCount.textContent = '2 Object(s)';
       } else if (folderKey === 'disk-c') {
         if (addressInput) addressInput.value = 'C:\\';
+        filesList.appendChild(createExplorerFileRow({
+          nav: 'games',
+          title: 'Open Games folder',
+          icon: '🗀',
+          name: 'Games',
+          date: '2026-10-18',
+          type: 'File Folder',
+          size: '--'
+        }));
         filesList.appendChild(createExplorerFileRow({
           nav: 'desktop',
           title: 'Open Desktop folder',
@@ -1231,7 +1287,7 @@
           size: '--'
         }));
         bindNavRows();
-        if (statusCount) statusCount.textContent = '4 Object(s)';
+        if (statusCount) statusCount.textContent = '5 Object(s)';
       } else if (folderKey === 'floppy') {
         if (addressInput) addressInput.value = 'A:\\';
         const msgBox = document.createElement('div');
@@ -1333,7 +1389,7 @@
       upBtn.addEventListener('click', function () {
         if (currentFolder === 'blog-archive') {
           renderFolderContent('documents', true);
-        } else if (currentFolder === 'documents' || currentFolder === 'desktop') {
+        } else if (currentFolder === 'documents' || currentFolder === 'desktop' || currentFolder === 'games') {
           renderFolderContent('disk-c', true);
         }
       }, opts);
