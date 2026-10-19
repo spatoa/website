@@ -8,11 +8,12 @@ Welcome to the architectural specification for **Lachlan's World** (`spatoa/webs
 
 Lachlan's World is a zero-framework, static-first web experience compiled by [Zola](https://www.getzola.org/) (Rust-based SSG) and enriched with vanilla ECMAScript, HTML5 Semantic layouts, and CSS variables.
 
-The site provides **four primary runtime environments**:
+The site provides **five primary runtime environments**:
 1. **Web Portal (`/`)**: A classic two-column Web 2.0 portal with modular retro widgets, profile card, chiptune music player, LED marquee ticker, interactive screensaver canvas, and a floating sticker drawer.
 2. **Desktop OS (`/desktop/`)**: A mid-2000s draggable Web OS shell with a desktop icon grid, taskbar dock, Start Menu, virtual File Explorer (`C:\`), Display Properties / Settings dialog (`Settings.exe`), and Blog Reader window.
 3. **Standalone Virtual Pet PWA (`/pet/`)**: A dedicated handheld appliance simulation of a 1997 Gen-1 virtual keychain pet, featuring an authentic 32x19 dot-matrix LCD canvas, 1-bit Web Audio piezo buzzer, and offline Service Worker caching.
 4. **Standalone Desert Golfing PWA (`/golf/`)**: A dedicated full-screen, landscape-locked 2D physics arcade appliance running 100% offline with zero visual website chrome, resolution-independent vector scaling, and continuous Catmull-Rom dunes.
+5. **System Recovery Console 404 (`/404.html`)**: An authentic fullscreen Windows Blue Screen of Death (BSOD) crash screen and safe-mode recovery console featuring STOP 0x00000404, retro monospace diagnostics, and any-key reboot navigation.
 
 ```mermaid
 graph TD
@@ -181,7 +182,7 @@ All scripts are written in vanilla ECMAScript (ES6+) without npm dependencies or
 | `window.PWARuntime` | `pwa-runtime.js` | Standalone PWAs (/golf/, /pet/) | Reusable PWA client runtime (`registerServiceWorker()`, `isStandalone()`, `bindViewport()`). |
 | `window.VisitCounter` | `visit-counter.js` | Status widget | Calculates visitor visit count and formats retro mechanical odometer digits. |
 | `window.LegitSoftware` | `gimmicks.js` | Gimmicks window | Interactive fake software setup wizard minigame. |
-| `window.randomizeWordArt()` | `wordart.js` | Gimmicks window | Re-rolls gradient style on vintage WordArt elements. |
+| `window.randomizeWordArt()` | `wordart.js` | Site banner (`banner.html`) | Cycles vintage WordArt gradient styling on the portal header title. |
 | `window.SEARCH_CONFIG` | `base.html` (inline) | `search.js` | URLs and localized strings for ElasticLunr search index execution. |
 
 ---
@@ -209,7 +210,7 @@ All client state is isolated under the `lachlan_` prefix to prevent collision wi
 | `lachlan_active_portal_game`| `localStorage`| `string` | `null` | `game-engine.js` | ID of the active cartridge mounted on the Web Portal interactive canvas. |
 | `lachlan_pet_skin` | `localStorage` | `string` | `'windows'` | `pet-standalone.js` | Visual housing plastic skin for the standalone pet appliance. |
 | `lachlan_user_visits` | `localStorage` | `string` | `'1'` | `visit-counter.js` | Total persistent visit counter number. |
-| `lachlan_wordart_style` | `localStorage` | `string` | `'0'` | `wordart.js` | Current active vintage WordArt gradient preset index. |
+| `lachlan_wordart_style` | `sessionStorage`| `string` | `'wordart-rainbow'` | `wordart.js` | Active vintage WordArt gradient style class for the banner title. |
 | `lachlan_session_visited` | `sessionStorage`| `string` | `'true'` | `visit-counter.js` | Session guard flag preventing duplicate visit increments during navigation. |
 | `lachlan_last_gimmick_idx` | `sessionStorage`| `string` | `'0'` | `gimmicks.js` | Stores last selected gimmick tab index across session navigation. |
 
@@ -242,6 +243,10 @@ style.css (Entry Point)
     ├── pocket_pet.css
     ├── pet_standalone.css
     └── cursor.css
+
+Standalone Appliance Stylesheets (Scoped entry points)
+├── components/desert_golfing_standalone.css (Fullscreen canvas layout for /golf/)
+└── components/bsod.css (Cobalt blue crash screen layout for /404.html)
 ```
 
 ### 5.1 Design Tokens & Theming
