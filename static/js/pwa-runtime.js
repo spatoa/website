@@ -82,7 +82,15 @@
         const promise = screen.orientation.lock('landscape');
         if (promise && typeof promise.catch === 'function') {
           promise.catch(function () {
-            // Orientation lock may require user gesture or fullscreen mode in some browsers
+            // In Android Chrome, orientation.lock requires fullscreen mode.
+            // Attempt requestFullscreen on active user gesture if supported.
+            if (!document.fullscreenElement && typeof document.documentElement.requestFullscreen === 'function') {
+              document.documentElement.requestFullscreen().then(function () {
+                if (screen.orientation && typeof screen.orientation.lock === 'function') {
+                  screen.orientation.lock('landscape').catch(function () {});
+                }
+              }).catch(function () {});
+            }
           });
         }
       } catch (e) {}
@@ -135,9 +143,14 @@
       if (pendingRaf) return;
       pendingRaf = requestAnimationFrame(function () {
         pendingRaf = null;
-        const dims = getViewportDimensions();
         if (typeof onResize === 'function') {
-          onResize(dims.width, dims.height);
+          const rect = canvas ? canvas.getBoundingClientRect() : null;
+          if (rect && rect.width > 0 && rect.height > 0) {
+            onResize(rect.width, rect.height);
+          } else {
+            const dims = getViewportDimensions();
+            onResize(dims.width, dims.height);
+          }
         }
       });
     }

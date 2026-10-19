@@ -580,16 +580,13 @@
     let height = canvas.height || 250;
 
     const isResIndependent = !!(options && options.resolutionIndependent);
+    const STAGE_WIDTH = 480.0;
+    const STAGE_HEIGHT = 270.0;
     let dpr = 1.0;
     let scaleX = 1.0;
     let scaleY = 1.0;
-    let simWidth = width;
-    let simHeight = height;
-
-    if (isResIndependent) {
-      simHeight = 270.0;
-      simWidth = simHeight * (Math.max(1, width) / Math.max(1, height));
-    }
+    let simWidth = isResIndependent ? STAGE_WIDTH : width;
+    let simHeight = isResIndependent ? STAGE_HEIGHT : height;
 
     // Enforce touch-action none and prevent context callouts on mobile touchscreens
     canvas.style.touchAction = 'none';
@@ -620,10 +617,10 @@
       dpr = window.devicePixelRatio || 1;
 
       if (isResIndependent) {
+        simWidth = STAGE_WIDTH;
+        simHeight = STAGE_HEIGHT;
         canvas.width = Math.round(width * dpr);
         canvas.height = Math.round(height * dpr);
-        simHeight = 270.0;
-        simWidth = simHeight * (Math.max(1, width) / Math.max(1, height));
         scaleX = (canvas.width / simWidth);
         scaleY = (canvas.height / simHeight);
       } else {

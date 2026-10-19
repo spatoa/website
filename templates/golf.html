@@ -21,6 +21,19 @@
 <body class="golf-standalone-page">
   <canvas id="desert-golfing-canvas" role="img" aria-label="Desert Golfing 2D Physics Canvas"></canvas>
 
+  <!-- Mobile Landscape Enforcer: Strictly blocks portrait orientation on mobile with no bypass -->
+  <div id="golf-orientation-blocker" class="golf-orientation-blocker" role="alertdialog" aria-modal="true" aria-label="Landscape Orientation Required">
+    <div class="orientation-blocker-content">
+      <div class="orientation-icon wingdings" aria-hidden="true">🖵</div>
+      <h1 class="orientation-title">★ LANDSCAPE REQUIRED ★</h1>
+      <p class="orientation-text">Desert Golfing is designed exclusively for landscape view.</p>
+      <div class="orientation-rotate-hint">
+        <span class="rotate-glyph" aria-hidden="true">⟳</span>
+        <span>Please rotate your device horizontally</span>
+      </div>
+    </div>
+  </div>
+
   <script src="{{ get_url(path='js/pwa-runtime.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/desert-golfing.js') | safe }}" defer></script>
   <script>
@@ -48,18 +61,50 @@
 
         if (!game) return;
 
-        // 3. Bind Dynamic Fullscreen Viewport Resize
+        // 3. Bind Dynamic Viewport Resize (Letterboxed 16:9 Canvas)
+        function handleCanvasResize() {
+          const rect = canvas.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            game.resize(rect.width, rect.height);
+          }
+        }
+
         if (window.PWARuntime) {
           window.PWARuntime.bindViewport(canvas, function (w, h) {
             game.resize(w, h);
           });
         } else {
-          function onResize() {
-            game.resize(window.innerWidth, window.innerHeight);
-          }
-          window.addEventListener('resize', onResize);
-          onResize();
+          window.addEventListener('resize', handleCanvasResize);
+          handleCanvasResize();
         }
+
+        // 4. Orientation State Monitor & Blocker Tap Lock
+        const blocker = document.getElementById('golf-orientation-blocker');
+        if (blocker && window.PWARuntime) {
+          blocker.addEventListener('click', function () {
+            window.PWARuntime.lockLandscape();
+          });
+          blocker.addEventListener('touchstart', function () {
+            window.PWARuntime.lockLandscape();
+          }, { passive: true });
+        }
+
+        function checkOrientationState() {
+          const isPortraitMobile = window.matchMedia('(orientation: portrait) and (pointer: coarse), (orientation: portrait) and (max-width: 768px)').matches;
+          if (isPortraitMobile) {
+            game.pause();
+          } else {
+            game.start();
+            handleCanvasResize();
+          }
+        }
+
+        window.addEventListener('resize', checkOrientationState);
+        window.addEventListener('orientationchange', function () {
+          setTimeout(checkOrientationState, 100);
+          setTimeout(handleCanvasResize, 250);
+        });
+        checkOrientationState();
 
         game.start();
       }

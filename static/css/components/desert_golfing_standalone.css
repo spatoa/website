@@ -36,11 +36,13 @@ body.golf-standalone-page {
 }
 
 #desert-golfing-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100dvh;
   display: block;
+  /* Maintain fixed 16:9 aspect ratio and fit cleanly inside the browser window */
+  aspect-ratio: 16 / 9;
+  width: min(100vw, calc(100dvh * 16 / 9));
+  height: min(100dvh, calc(100vw * 9 / 16));
+  max-width: 100vw;
+  max-height: 100dvh;
   touch-action: none;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -50,4 +52,106 @@ body.golf-standalone-page {
   background: #000000;
   outline: none;
   border: none;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.95);
+}
+
+/* ==============================================================
+   MOBILE LANDSCAPE ENFORCEMENT & ORIENTATION BLOCKER
+   Impassable full-screen retro barrier when in portrait on mobile
+   ============================================================== */
+.golf-orientation-blocker {
+  display: none;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 99999;
+  background-color: #0b0d13;
+  color: #f7e6c4;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  font-family: Tahoma, Verdana, Geneva, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.orientation-blocker-content {
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background: #111827;
+  padding: 24px 20px;
+  border: 2px outset #4b5563;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85);
+}
+
+.orientation-icon {
+  font-size: 48px;
+  line-height: 1;
+  color: #e09953;
+  font-family: "Wingdings", "Wingdings 2", "Wingdings 3", "Webdings", "Segoe MDL2 Assets", "Noto Sans Symbols 2", "Apple Symbols", Tahoma, sans-serif;
+  font-variant-emoji: text;
+}
+
+.orientation-title {
+  font-family: "Arial Black", "Impact", Tahoma, sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #f6ad55;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.orientation-text {
+  font-family: Tahoma, Verdana, Geneva, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #d1d5db;
+  margin: 0;
+}
+
+.orientation-rotate-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 8px 14px;
+  background: #1f2937;
+  border: 1px inset #374151;
+  color: #93c5fd;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 11px;
+}
+
+.rotate-glyph {
+  display: inline-block;
+  font-size: 16px;
+  animation: retro-device-spin 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes retro-device-spin {
+  0%, 35% {
+    transform: rotate(0deg);
+  }
+  75%, 100% {
+    transform: rotate(90deg);
+  }
+}
+
+/* Trigger blocker strictly on mobile/touch screens in portrait orientation */
+@media screen and (orientation: portrait) and (pointer: coarse),
+       screen and (orientation: portrait) and (max-width: 768px) {
+  .golf-orientation-blocker {
+    display: flex !important;
+  }
+  #desert-golfing-canvas {
+    display: none !important;
+  }
 }
