@@ -10,7 +10,7 @@
  * - window.randomizeWordArt
  *
  * @storageKeys
- * - lachlan_wordart_style (localStorage: active preset index)
+ * - lachlan_wordart_style (sessionStorage: active style class)
  */
 
 (function () {

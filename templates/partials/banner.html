@@ -8,31 +8,6 @@
 #}
 <header class="banner" role="banner">
   <h1 id="site-banner-title" class="wordart-title" title="WordArt Title (Click to randomize!)" tabindex="0" role="heading" aria-level="1">LACHLAN'S WORLD</h1>
-  <script>
-    (function () {
-      try {
-        var styles = [
-          'wordart-rainbow',
-          'wordart-chrome',
-          'wordart-sunset',
-          'wordart-extruded-blue',
-          'wordart-outline-shadow',
-          'wordart-purple-wave',
-          'wordart-neon-lime',
-          'wordart-gold-bevel',
-          'wordart-superhero',
-          'wordart-inflatable'
-        ];
-        var prev = sessionStorage.getItem('lachlan_wordart_style');
-        var pool = styles.filter(function (s) { return s !== prev; });
-        if (!pool.length) pool = styles;
-        var chosen = pool[Math.floor(Math.random() * pool.length)];
-        var el = document.getElementById('site-banner-title');
-        if (el) el.classList.add(chosen);
-        sessionStorage.setItem('lachlan_wordart_style', chosen);
-      } catch (e) {}
-    })();
-  </script>
   <div class="led-ticker-container">
     <span class="ticker-prefix" aria-hidden="true">&#9658;&#9658;</span>
     <div class="led-ticker-track" aria-live="off">

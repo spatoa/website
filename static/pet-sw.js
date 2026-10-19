@@ -3,7 +3,7 @@
  * Enables 100% offline gameplay, fast cached asset delivery, and standalone mobile app experience.
  */
 
-const CACHE_NAME = 'lachlan-pocket-pet-v2';
+const CACHE_NAME = 'lachlan-pocket-pet-v3';
 const PRECACHE_ASSETS = [
   '/pet/',
   '/pet',
@@ -17,6 +17,7 @@ const PRECACHE_ASSETS = [
   '/css/components/pet_standalone.css',
   '/css/components/cursor.css',
   '/js/theme-switcher.js',
+  '/js/pocket_pet_sprites.js',
   '/js/pocket_pet.js',
   '/js/pet-standalone.js',
   '/stickers/pocket_pet-egg.svg',
