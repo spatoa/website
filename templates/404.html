@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="{{ lang | default(value=config.default_language | default(value='en')) }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 Not Found - STOP: 0x00000404 - {{ config.title }}</title>
+  <meta name="description" content="{{ config.extra.strings.error_404_message | default(value='The requested page or bulletin could not be found on this server.') }}">
+  <link rel="icon" href="{{ get_url(path='favicon.ico') | safe }}">
+  <link rel="stylesheet" href="{{ get_url(path='css/components/bsod.css', cachebust=true) | safe }}">
+</head>
+<body class="bsod-page" id="bsod-screen" tabindex="0">
+  <main class="bsod-container" role="main">
+    <div class="bsod-title-badge">LACHLAN'S WORLD // SYSTEM RECOVERY CONSOLE</div>
+
+    <div class="bsod-header">
+      *** STOP: 0x00000404 (0xDEADBEEF, 0x00000000, 0x00000000, 0x00000000)<br>
+      PAGE_FAULT_IN_NONPAGED_AREA (HTTP_404_NOT_FOUND)
+    </div>
+
+    <hr class="bsod-divider">
+
+    <div class="bsod-section">
+      A problem has been detected and Lachlan's World has been halted to prevent damage to your browser session.
+    </div>
+
+    <div class="bsod-section">
+      <strong>{{ config.extra.strings.error_404_header | default(value="★ 404 Not Found ★") }}</strong><br>
+      {{ config.extra.strings.error_404_message | default(value="The requested page or bulletin could not be found on this server.") }}
+    </div>
+
+    <div class="bsod-section">
+      If this is the first time you've seen this Stop error screen, restart your session. If this screen appears again, follow these recovery steps:
+      <ul class="bsod-list">
+        <li>Check to ensure any URL addresses or query parameters are properly formatted.</li>
+        <li>If an external hyperlink brought you here, the requested bulletin may have been re-indexed.</li>
+        <li>Check with your system administrator or return to the main portal console.</li>
+      </ul>
+    </div>
+
+    <div class="bsod-tech-info">
+      <div class="bsod-tech-line">*** Technical information:</div>
+      <div class="bsod-tech-line">*** GV_KERNEL: {{ config.extra.strings.status_server_arch | default(value="Linux x86_64") }} &bull; Zola SSG Engine</div>
+      <div class="bsod-tech-line">*** FAULT_ADDRESS: 0x00000404 (URL Not Found)</div>
+      <div class="bsod-tech-line">*** DUMP: Beginning dump of physical memory... Dump complete.<span class="bsod-cursor" aria-hidden="true"></span></div>
+    </div>
+
+    <div class="bsod-section" style="margin-top: 20px;">
+      Press any key or click anywhere to reboot system. Or choose an emergency mode:
+    </div>
+
+    <nav class="bsod-actions" aria-label="Recovery Options">
+      <a href="{{ get_url(path='/') }}" class="bsod-btn" id="btn-reboot-home">[ Enter: Reboot to Home Portal ]</a>
+      <a href="{{ get_url(path='blog/') }}" class="bsod-btn">[ Safe Mode: Blog Archive ]</a>
+      <a href="{{ get_url(path='desktop/') }}" class="bsod-btn">[ Start Desktop OS Shell ]</a>
+    </nav>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+      var homeUrl = "{{ get_url(path='/') }}";
+      var redirected = false;
+
+      function rebootToHome() {
+        if (redirected) return;
+        redirected = true;
+        window.location.href = homeUrl;
+      }
+
+      // Any keyboard press reboots to home
+      window.addEventListener('keydown', function (e) {
+        // Allow tab/shift-tab for keyboard accessibility navigation between buttons
+        if (e.key === 'Tab' || e.key === 'Shift') return;
+        rebootToHome();
+      });
+
+      // Clicking anywhere outside recovery action links reboots to home
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('a')) {
+          // Allow clicking specific navigation links
+          return;
+        }
+        rebootToHome();
+      });
+    })();
+  </script>
+</body>
+</html>
