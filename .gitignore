@@ -6,3 +6,10 @@ public/
 
 # Ignore nix direnv
 .direnv/
+
+# OS & Editor temporary files
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.tmp
