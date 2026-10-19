@@ -154,7 +154,4 @@ To run the automated verification suite:
 nix develop --command node scripts/test-desert-golfing.js
 ```
 
-To bundle the modular files into the distributable `static/js/desert-golfing.js`:
-```bash
-nix develop --command node scripts/build-desert-golfing.js
-```
+The modular components in `static/js/desert-golfing/` are loaded directly by templates (`templates/partials/desert_golfing_scripts.html`) without requiring any bundler or build step.

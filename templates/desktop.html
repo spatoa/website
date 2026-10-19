@@ -79,7 +79,7 @@
   {% include "partials/site_config.html" %}
   <script src="{{ get_url(path='js/theme-switcher.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/game-engine.js') | safe }}" defer></script>
-  <script src="{{ get_url(path='js/desert-golfing.js') | safe }}" defer></script>
+  {% include "partials/desert_golfing_scripts.html" %}
   <script src="{{ get_url(path='js/screensaver.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/music-player.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/visit-counter.js') | safe }}" defer></script>

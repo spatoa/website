@@ -1,0 +1,17 @@
+{#
+  ==============================================================
+  PARTIAL: templates/partials/desert_golfing_scripts.html
+  DESCRIPTION: Modular script loader for Desert Golfing 2D engine.
+  Loads modular components from static/js/desert-golfing/ in dependency order.
+  ==============================================================
+#}
+<script src="{{ get_url(path='js/desert-golfing/config.js') | safe }}" defer></script>
+<script src="{{ get_url(path='js/desert-golfing/math.js') | safe }}" defer></script>
+<script src="{{ get_url(path='js/desert-golfing/save-manager.js') | safe }}" defer></script>
+<script src="{{ get_url(path='js/desert-golfing/sound-engine.js') | safe }}" defer></script>
+<script src="{{ get_url(path='js/desert-golfing/terrain-world.js') | safe }}" defer></script>
+<script src="{{ get_url(path='js/desert-golfing/physics-engine.js') | safe }}" defer></script>
+<script src="{{ get_url(path='js/desert-golfing/input-controller.js') | safe }}" defer></script>
+<script src="{{ get_url(path='js/desert-golfing/terrain-renderer.js') | safe }}" defer></script>
+<script src="{{ get_url(path='js/desert-golfing/game-instance.js') | safe }}" defer></script>
+<script src="{{ get_url(path='js/desert-golfing/index.js') | safe }}" defer></script>

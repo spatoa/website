@@ -27,7 +27,7 @@ graph TD
         WM["DesktopOS Window Manager\nstatic/js/window-manager.js"]
         Audio["Chiptune Audio Player\nstatic/js/music-player.js"]
         Canvas["Modular Game Host & Cartridge Engine\nstatic/js/game-engine.js"]
-        Golf["Desert Golfing Engine\nstatic/js/desert-golfing.js"]
+        Golf["Desert Golfing Engine\nstatic/js/desert-golfing/"]
         Screensaver["WASM/Canvas Screensaver\nstatic/js/screensaver.js"]
         Stickers["Sticker Physics & Tray\nstatic/js/stickers.js"]
         Search["ElasticLunr Search Index\nstatic/js/search.js"]
@@ -160,7 +160,7 @@ All scripts are written in vanilla ECMAScript (ES6+) without npm dependencies or
 | `window.toggleStickerMotionPreference()`| `stickers.js` | Settings.exe | Toggles motion preference (`enabled` / `disabled`) and saves to storage. |
 | `window.StickerEngine` | `stickers.js` | External extensions | Public API for sticker management (`getActiveContainer()`, `getStorageKey()`). |
 | `window.GameEngine` | `game-engine.js` | Web Portal, Desktop OS | Cartridge registry & container host (`registerCartridge`, `mountCartridge`, `cycleNextCartridge`). |
-| `window.DesertGolfing` | `desert-golfing.js`<br>*(sources in `static/js/desert-golfing/`)* | GameEngine, DesktopOS | Desert Golfing physics engine factory (`createInstance(canvas)`, `getState()`). Built from modular components (`config.js`, `math.js`, `save-manager.js`, `sound-engine.js`, `terrain-world.js`, `physics-engine.js`, `input-controller.js`, `terrain-renderer.js`, `game-instance.js`). |
+| `window.DesertGolfing` | `desert-golfing/` | GameEngine, DesktopOS | Desert Golfing physics engine factory (`createInstance(canvas)`, `getState()`). Modular sub-components: `config.js`, `math.js`, `save-manager.js`, `sound-engine.js`, `terrain-world.js`, `physics-engine.js`, `input-controller.js`, `terrain-renderer.js`, `game-instance.js`, `index.js`. |
 | `window.PWARuntime` | `pwa-runtime.js` | Standalone PWA (/golf/) | Reusable PWA client runtime (`registerServiceWorker()`, `isStandalone()`, `bindViewport()`). |
 | `window.VisitCounter` | `visit-counter.js` | Status widget | Calculates visitor visit count and formats retro mechanical odometer digits. |
 | `window.LegitSoftware` | `gimmicks.js` | Gimmicks window | Interactive fake software setup wizard minigame. |
@@ -186,7 +186,7 @@ All client state is isolated under the `lachlan_` prefix to prevent collision wi
 | `lachlan_stickers` | `localStorage` | `JSON Array` | `[]` | `stickers.js` | Legacy fallback key for portal sticker records. |
 | `lachlan_sticker_motion` | `localStorage` | `string` | `'enabled'` | `stickers.js` | Floating CSS motion toggle (`'enabled'` or `'disabled'`). |
 | `lachlan_grid_sticker_drawer_open` | `localStorage` | `string` | `'false'` | `stickers.js` | Drawer open/closed state on portal layout. |
-| `lachlan_desert_golfing_v1`| `localStorage` | `JSON Object` | `{}` | `desert-golfing.js` | Endless physics golf state (`hole`, `strokes`, `totalStrokes`, `ball`, `seed`, `sound`). |
+| `lachlan_desert_golfing_v1`| `localStorage` | `JSON Object` | `{}` | `desert-golfing/save-manager.js` | Endless physics golf state (`hole`, `strokes`, `totalStrokes`, `ball`, `seed`, `sound`). |
 | `lachlan_active_portal_game`| `localStorage`| `string` | `null` | `game-engine.js` | ID of the active cartridge mounted on the Web Portal interactive canvas. |
 | `lachlan_user_visits` | `localStorage` | `string` | `'1'` | `visit-counter.js` | Total persistent visit counter number. |
 | `lachlan_wordart_style` | `sessionStorage`| `string` | `'wordart-rainbow'` | `wordart.js` | Active vintage WordArt gradient style class for the banner title. |

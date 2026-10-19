@@ -19,9 +19,6 @@ const TerrainWorld = require('../static/js/desert-golfing/terrain-world.js');
 const PhysicsEngine = require('../static/js/desert-golfing/physics-engine.js');
 const TerrainRenderer = require('../static/js/desert-golfing/terrain-renderer.js');
 
-// 2. Test Assembled Distribution Bundle
-const AssembledDesertGolfing = require('../static/js/desert-golfing.js');
-
 let totalTests = 0;
 let passedTests = 0;
 
@@ -266,12 +263,11 @@ function runSuite() {
     assert.strictEqual(ball.vy, 0, 'Ball vertical velocity must settle to 0');
   });
 
-  console.log('\nSuite 5: Public API Contracts & Assembled Bundle Equivalence');
-  it('ModularDesertGolfing and AssembledDesertGolfing expose identical public APIs', () => {
-    const expectedMethods = ['createInstance', 'getState', 'SaveManager', 'getPaletteColors'];
+  console.log('\nSuite 5: Public API Contracts & Modular Interface');
+  it('ModularDesertGolfing exposes all expected public APIs and submodules', () => {
+    const expectedMethods = ['createInstance', 'getState', 'SaveManager', 'getPaletteColors', 'CONFIG', 'MathUtils', 'PhysicsEngine', 'TerrainWorld'];
     for (const m of expectedMethods) {
-      assert.strictEqual(typeof ModularDesertGolfing[m], typeof AssembledDesertGolfing[m], `Mismatch on ${m}`);
-      assert(typeof ModularDesertGolfing[m] !== 'undefined', `Method ${m} should be defined`);
+      assert(typeof ModularDesertGolfing[m] !== 'undefined', `Property/Method ${m} should be defined`);
     }
   });
 

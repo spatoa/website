@@ -3,14 +3,23 @@
  * Enables 100% offline gameplay, instant cached asset delivery, and fullscreen standalone mobile experience.
  */
 
-const CACHE_NAME = 'lachlan-desert-golfing-v3';
+const CACHE_NAME = 'lachlan-desert-golfing-v4';
 const PRECACHE_ASSETS = [
   '/golf/',
   '/golf',
   '/golf-manifest.json',
   '/css/components/desert_golfing_standalone.css',
   '/js/pwa-runtime.js',
-  '/js/desert-golfing.js',
+  '/js/desert-golfing/config.js',
+  '/js/desert-golfing/math.js',
+  '/js/desert-golfing/save-manager.js',
+  '/js/desert-golfing/sound-engine.js',
+  '/js/desert-golfing/terrain-world.js',
+  '/js/desert-golfing/physics-engine.js',
+  '/js/desert-golfing/input-controller.js',
+  '/js/desert-golfing/terrain-renderer.js',
+  '/js/desert-golfing/game-instance.js',
+  '/js/desert-golfing/index.js',
   '/stickers/desert-golfing-icon.svg',
   '/favicon.ico'
 ];

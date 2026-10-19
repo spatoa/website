@@ -35,7 +35,7 @@
   </div>
 
   <script src="{{ get_url(path='js/pwa-runtime.js') | safe }}" defer></script>
-  <script src="{{ get_url(path='js/desert-golfing.js') | safe }}" defer></script>
+  {% include "partials/desert_golfing_scripts.html" %}
   <script>
     (function () {
       'use strict';
