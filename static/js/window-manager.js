@@ -436,7 +436,6 @@
         'sticker-album-window': '★',
         'system-status': '🖵',
         'legit-software': '🖫',
-        'pocket_pet-app': '☺',
         'settings-window': '⚙',
         'desert-golfing-window': '⚑'
       };
@@ -799,7 +798,6 @@
         'sticker-album-window': { x: 300, y: 150 },
         'settings-window': { x: 360, y: 120 },
         'system-status': { x: 920, y: 50 },
-        'pocket_pet-app': { x: 480, y: 180 },
         'legit-software': { x: 520, y: 240 },
         'desert-golfing-window': { x: 360, y: 160 }
       };

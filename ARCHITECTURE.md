@@ -8,27 +8,23 @@ Welcome to the architectural specification for **Lachlan's World** (`spatoa/webs
 
 Lachlan's World is a zero-framework, static-first web experience compiled by [Zola](https://www.getzola.org/) (Rust-based SSG) and enriched with vanilla ECMAScript, HTML5 Semantic layouts, and CSS variables.
 
-The site provides **five primary runtime environments**:
+The site provides **four primary runtime environments**:
 1. **Web Portal (`/`)**: A classic two-column Web 2.0 portal with modular retro widgets, profile card, chiptune music player, LED marquee ticker, interactive screensaver canvas, and a floating sticker drawer.
 2. **Desktop OS (`/desktop/`)**: A mid-2000s draggable Web OS shell with a desktop icon grid, taskbar dock, Start Menu, virtual File Explorer (`C:\`), Display Properties / Settings dialog (`Settings.exe`), and Blog Reader window.
-3. **Standalone Virtual Pet PWA (`/pet/`)**: A dedicated handheld appliance simulation of a 1997 Gen-1 virtual keychain pet, featuring an authentic 32x19 dot-matrix LCD canvas, 1-bit Web Audio piezo buzzer, and offline Service Worker caching.
-4. **Standalone Desert Golfing PWA (`/golf/`)**: A dedicated full-screen, landscape-locked 2D physics arcade appliance running 100% offline with zero visual website chrome, resolution-independent vector scaling, and continuous Catmull-Rom dunes.
-5. **System Recovery Console 404 (`/404.html`)**: An authentic fullscreen Windows Blue Screen of Death (BSOD) crash screen and safe-mode recovery console featuring STOP 0x00000404, retro monospace diagnostics, and any-key reboot navigation.
+3. **Standalone Desert Golfing PWA (`/golf/`)**: A dedicated full-screen, landscape-locked 2D physics arcade appliance running 100% offline with zero visual website chrome, resolution-independent vector scaling, and continuous Catmull-Rom dunes.
+4. **System Recovery Console 404 (`/404.html`)**: An authentic fullscreen Windows Blue Screen of Death (BSOD) crash screen and safe-mode recovery console featuring STOP 0x00000404, retro monospace diagnostics, and any-key reboot navigation.
 
 ```mermaid
 graph TD
     subgraph Client_Environments["Client Runtime Environments"]
         Portal["Web Portal (/)\ntemplates/index.html"]
         Desktop["Desktop OS (/desktop/)\ntemplates/desktop.html"]
-        PetApp["Virtual Pet PWA (/pet/)\ntemplates/pet.html"]
         GolfApp["Desert Golfing PWA (/golf/)\ntemplates/golf.html"]
         BlogContent["Blog Reader & Archive (/blog/*)\ntemplates/blog.html, page.html"]
     end
 
     subgraph Core_Engines["Shared Core Engines (Vanilla JS)"]
         WM["DesktopOS Window Manager\nstatic/js/window-manager.js"]
-        PetCore["Pocket Pet Simulation\nstatic/js/pocket_pet.js"]
-        PetSprites["Sprite Bitmap Bank\nstatic/js/pocket_pet_sprites.js"]
         Audio["Chiptune Audio Player\nstatic/js/music-player.js"]
         Canvas["Modular Game Host & Cartridge Engine\nstatic/js/game-engine.js"]
         Golf["Desert Golfing Engine\nstatic/js/desert-golfing.js"]
@@ -40,7 +36,6 @@ graph TD
     subgraph State_Contracts["State & Persistence (localStorage)"]
         SiteTheme["lachlan_site_theme (6 retro themes)"]
         WindowPositions["lachlan_desktop_window_positions"]
-        PetState["lachlan_pocket_pet_v1"]
         StickerState["lachlan_grid_stickers / lachlan_desktop_stickers"]
     end
 
@@ -50,17 +45,11 @@ graph TD
     Portal --> Search
 
     Desktop --> WM
-    Desktop --> PetSprites
-    Desktop --> PetCore
     Desktop --> Audio
     Desktop --> Canvas
     Desktop --> Stickers
 
-    PetApp --> PetSprites
-    PetApp --> PetCore
-
     WM -.-> WindowPositions
-    PetCore -.-> PetState
     Stickers -.-> StickerState
 ```
 
@@ -68,7 +57,7 @@ graph TD
 
 ## 2. Template Partials Hierarchy & Component Tree
 
-To maintain clean separation of concerns and adhere to `AGENTS.md` guidelines, `templates/index.html`, `templates/desktop.html`, and `templates/pet.html` assemble their layouts from partials located in `templates/partials/`.
+To maintain clean separation of concerns and adhere to `AGENTS.md` guidelines, `templates/index.html` and `templates/desktop.html` assemble their layouts from partials located in `templates/partials/`.
 
 ### 2.1 Partials Inclusion Map
 
@@ -99,7 +88,6 @@ graph LR
         file_explorer["partials/file_explorer.html"]
         blog_reader["partials/blog_reader.html"]
         settings_window["partials/settings_window.html"]
-        pocket_pet_win["partials/pocket_pet_window.html"]
         taskbar["partials/taskbar.html"]
     end
 
@@ -107,7 +95,6 @@ graph LR
         about_card["partials/about_profile_card.html"]
         diagnostics["partials/status_diagnostics.html"]
         palette["partials/sticker_palette.html"]
-        pet_deck["partials/pocket_pet_deck.html"]
         start_menu["partials/start_menu.html"]
     end
 
@@ -117,7 +104,6 @@ graph LR
     settings_window --> diagnostics
     sticker_book --> palette
     desktop_stickers --> palette
-    pocket_pet_win --> pet_deck
     taskbar --> start_menu
 ```
 
@@ -125,10 +111,10 @@ graph LR
 
 | Partial Name | Environment | Included By | Description |
 | :--- | :--- | :--- | :--- |
-| `head_init.html` | Shared Global | `base.html`, `desktop.html`, `pet.html` | Injected early in `<head>` to read theme and wallpaper from localStorage, preventing FOUC. |
-| `site_config.html` | Shared Global | `base.html`, `desktop.html`, `pet.html` | Embeds Zola configuration metadata (avatar icon, theme strings) for client scripts. |
+| `head_init.html` | Shared Global | `base.html`, `desktop.html` | Injected early in `<head>` to read theme and wallpaper from localStorage, preventing FOUC. |
+| `site_config.html` | Shared Global | `base.html`, `desktop.html` | Embeds Zola configuration metadata (avatar icon, theme strings) for client scripts. |
 | `banner.html` | Web Portal | `base.html` | Top vintage marquee banner with LED ticker messages from `zola.toml`. |
-| `nav.html` | Web Portal | `base.html` | Portal header navigation bar, search input, and quick links (`HOME`, `BLOG`, `PET`, `GIT`, `DESKTOP`). |
+| `nav.html` | Web Portal | `base.html` | Portal header navigation bar, search input, and quick links (`HOME`, `BLOG`, `GOLF`, `CTF`, `GIT`). |
 | `update_stamp.html` | Web Portal | `base.html` | Retro "LAST UPDATED" marquee stamp bar. |
 | `footer.html` | Web Portal | `base.html` | Bottom portal footer with license link and copyright info. |
 | `about.html` | Web Portal | `index.html` | Left-column profile widget wrapper; includes `about_profile_card.html`. |
@@ -143,8 +129,6 @@ graph LR
 | `desert_golfing_window.html`| Desktop OS | `desktop.html` | Dedicated Desert_Golfing.exe application window with 2D physics simulation and endless dunes. |
 | `winamp_window.html` | Shared Window | `index.html`, `desktop.html` | Authentic Winamp v2-inspired procedural Web Audio 8-bit chiptune synthesizer and visualizer. |
 | `gimmicks.html` | Shared Window | `index.html`, `desktop.html` | Retro interactive gimmick box (random fortune, visitor prank, fake installer). |
-| `pocket_pet_deck.html` | Reusable Card | `pocket_pet_window.html`, `pet.html` | Hardware LCD virtual pet deck with 32x19 canvas screen and 3-button control pad (A, B, C). |
-| `pocket_pet_window.html` | Desktop OS | `desktop.html` | Desktop window wrapper for `pocket_pet_deck.html`. |
 | `file_explorer.html` | Desktop OS | `desktop.html` | Retro Win32 File Explorer window with virtual directory tree (`C:\`), search, and sorting. |
 | `blog_reader.html` | Desktop OS | `desktop.html` | Embedded blog reader window allowing full post reading without leaving Desktop OS. |
 | `settings_window.html` | Desktop OS | `desktop.html` | Display Properties dialog (`Settings.exe`) with wallpaper picker, theme chooser, and diagnostics tabs. |
@@ -175,11 +159,9 @@ All scripts are written in vanilla ECMAScript (ES6+) without npm dependencies or
 | `window.applyStickerMotionPreference()` | `stickers.js` | Settings.exe | Re-reads `lachlan_sticker_motion` and toggles CSS floating animations. |
 | `window.toggleStickerMotionPreference()`| `stickers.js` | Settings.exe | Toggles motion preference (`enabled` / `disabled`) and saves to storage. |
 | `window.StickerEngine` | `stickers.js` | External extensions | Public API for sticker management (`getActiveContainer()`, `getStorageKey()`). |
-| `window.PocketPetSprites` | `pocket_pet_sprites.js`| `pocket_pet.js` | 2D bitmask dictionary for all 32x19 virtual LCD sprite graphics. |
-| `window.Pocket_Pet` | `pocket_pet.js` | Pet UI, standalone PWA | Virtual pet simulation engine (lifecycle, feeding, hygiene, minigame loop). |
 | `window.GameEngine` | `game-engine.js` | Web Portal, Desktop OS | Cartridge registry & container host (`registerCartridge`, `mountCartridge`, `cycleNextCartridge`). |
 | `window.DesertGolfing` | `desert-golfing.js` | GameEngine, DesktopOS | Desert Golfing physics engine factory (`createInstance(canvas)`, `getState()`). |
-| `window.PWARuntime` | `pwa-runtime.js` | Standalone PWAs (/golf/, /pet/) | Reusable PWA client runtime (`registerServiceWorker()`, `isStandalone()`, `bindViewport()`). |
+| `window.PWARuntime` | `pwa-runtime.js` | Standalone PWA (/golf/) | Reusable PWA client runtime (`registerServiceWorker()`, `isStandalone()`, `bindViewport()`). |
 | `window.VisitCounter` | `visit-counter.js` | Status widget | Calculates visitor visit count and formats retro mechanical odometer digits. |
 | `window.LegitSoftware` | `gimmicks.js` | Gimmicks window | Interactive fake software setup wizard minigame. |
 | `window.randomizeWordArt()` | `wordart.js` | Site banner (`banner.html`) | Cycles vintage WordArt gradient styling on the portal header title. |
@@ -204,11 +186,8 @@ All client state is isolated under the `lachlan_` prefix to prevent collision wi
 | `lachlan_stickers` | `localStorage` | `JSON Array` | `[]` | `stickers.js` | Legacy fallback key for portal sticker records. |
 | `lachlan_sticker_motion` | `localStorage` | `string` | `'enabled'` | `stickers.js` | Floating CSS motion toggle (`'enabled'` or `'disabled'`). |
 | `lachlan_grid_sticker_drawer_open` | `localStorage` | `string` | `'false'` | `stickers.js` | Drawer open/closed state on portal layout. |
-| `lachlan_pocket_pet_v1` | `localStorage` | `JSON Object` | `{}` | `pocket_pet.js` | Virtual pet state (species, stage, hunger, happiness, discipline, age, sickness, poo, lastTick). |
-| `lachlan_pocket_pet_sound` | `localStorage` | `string` | `'active'` | `pocket_pet.js` | Sound toggle for 1-bit piezo buzzer (`'active'` or `'muted'`). |
 | `lachlan_desert_golfing_v1`| `localStorage` | `JSON Object` | `{}` | `desert-golfing.js` | Endless physics golf state (`hole`, `strokes`, `totalStrokes`, `ball`, `seed`, `sound`). |
 | `lachlan_active_portal_game`| `localStorage`| `string` | `null` | `game-engine.js` | ID of the active cartridge mounted on the Web Portal interactive canvas. |
-| `lachlan_pet_skin` | `localStorage` | `string` | `'windows'` | `pet-standalone.js` | Visual housing plastic skin for the standalone pet appliance. |
 | `lachlan_user_visits` | `localStorage` | `string` | `'1'` | `visit-counter.js` | Total persistent visit counter number. |
 | `lachlan_wordart_style` | `sessionStorage`| `string` | `'wordart-rainbow'` | `wordart.js` | Active vintage WordArt gradient style class for the banner title. |
 | `lachlan_session_visited` | `sessionStorage`| `string` | `'true'` | `visit-counter.js` | Session guard flag preventing duplicate visit increments during navigation. |
@@ -239,9 +218,6 @@ style.css (Entry Point)
     ├── stickers.css
     ├── footer.css
     ├── gimmicks.css
-    ├── pocket_pet_tokens.css
-    ├── pocket_pet.css
-    ├── pet_standalone.css
     └── cursor.css
 
 Standalone Appliance Stylesheets (Scoped entry points)

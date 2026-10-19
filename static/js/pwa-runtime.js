@@ -1,7 +1,7 @@
 /**
  * @module PWARuntime
  * @description Standardized client runtime and lifecycle manager for offline Progressive Web Apps (PWAs).
- * Used across standalone games and appliances in Lachlan's World (Desert Golfing, Pocket Pet, etc.).
+ * Used across standalone games and appliances in Lachlan's World (Desert Golfing, etc.).
  *
  * @exports window.PWARuntime
  */
@@ -12,7 +12,7 @@
   /**
    * Registers a dedicated, scoped service worker.
    * @param {string} swUrl - Relative or absolute URL to service worker script.
-   * @param {string} scope - App scope path (e.g. '/golf/' or '/pet/').
+   * @param {string} scope - App scope path (e.g. '/golf/').
    * @returns {Promise<ServiceWorkerRegistration|null>}
    */
   function registerServiceWorker(swUrl, scope) {

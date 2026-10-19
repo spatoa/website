@@ -51,10 +51,6 @@
         <div class="desktop-icon-img" aria-hidden="true">&#x1F5B5;</div>
         <div class="desktop-icon-label">Website.url</div>
       </a>
-      <a href="{{ get_url(path='pet') }}" class="desktop-icon desktop-link-icon" aria-label="Open Pocket Pet Standalone Mobile PWA" target="_blank" rel="noopener">
-        <div class="desktop-icon-img" aria-hidden="true">&#x263A;</div>
-        <div class="desktop-icon-label">Pocket_Pet_PWA.url</div>
-      </a>
       <a href="{{ get_url(path='golf') }}" class="desktop-icon desktop-link-icon" aria-label="Open Desert Golfing Standalone Fullscreen PWA" target="_blank" rel="noopener">
         <div class="desktop-icon-img" aria-hidden="true">&#x2691;</div>
         <div class="desktop-icon-label">Desert_Golfing_PWA.url</div>
@@ -69,7 +65,6 @@
       {% include "partials/desert_golfing_window.html" %}
       {% include "partials/game_window.html" %}
       {% include "partials/winamp_window.html" %}
-      {% include "partials/pocket_pet_window.html" %}
       {% include "partials/blog_reader.html" %}
       {% include "partials/file_explorer.html" %}
       {% include "partials/desktop_sticker_window.html" %}
@@ -89,8 +84,6 @@
   <script src="{{ get_url(path='js/music-player.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/visit-counter.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/stickers.js') | safe }}" defer></script>
-  <script src="{{ get_url(path='js/pocket_pet_sprites.js') | safe }}" defer></script>
-  <script src="{{ get_url(path='js/pocket_pet.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/gimmicks.js') | safe }}" defer></script>
   <script src="{{ get_url(path='js/window-manager.js') | safe }}" defer></script>
 </body>
