@@ -27,8 +27,8 @@
       </button>
     </div>
 
-    <div class="game-viewport-wrap">
-      <canvas id="wasm-canvas" width="380" height="200" role="img" aria-label="Interactive Game Player Canvas"></canvas>
+    <div class="game-viewport-wrap" style="touch-action: none;">
+      <canvas id="wasm-canvas" width="380" height="200" style="touch-action: none;" role="img" aria-label="Interactive Game Player Canvas"></canvas>
       <div class="canvas-overlay-notice" id="canvas-instructions">Pull back to set angle and power &bull; Release to shoot &bull; Endless sand dunes</div>
     </div>
     <div class="win-statusbar">

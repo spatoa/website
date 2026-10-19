@@ -32,6 +32,13 @@
     } catch (e) {}
   }
 
+  function resolveCanvas(target) {
+    if (!target) return null;
+    if (typeof target !== 'string') return target;
+    const cleanId = target.startsWith('#') ? target.slice(1) : target;
+    return document.getElementById(cleanId) || document.querySelector(target);
+  }
+
   const GameEngine = {
     /**
      * Register a new game cartridge into the registry.
@@ -81,7 +88,7 @@
      * @returns {Object|null} running instance
      */
     mountCartridge: function (target, cartridgeId, options) {
-      const canvas = typeof target === 'string' ? document.getElementById(target) : target;
+      const canvas = resolveCanvas(target);
       if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
         console.warn('[GameEngine] Mount target is not an HTMLCanvasElement:', target);
         return null;
@@ -156,7 +163,7 @@
      * Unmount any cartridge currently running on a target canvas.
      */
     unmountCartridge: function (target) {
-      const canvas = typeof target === 'string' ? document.getElementById(target) : target;
+      const canvas = resolveCanvas(target);
       if (!canvas) return;
 
       const record = mountedInstances.get(canvas);
@@ -175,7 +182,7 @@
      * Retrieve the active cartridge instance running on a canvas.
      */
     getActiveInstance: function (target) {
-      const canvas = typeof target === 'string' ? document.getElementById(target) : target;
+      const canvas = resolveCanvas(target);
       if (!canvas) return null;
       const record = mountedInstances.get(canvas);
       return record ? record.instance : null;
@@ -185,7 +192,7 @@
      * Retrieve the active cartridge ID running on a canvas.
      */
     getActiveCartridgeId: function (target) {
-      const canvas = typeof target === 'string' ? document.getElementById(target) : target;
+      const canvas = resolveCanvas(target);
       if (!canvas) return null;
       const record = mountedInstances.get(canvas);
       return record ? record.cartridgeId : null;
@@ -195,7 +202,7 @@
      * Cycle to the next registered cartridge on a canvas.
      */
     cycleNextCartridge: function (target, options) {
-      const canvas = typeof target === 'string' ? document.getElementById(target) : target;
+      const canvas = resolveCanvas(target);
       if (!canvas) return null;
 
       const list = this.listCartridges();

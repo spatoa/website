@@ -73,6 +73,11 @@
     background: #000;
     position: relative;
     border: 2px inset var(--bevel-dark);
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    overscroll-behavior: none;
 }
 
 .game-viewport-wrap canvas,
@@ -82,6 +87,11 @@
     height: 190px;
     background: #000;
     border: 1px inset var(--bevel-dark);
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .canvas-overlay-notice {

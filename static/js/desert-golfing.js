@@ -579,6 +579,15 @@
     let width = canvas.width || 470;
     let height = canvas.height || 250;
 
+    // Enforce touch-action none and prevent context callouts on mobile touchscreens
+    canvas.style.touchAction = 'none';
+    canvas.style.webkitUserSelect = 'none';
+    canvas.style.userSelect = 'none';
+    canvas.style.webkitTouchCallout = 'none';
+    if (canvas.parentElement) {
+      canvas.parentElement.style.touchAction = 'none';
+    }
+
     const saved = SaveManager.load();
     let masterSeed = saved ? (saved.master_seed || DEFAULT_MASTER_SEED) : DEFAULT_MASTER_SEED;
     let currentHole = saved ? (saved.current_hole || 1) : 1;
@@ -1154,19 +1163,38 @@
     }
 
     // =======================================================================
-    // SECTION 4: Input & Launch Controller
+    // SECTION 4: Input & Launch Controller (Mobile Optimized, Zero Page Scroll)
     // =======================================================================
+
+    let activePointerId = null;
 
     function handlePointerDown(e) {
       if (currentState !== States.IDLE) return;
+
+      // Unconditionally prevent default on initiation to stop mobile page scroll, pinch-zoom, and pull-to-refresh
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+
       fadeElapsed = FADE_DURATION; // Full visibility when initiating a stroke
 
       const rect = canvas.getBoundingClientRect();
-      const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-      const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+      let clientX = e.clientX;
+      let clientY = e.clientY;
+
+      if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      }
+
+      if (clientX === undefined) clientX = rect.left + rect.width * 0.5;
+      if (clientY === undefined) clientY = rect.top + rect.height * 0.5;
 
       if (typeof canvas.setPointerCapture === 'function' && e.pointerId !== undefined) {
-        try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+        try {
+          canvas.setPointerCapture(e.pointerId);
+          activePointerId = e.pointerId;
+        } catch (err) {}
       }
 
       currentState = States.DRAGGING;
@@ -1180,23 +1208,39 @@
 
     function handlePointerMove(e) {
       if (currentState !== States.DRAGGING) return;
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-      const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
 
-      dragCurrentX = clientX - rect.left;
-      dragCurrentY = clientY - rect.top;
-
+      // Unconditionally stop page scroll while dragging
       if (e.cancelable) {
         e.preventDefault();
+      }
+
+      const rect = canvas.getBoundingClientRect();
+      let clientX = e.clientX;
+      let clientY = e.clientY;
+
+      if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      }
+
+      if (clientX !== undefined && clientY !== undefined) {
+        dragCurrentX = clientX - rect.left;
+        dragCurrentY = clientY - rect.top;
       }
     }
 
     function handlePointerUp(e) {
       if (currentState !== States.DRAGGING) return;
 
-      if (typeof canvas.releasePointerCapture === 'function' && e.pointerId !== undefined) {
-        try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+      if (e && e.cancelable) {
+        e.preventDefault();
+      }
+
+      if (typeof canvas.releasePointerCapture === 'function' && activePointerId !== null) {
+        try {
+          canvas.releasePointerCapture(activePointerId);
+        } catch (err) {}
+        activePointerId = null;
       }
 
       const rawDx = dragCurrentX - dragOriginX;
@@ -1229,40 +1273,80 @@
       }
     }
 
+    function handlePointerCancel(e) {
+      if (currentState === States.DRAGGING) {
+        currentState = States.IDLE;
+        if (typeof canvas.releasePointerCapture === 'function' && activePointerId !== null) {
+          try {
+            canvas.releasePointerCapture(activePointerId);
+          } catch (err) {}
+          activePointerId = null;
+        }
+      }
+    }
+
+    // Window-level touchmove trap: if the user drags their finger outside the canvas during a shot,
+    // this strictly blocks the page from scrolling up/down and tracks the pull vector seamlessly.
+    function handleWindowTouchMove(e) {
+      if (currentState === States.DRAGGING) {
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+        handlePointerMove(e);
+      }
+    }
+
+    function handleWindowTouchEnd(e) {
+      if (currentState === States.DRAGGING) {
+        handlePointerUp(e);
+      }
+    }
+
     function bindEvents() {
+      // Direct non-passive touch listeners on canvas to block native gestures & scroll
+      canvas.addEventListener('touchstart', handlePointerDown, { passive: false });
+      canvas.addEventListener('touchmove', handlePointerMove, { passive: false });
+      canvas.addEventListener('touchend', handlePointerUp, { passive: false });
+      canvas.addEventListener('touchcancel', handlePointerCancel, { passive: false });
+
+      // Pointer events for desktop and pointer-capable mobile browsers
       if ('PointerEvent' in window) {
         canvas.addEventListener('pointerdown', handlePointerDown);
         canvas.addEventListener('pointermove', handlePointerMove);
         canvas.addEventListener('pointerup', handlePointerUp);
-        canvas.addEventListener('pointercancel', handlePointerUp);
+        canvas.addEventListener('pointercancel', handlePointerCancel);
       } else {
-        canvas.addEventListener('touchstart', handlePointerDown, { passive: false });
-        canvas.addEventListener('touchmove', handlePointerMove, { passive: false });
-        canvas.addEventListener('touchend', handlePointerUp);
-        canvas.addEventListener('touchcancel', handlePointerUp);
-
         canvas.addEventListener('mousedown', handlePointerDown);
         window.addEventListener('mousemove', handlePointerMove);
         window.addEventListener('mouseup', handlePointerUp);
       }
+
+      // Window-level touchmove & touchend traps while dragging (prevents page pull up/down)
+      window.addEventListener('touchmove', handleWindowTouchMove, { passive: false });
+      window.addEventListener('touchend', handleWindowTouchEnd, { passive: false });
+      window.addEventListener('touchcancel', handlePointerCancel, { passive: false });
     }
 
     function unbindEvents() {
+      canvas.removeEventListener('touchstart', handlePointerDown);
+      canvas.removeEventListener('touchmove', handlePointerMove);
+      canvas.removeEventListener('touchend', handlePointerUp);
+      canvas.removeEventListener('touchcancel', handlePointerCancel);
+
       if ('PointerEvent' in window) {
         canvas.removeEventListener('pointerdown', handlePointerDown);
         canvas.removeEventListener('pointermove', handlePointerMove);
         canvas.removeEventListener('pointerup', handlePointerUp);
-        canvas.removeEventListener('pointercancel', handlePointerUp);
+        canvas.removeEventListener('pointercancel', handlePointerCancel);
       } else {
-        canvas.removeEventListener('touchstart', handlePointerDown);
-        canvas.removeEventListener('touchmove', handlePointerMove);
-        canvas.removeEventListener('touchend', handlePointerUp);
-        canvas.removeEventListener('touchcancel', handlePointerUp);
-
         canvas.removeEventListener('mousedown', handlePointerDown);
         window.removeEventListener('mousemove', handlePointerMove);
         window.removeEventListener('mouseup', handlePointerUp);
       }
+
+      window.removeEventListener('touchmove', handleWindowTouchMove);
+      window.removeEventListener('touchend', handleWindowTouchEnd);
+      window.removeEventListener('touchcancel', handlePointerCancel);
     }
 
     function resize(newW, newH) {
