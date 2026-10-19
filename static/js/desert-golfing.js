@@ -579,6 +579,18 @@
     let width = canvas.width || 470;
     let height = canvas.height || 250;
 
+    const isResIndependent = !!(options && options.resolutionIndependent);
+    let dpr = 1.0;
+    let scaleX = 1.0;
+    let scaleY = 1.0;
+    let simWidth = width;
+    let simHeight = height;
+
+    if (isResIndependent) {
+      simHeight = 270.0;
+      simWidth = simHeight * (Math.max(1, width) / Math.max(1, height));
+    }
+
     // Enforce touch-action none and prevent context callouts on mobile touchscreens
     canvas.style.touchAction = 'none';
     canvas.style.webkitUserSelect = 'none';
@@ -594,12 +606,37 @@
     let totalStrokes = saved ? (saved.total_strokes || 0) : 0;
     let isMuted = saved ? (saved.sound === 'muted') : false;
 
-    const world = createContinuousWorld(masterSeed, height, BALL_RADIUS);
-    let holeInfo = world.getHoleInfo(currentHole, width);
+    const world = createContinuousWorld(masterSeed, simHeight, BALL_RADIUS);
+    let holeInfo = world.getHoleInfo(currentHole, simWidth);
 
     function getCameraFraming(h) {
-      const info = world.getHoleInfo(h, width);
+      const info = world.getHoleInfo(h, simWidth);
       return Math.max(0, info.teeX - 50.0);
+    }
+
+    function updateDimensions(newCssW, newCssH) {
+      width = Math.floor(newCssW);
+      height = Math.floor(newCssH);
+      dpr = window.devicePixelRatio || 1;
+
+      if (isResIndependent) {
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        simHeight = 270.0;
+        simWidth = simHeight * (Math.max(1, width) / Math.max(1, height));
+        scaleX = (canvas.width / simWidth);
+        scaleY = (canvas.height / simHeight);
+      } else {
+        canvas.width = width;
+        canvas.height = height;
+        simWidth = width;
+        simHeight = height;
+        scaleX = 1.0;
+        scaleY = 1.0;
+      }
+
+      holeInfo = world.getHoleInfo(currentHole, simWidth);
+      cameraX = getCameraFraming(currentHole);
     }
 
     let cameraX = getCameraFraming(currentHole);
@@ -630,7 +667,7 @@
 
     const ball = {
       x: holeInfo.teeX,
-      y: world.getDuneElevation(holeInfo.teeX, currentHole, width) - BALL_RADIUS - 0.5,
+      y: world.getDuneElevation(holeInfo.teeX, currentHole, simWidth) - BALL_RADIUS - 0.5,
       vx: 0,
       vy: 0,
       restTicks: REST_CONSECUTIVE_TICKS
@@ -727,7 +764,7 @@
           currentState = States.CUP_RISING;
           riseElapsed = 0;
           riseStartY = cupBottomY - BALL_RADIUS;
-          riseTargetY = world.getDuneElevation(holeInfo.cupX, currentHole, width) - BALL_RADIUS - 0.5;
+          riseTargetY = world.getDuneElevation(holeInfo.cupX, currentHole, simWidth) - BALL_RADIUS - 0.5;
         }
         return;
       }
@@ -748,7 +785,7 @@
 
           // Ball has reached surface rim: advance to next hole (old hole becomes flat sand at tee)
           currentHole++;
-          holeInfo = world.getHoleInfo(currentHole, width);
+          holeInfo = world.getHoleInfo(currentHole, simWidth);
 
           // Step 3: Initiate Horizontal Camera Pan across continuous terrain
           cameraStartX = cameraX;
@@ -801,7 +838,7 @@
       // Triggers 1.0-second despawn delay before respawning at lastRestPosition
       // =====================================================================
       const screenX = nextX - cameraX;
-      if (screenX < -12 || nextY > height + 15 || screenX > width + 10) {
+      if (screenX < -12 || nextY > simHeight + 15 || screenX > simWidth + 10) {
         ball.vx = 0;
         ball.vy = 0;
         currentState = States.RESPAWN_DELAY;
@@ -848,12 +885,12 @@
       // =====================================================================
       // 2D COULOMB FRICTION & DUNE INTERACTION MODEL (Spec §1 - §4)
       // =====================================================================
-      const groundY = world.getPhysicalElevation(nextX, currentHole, width);
+      const groundY = world.getPhysicalElevation(nextX, currentHole, simWidth);
       const penetration = (nextY + BALL_RADIUS) - groundY;
 
       if (penetration >= 0) {
         nextY = groundY - BALL_RADIUS;
-        const norm = world.getSurfaceNormal(nextX, currentHole, width);
+        const norm = world.getSurfaceNormal(nextX, currentHole, simWidth);
 
         // 1. Velocity Decomposition: v_n = (v . n)n, v_t = v - v_n
         const vnMag = nextVx * norm.nx + nextVy * norm.ny;
@@ -944,8 +981,8 @@
 
       // 4. Settling and Zero-Velocity Threshold (Spec §4)
       const currentSpeed = Math.hypot(ball.vx, ball.vy);
-      const distToSurface = Math.abs((ball.y + BALL_RADIUS) - world.getPhysicalElevation(ball.x, currentHole, width));
-      const norm = world.getSurfaceNormal(ball.x, currentHole, width);
+      const distToSurface = Math.abs((ball.y + BALL_RADIUS) - world.getPhysicalElevation(ball.x, currentHole, simWidth));
+      const norm = world.getSurfaceNormal(ball.x, currentHole, simWidth);
       const tanTheta = Math.abs(norm.slope);
 
       // Lock position only if sticking condition holds (tanTheta <= MU_S)
@@ -954,7 +991,7 @@
         if (ball.restTicks >= REST_CONSECUTIVE_TICKS) {
           ball.vx = 0;
           ball.vy = 0;
-          ball.y = world.getPhysicalElevation(ball.x, currentHole, width) - BALL_RADIUS;
+          ball.y = world.getPhysicalElevation(ball.x, currentHole, simWidth) - BALL_RADIUS;
           currentState = States.IDLE;
           lastRestPosition.x = ball.x;
           lastRestPosition.y = ball.y;
@@ -970,16 +1007,19 @@
     // =======================================================================
 
     function render() {
-      ctx.clearRect(0, 0, width, height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       const palette = getPaletteColors(currentHole);
+
+      ctx.save();
+      ctx.scale(scaleX, scaleY);
 
       // 1. Sky
       ctx.fillStyle = palette.sky;
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillRect(0, 0, simWidth, simHeight);
 
       // 2. Sand Dune Polygon across camera view (with exact U-trench cutout for ONLY the active target cup)
       ctx.beginPath();
-      ctx.moveTo(0, height);
+      ctx.moveTo(0, simHeight);
 
       const activeCupScreenX = holeInfo.cupX - cameraX;
       const cupLeftScreen = activeCupScreenX - world.cupWidth * 0.5;
@@ -990,7 +1030,7 @@
       let renderedCup = false;
       const stepPx = 3;
 
-      for (let px = 0; px <= width + stepPx; px += stepPx) {
+      for (let px = 0; px <= simWidth + stepPx; px += stepPx) {
         const wx = cameraX + px;
 
         // Subpixel insertion of vertical U-trench cutout for the target hole
@@ -1007,17 +1047,17 @@
           continue;
         }
 
-        const gy = world.getDuneElevation(wx, currentHole, width);
+        const gy = world.getDuneElevation(wx, currentHole, simWidth);
         ctx.lineTo(px, gy);
       }
 
-      ctx.lineTo(width, height);
+      ctx.lineTo(simWidth, simHeight);
       ctx.closePath();
       ctx.fillStyle = palette.sand;
       ctx.fill();
 
       // 3. Dark Cup Cavity for the active target hole (previous hole is removed)
-      if (activeCupScreenX > -40 && activeCupScreenX < width + 40) {
+      if (activeCupScreenX > -40 && activeCupScreenX < simWidth + 40) {
         ctx.fillStyle = '#111827';
         ctx.fillRect(cupLeftScreen, rimY, world.cupWidth, world.cupDepth);
 
@@ -1056,10 +1096,10 @@
       const endHoleScan = currentHole + 3;
 
       for (let hScan = startHoleScan; hScan <= endHoleScan; hScan++) {
-        const hScanInfo = world.getHoleInfo(hScan, width);
+        const hScanInfo = world.getHoleInfo(hScan, simWidth);
         if (hScanInfo && hScanInfo.cactus) {
           const cScreenX = hScanInfo.cactus.worldX - cameraX;
-          if (cScreenX > -50 && cScreenX < width + 50) {
+          if (cScreenX > -50 && cScreenX < simWidth + 50) {
             ctx.strokeStyle = palette.cactus;
             ctx.lineWidth = 3.5;
             ctx.lineCap = 'round';
@@ -1119,7 +1159,7 @@
       if (currentState !== States.RESPAWN_DELAY) {
         const ballScreenX = ball.x - cameraX;
         const ballScreenY = ball.y;
-        if (ballScreenX > -10 && ballScreenX < width + 10) {
+        if (ballScreenX > -10 && ballScreenX < simWidth + 10) {
           const alpha = Math.min(1.0, Math.max(0.0, fadeElapsed / FADE_DURATION));
           ctx.save();
           ctx.globalAlpha = alpha;
@@ -1139,7 +1179,9 @@
 
       const strokeText = `${totalStrokes}`;
       const strokeWidth = ctx.measureText(strokeText).width;
-      ctx.fillText(strokeText, width - strokeWidth - 14, 20);
+      ctx.fillText(strokeText, simWidth - strokeWidth - 14, 20);
+
+      ctx.restore();
     }
 
     // =======================================================================
@@ -1166,19 +1208,50 @@
     // SECTION 4: Input & Launch Controller (Mobile Optimized, Zero Page Scroll)
     // =======================================================================
 
+    function isHoleNumberTapped(px, py) {
+      const holeText = `HOLE ${currentHole}`;
+      const textWidth = holeText.length * 9.0;
+      const hitLeft = 0;
+      const hitRight = Math.max(75, 14 + textWidth + 14);
+      const hitTop = 0;
+      const hitBottom = 38;
+      return (px >= hitLeft && px <= hitRight && py >= hitTop && py <= hitBottom);
+    }
+
+    function resetStage() {
+      if (currentState === States.CUP_DWELL || currentState === States.CUP_RISING || currentState === States.CAMERA_PANNING) {
+        return;
+      }
+      ball.x = holeInfo.teeX;
+      ball.y = world.getDuneElevation(holeInfo.teeX, currentHole, simWidth) - BALL_RADIUS - 0.5;
+      ball.vx = 0;
+      ball.vy = 0;
+      ball.restTicks = REST_CONSECUTIVE_TICKS;
+      lastRestPosition.x = ball.x;
+      lastRestPosition.y = ball.y;
+
+      totalStrokes++;
+
+      cameraX = getCameraFraming(currentHole);
+      currentState = States.IDLE;
+      fadeElapsed = FADE_DURATION;
+
+      AudioOutput.playBounce(isMuted, 80);
+      persist();
+      render();
+    }
+
     let activePointerId = null;
 
     function handlePointerDown(e) {
-      if (currentState !== States.IDLE) return;
-
       // Unconditionally prevent default on initiation to stop mobile page scroll, pinch-zoom, and pull-to-refresh
       if (e.cancelable) {
         e.preventDefault();
       }
 
-      fadeElapsed = FADE_DURATION; // Full visibility when initiating a stroke
-
       const rect = canvas.getBoundingClientRect();
+      const ptrScaleX = simWidth / Math.max(1, rect.width);
+      const ptrScaleY = simHeight / Math.max(1, rect.height);
       let clientX = e.clientX;
       let clientY = e.clientY;
 
@@ -1190,6 +1263,19 @@
       if (clientX === undefined) clientX = rect.left + rect.width * 0.5;
       if (clientY === undefined) clientY = rect.top + rect.height * 0.5;
 
+      const clickX = (clientX - rect.left) * ptrScaleX;
+      const clickY = (clientY - rect.top) * ptrScaleY;
+
+      // Small hidden feature: tapping or clicking the hole number resets the ball to the start position of the stage and adds one stroke
+      if (isHoleNumberTapped(clickX, clickY)) {
+        resetStage();
+        return;
+      }
+
+      if (currentState !== States.IDLE) return;
+
+      fadeElapsed = FADE_DURATION; // Full visibility when initiating a stroke
+
       if (typeof canvas.setPointerCapture === 'function' && e.pointerId !== undefined) {
         try {
           canvas.setPointerCapture(e.pointerId);
@@ -1198,8 +1284,8 @@
       }
 
       currentState = States.DRAGGING;
-      dragOriginX = clientX - rect.left;
-      dragOriginY = clientY - rect.top;
+      dragOriginX = clickX;
+      dragOriginY = clickY;
       dragCurrentX = dragOriginX;
       dragCurrentY = dragOriginY;
 
@@ -1215,6 +1301,8 @@
       }
 
       const rect = canvas.getBoundingClientRect();
+      const ptrScaleX = simWidth / Math.max(1, rect.width);
+      const ptrScaleY = simHeight / Math.max(1, rect.height);
       let clientX = e.clientX;
       let clientY = e.clientY;
 
@@ -1224,8 +1312,8 @@
       }
 
       if (clientX !== undefined && clientY !== undefined) {
-        dragCurrentX = clientX - rect.left;
-        dragCurrentY = clientY - rect.top;
+        dragCurrentX = (clientX - rect.left) * ptrScaleX;
+        dragCurrentY = (clientY - rect.top) * ptrScaleY;
       }
     }
 
@@ -1270,6 +1358,9 @@
         persist();
       } else {
         currentState = States.IDLE;
+        if (isHoleNumberTapped(dragOriginX, dragOriginY)) {
+          resetStage();
+        }
       }
     }
 
@@ -1351,12 +1442,7 @@
 
     function resize(newW, newH) {
       if (newW > 0 && newH > 0) {
-        width = Math.floor(newW);
-        height = Math.floor(newH);
-        canvas.width = width;
-        canvas.height = height;
-        holeInfo = world.getHoleInfo(currentHole, width);
-        cameraX = getCameraFraming(currentHole);
+        updateDimensions(newW, newH);
         render();
       }
     }
@@ -1443,7 +1529,8 @@
         persist();
         render();
         return !isMuted;
-      }
+      },
+      resetStage: resetStage
     };
   }
 

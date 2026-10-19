@@ -8,10 +8,11 @@ Welcome to the architectural specification for **Lachlan's World** (`spatoa/webs
 
 Lachlan's World is a zero-framework, static-first web experience compiled by [Zola](https://www.getzola.org/) (Rust-based SSG) and enriched with vanilla ECMAScript, HTML5 Semantic layouts, and CSS variables.
 
-The site provides **three primary runtime environments**:
+The site provides **four primary runtime environments**:
 1. **Web Portal (`/`)**: A classic two-column Web 2.0 portal with modular retro widgets, profile card, chiptune music player, LED marquee ticker, interactive screensaver canvas, and a floating sticker drawer.
 2. **Desktop OS (`/desktop/`)**: A mid-2000s draggable Web OS shell with a desktop icon grid, taskbar dock, Start Menu, virtual File Explorer (`C:\`), Display Properties / Settings dialog (`Settings.exe`), and Blog Reader window.
 3. **Standalone Virtual Pet PWA (`/pet/`)**: A dedicated handheld appliance simulation of a 1997 Gen-1 virtual keychain pet, featuring an authentic 32x19 dot-matrix LCD canvas, 1-bit Web Audio piezo buzzer, and offline Service Worker caching.
+4. **Standalone Desert Golfing PWA (`/golf/`)**: A dedicated full-screen, landscape-locked 2D physics arcade appliance running 100% offline with zero visual website chrome, resolution-independent vector scaling, and continuous Catmull-Rom dunes.
 
 ```mermaid
 graph TD
@@ -19,6 +20,7 @@ graph TD
         Portal["Web Portal (/)\ntemplates/index.html"]
         Desktop["Desktop OS (/desktop/)\ntemplates/desktop.html"]
         PetApp["Virtual Pet PWA (/pet/)\ntemplates/pet.html"]
+        GolfApp["Desert Golfing PWA (/golf/)\ntemplates/golf.html"]
         BlogContent["Blog Reader & Archive (/blog/*)\ntemplates/blog.html, page.html"]
     end
 
@@ -176,6 +178,7 @@ All scripts are written in vanilla ECMAScript (ES6+) without npm dependencies or
 | `window.Pocket_Pet` | `pocket_pet.js` | Pet UI, standalone PWA | Virtual pet simulation engine (lifecycle, feeding, hygiene, minigame loop). |
 | `window.GameEngine` | `game-engine.js` | Web Portal, Desktop OS | Cartridge registry & container host (`registerCartridge`, `mountCartridge`, `cycleNextCartridge`). |
 | `window.DesertGolfing` | `desert-golfing.js` | GameEngine, DesktopOS | Desert Golfing physics engine factory (`createInstance(canvas)`, `getState()`). |
+| `window.PWARuntime` | `pwa-runtime.js` | Standalone PWAs (/golf/, /pet/) | Reusable PWA client runtime (`registerServiceWorker()`, `isStandalone()`, `bindViewport()`). |
 | `window.VisitCounter` | `visit-counter.js` | Status widget | Calculates visitor visit count and formats retro mechanical odometer digits. |
 | `window.LegitSoftware` | `gimmicks.js` | Gimmicks window | Interactive fake software setup wizard minigame. |
 | `window.randomizeWordArt()` | `wordart.js` | Gimmicks window | Re-rolls gradient style on vintage WordArt elements. |

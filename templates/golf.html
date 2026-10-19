@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="{{ lang | default(value=config.default_language | default(value='en')) }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Desert Golfing</title>
+  <meta name="description" content="Desert Golfing standalone 2D physics simulation and installable mobile progressive web app (PWA).">
+
+  <!-- PWA Manifest & Fullscreen Mobile Meta -->
+  <link rel="manifest" href="{{ get_url(path='golf-manifest.json') | safe }}">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Desert Golfing">
+  <meta name="theme-color" content="#e09953">
+  <link rel="apple-touch-icon" href="{{ get_url(path='stickers/desert-golfing-icon.svg') | safe }}">
+  <link rel="icon" type="image/svg+xml" href="{{ get_url(path='stickers/desert-golfing-icon.svg') | safe }}">
+
+  <link rel="stylesheet" href="{{ get_url(path='css/components/desert_golfing_standalone.css') | safe }}">
+</head>
+<body class="golf-standalone-page">
+  <canvas id="desert-golfing-canvas" role="img" aria-label="Desert Golfing 2D Physics Canvas"></canvas>
+
+  <script src="{{ get_url(path='js/pwa-runtime.js') | safe }}" defer></script>
+  <script src="{{ get_url(path='js/desert-golfing.js') | safe }}" defer></script>
+  <script>
+    (function () {
+      'use strict';
+
+      function initStandaloneGolf() {
+        const canvas = document.getElementById('desert-golfing-canvas');
+        if (!canvas || !window.DesertGolfing) {
+          setTimeout(initStandaloneGolf, 30);
+          return;
+        }
+
+        // 1. Register Dedicated Scoped Service Worker
+        if (window.PWARuntime) {
+          window.PWARuntime.registerServiceWorker('/golf-sw.js', '/golf/');
+          window.PWARuntime.attachGestureOrientationLock();
+        }
+
+        // 2. Initialize Game Engine Instance in Standalone Mode
+        const game = window.DesertGolfing.createInstance(canvas, {
+          isStandalone: true,
+          resolutionIndependent: true
+        });
+
+        if (!game) return;
+
+        // 3. Bind Dynamic Fullscreen Viewport Resize
+        if (window.PWARuntime) {
+          window.PWARuntime.bindViewport(canvas, function (w, h) {
+            game.resize(w, h);
+          });
+        } else {
+          function onResize() {
+            game.resize(window.innerWidth, window.innerHeight);
+          }
+          window.addEventListener('resize', onResize);
+          onResize();
+        }
+
+        game.start();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initStandaloneGolf);
+      } else {
+        initStandaloneGolf();
+      }
+    })();
+  </script>
+</body>
+</html>

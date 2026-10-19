@@ -1,0 +1,20 @@
+{
+  "name": "Desert Golfing - Lachlan's World",
+  "short_name": "DesertGolfing",
+  "start_url": "/golf/",
+  "scope": "/golf/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#e09953",
+  "theme_color": "#e09953",
+  "description": "Deterministic 2D physics & continuous dune engine running offline.",
+  "categories": ["games", "sports", "retro"],
+  "icons": [
+    {
+      "src": "/stickers/desert-golfing-icon.svg",
+      "sizes": "48x48 72x72 96x96 144x144 192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
