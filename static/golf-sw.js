@@ -3,7 +3,7 @@
  * Enables 100% offline gameplay, instant cached asset delivery, and fullscreen standalone mobile experience.
  */
 
-const CACHE_NAME = 'lachlan-desert-golfing-v2';
+const CACHE_NAME = 'lachlan-desert-golfing-v3';
 const PRECACHE_ASSETS = [
   '/golf/',
   '/golf',

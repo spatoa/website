@@ -160,7 +160,7 @@ All scripts are written in vanilla ECMAScript (ES6+) without npm dependencies or
 | `window.toggleStickerMotionPreference()`| `stickers.js` | Settings.exe | Toggles motion preference (`enabled` / `disabled`) and saves to storage. |
 | `window.StickerEngine` | `stickers.js` | External extensions | Public API for sticker management (`getActiveContainer()`, `getStorageKey()`). |
 | `window.GameEngine` | `game-engine.js` | Web Portal, Desktop OS | Cartridge registry & container host (`registerCartridge`, `mountCartridge`, `cycleNextCartridge`). |
-| `window.DesertGolfing` | `desert-golfing.js` | GameEngine, DesktopOS | Desert Golfing physics engine factory (`createInstance(canvas)`, `getState()`). |
+| `window.DesertGolfing` | `desert-golfing.js`<br>*(sources in `static/js/desert-golfing/`)* | GameEngine, DesktopOS | Desert Golfing physics engine factory (`createInstance(canvas)`, `getState()`). Built from modular components (`config.js`, `math.js`, `save-manager.js`, `sound-engine.js`, `terrain-world.js`, `physics-engine.js`, `input-controller.js`, `terrain-renderer.js`, `game-instance.js`). |
 | `window.PWARuntime` | `pwa-runtime.js` | Standalone PWA (/golf/) | Reusable PWA client runtime (`registerServiceWorker()`, `isStandalone()`, `bindViewport()`). |
 | `window.VisitCounter` | `visit-counter.js` | Status widget | Calculates visitor visit count and formats retro mechanical odometer digits. |
 | `window.LegitSoftware` | `gimmicks.js` | Gimmicks window | Interactive fake software setup wizard minigame. |

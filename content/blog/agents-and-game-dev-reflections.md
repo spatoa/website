@@ -1,8 +1,8 @@
 +++
-title = "Reflections on using agents while making a small game"
+title = "A reflection on using agents to make a small game"
 date = 2026-10-19
 updated = 2026-10-19
-description = "Some of my mixed thoughts on the use of using agentic workflows for making a small game on my website, \"Desert Golfing\", and how I think it should be used when doing so."
+description = "Some of my mixed thoughts on the use of using agentic workflows for making a small desert golfing clone game on my website, and how I think it should be used when doing so."
 
 [taxonomies]
 tags = ["gamedev", "web", "vibecoding", "agents", "ai"]
